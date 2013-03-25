@@ -1,0 +1,1225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html lang="en"><meta content="text/html; charset=utf-8" http-equiv="content-type">
+
+<title>Web Telephony API Specification</title>
+<style type="text/css">
+           pre.idl { border:solid thin; background:#eee; color:#000; padding:0.5em }
+           pre.idl :link, pre.idl :visited { color:inherit; background:transparent }
+           pre code { color:inherit; background:transparent }
+           div.example { margin-left:1em; padding-left:1em; border-left:double;
+                         color:#222; background:#fcfcfc }
+           .note { margin-left:2em; font-weight:bold; font-style:italic; color:#008000 }
+           p.note::before { content:"Note: " }
+           .XXX { padding:.5em; border:solid #f00 }
+           p.XXX::before { content:"Issue: " }
+           dl.switch { padding-left:2em }
+           dl.switch > dt { text-indent:-1.5em }
+           dl.switch > dt:before { content:'\21AA'; padding:0 0.5em 0 0;
+             display:inline-block; width:1em; text-align:right; line-height:0.5em }
+           dl.domintro { color: green; margin: 2em 0 2em 2em; padding: 0.5em 1em;
+             border: none; background: #DDFFDD; }
+           dl.domintro dt, dl.domintro dt * { color: black; text-decoration: none; }
+           dl.domintro dd { margin: 0.5em 0 1em 2em; padding: 0; }
+           dl.domintro dd p { margin: 0.5em 0; }
+           dl.domintro:before { display: table; margin: -1em -0.5em -0.5em auto; width: auto;
+           content: 'This box is non-normative. Implementation requirements are given below this box.';
+           color: red; border: solid 2px; background: white; padding: 0 0.25em; }
+           em.ct { text-transform:lowercase; font-variant:small-caps; font-style:normal }
+           dfn { font-weight:bold; font-style:normal }
+           code { color:orangered }
+           code :link, code :visited { color:inherit }
+           hr:not(.top) { display:block; background:none; border:none; padding:0;
+                          margin:2em 0; height:auto }
+           table { border-collapse:collapse; border-style:hidden hidden none hidden }
+           table thead { border-bottom:solid }
+           table tbody th:first-child { border-left:solid }
+           table td, table th { border-left:solid; border-right:solid;
+                  border-bottom:solid thin; vertical-align:top; padding:0.2em }
+
+</style>
+
+<link href="http://www.w3.org/StyleSheets/TR/W3C-ED" rel="stylesheet">
+
+<body class="draft">
+
+<div class="head">
+   <h1>Web Telephony API Specification</h1>
+   <h2 class="no-num no-toc" id="editor-draft-31-december-2012">Editor Draft &mdash; 31 December 2012</h2>
+
+   <dl>
+      <dt>This version:
+      <dd><!--begin-link--><a href="http://sysapps.github.com/sysapps/proposals/Telephony_Intel/Telephony.html">http://sysapps.github.com/sysapps/proposals/Telephony_Intel/Telephony.html</a><!--end-link-->
+
+      <dt class="dontpublish">Participate:</dt>
+      <dd class="dontpublish"><a href="mailto:public-sysapps@w3.org?subject=%5Bcontacts-api%5D%20">public-sysapps@w3.org</a> (<a href="http://lists.w3.org/Archives/Public/public-sysapps/">archives</a>)
+      <dd class="dontpublish"><a href="https://www.w3.org/Bugs/Public/enter_bug.cgi?product=SysAppsWG&amp;component=Telephony%20API">File a bug</a>
+
+      <dt>Latest version:
+      <dd><!--begin-link--><a href="http://www.w3.org/2012/sysapps/">http://www.w3.org/2012/sysapps/</a><!--end-link-->
+
+      <dt>Previous versions:
+      <dd><!--begin-link--><a href=" http://sysapps.github.com/sysapps/proposals/Telephony/Telephony.html"> http://sysapps.github.com/sysapps/proposals/Telephony/Telephony.html</a><!--end-link-->
+
+      <dt>Editors:
+      <dd class="vcard"> <span class="fn">Zoltan Kis</span>,
+      <span class="org"><a href="http://www.intel.com/">Intel Corporation</a></span>,
+      <span class="email"><a href="mailto:zoltan.kis@intel.com">zoltan.kis@intel.com</a></span>
+
+    </dl>
+
+    <div class="w3conly">
+<!--begin-copyright-->
+<p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> &copy; 2012 <a href="http://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>&reg;</sup> (<a href="http://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>, <a href="http://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+<!--end-copyright--></div>
+</div> <!-- head -->
+
+<div id="abstract">
+   <h2 class="no-num no-toc" id="abstract">Abstract</h2>
+   <p>  This specification defines a draft System Level API which provides an
+   interface to manage telephony calls on different
+   <a href="#telephony-service" title="telephony service">telephony services</a>. It uses the
+   <a href="http://sysapps.github.com/sysapps/proposals/Telephony/Telephony.html">
+   W3C Telephony API draft</a> as a starting point and adds support for
+   multiple telephony services, video calls, conference calls, call migration
+   between services, audio and video control, etc.
+   This specification is a working draft in order to present a larger context
+   and design considerations for further development of the Web Telephony API.
+   <p>A typical use case of the Web Telephony API is the implementation of
+   dialer applications.
+   </p>
+</div>
+
+<h2 class="no-num no-toc" id="toc">Table of Contents</h2>
+
+<!--begin-toc-->
+<ol class="toc">
+ <li><a href="#introduction-0"><span class="secno">1 </span>Introduction</a></li>
+ <li><a href="#conformance-0"><span class="secno">2 </span>Conformance</a></li>
+ <li><a href="#terminology-0"><span class="secno">3 </span>Terminology</a></li>
+ <li><a href="#web-messaging-api"><span class="secno">4 </span>Web Messaging API</a>
+  <ol class="toc">
+   <li><a U0003Ccode="" href="#navigator" interface="" title=""><span class="secno">4.1 </span>Navigator</a></li>
+   <li><a href="#interface-telephonyevent"><span class="secno">4.2 </span>Interface <code title="">TelephonyEvent</code></a></li>
+   <li><a href="#interface-telephonymanager"><span class="secno">4.3 </span>Interface <code title="">TelephonyManager</code></a></li>
+   <li><a href="#interface-telephonycall"><span class="secno">4.4 </span>Interface <code title="">TelephonyCall</code></a></li>
+   <li><a href="#dictionary-dialparams"><span class="secno">4.5 </span>Dictionary <code title="">DialParams</code></a></li>
+   <li><a href="#interface-telephonyaudiocontrol"><span class="secno">4.6 </span>Interface <code title="">TelephonyAudioControl</code></a></li>
+   <li><a href="#interface-telephonyvideocontrol"><span class="secno">4.7 </span>Interface <code title="">TelephonyVideoControl</code></a></li>
+   <li><a href="#interface-callhistoryentry"><span class="secno">4.8 </span>Interface <code title="">CallHistoryEntry</code></a></li>
+   <li><a href="#interface-remoteparty"><span class="secno">4.9 </span>Interface <code title="">RemoteParty</code></a></ol></li>
+ <li><a href="#asynchronous-operations"><span class="secno">5 </span>Asynchronous operations</a>
+  <ol class="toc">
+   <li><a href="#interface-telephonyrequest"><span class="secno">5.1 </span>Interface <code title="">TelephonyRequest</code></a></ol></li>
+ <li><a class="no-num" href="#references-0">References</a></li>
+ <li><a class="no-num" href="#acknowledgments">Acknowledgements</a></ol>
+<!--end-toc-->
+
+
+<div id="introduction">
+  <h2 id="introduction-0"><span class="secno">1 </span>Introduction</h2>
+  <p>The Telephony API provides the following functionality:<ul>
+    <li>Retrieve available telephony services and monitor their changes.</li>
+    <li>Make calls through different telephony services.</li>
+    <li>Support for conference calls.</li>
+    <li>Specify an informative structure for call history items.</li>
+   </ul><p></p>
+   <p>The API uses the following notions:<ul>
+   <li>A <dfn id="telephony-service" title="telephony service">telephony service</dfn> is an object
+   exposing telephony functionality associated to a subscriber identity at a
+   service provider. For example, in cellular telephony a telephony service
+   is associated to one or multiple SIM cards (subscriber accounts) representing
+   the user identity in the telephony service subscriptions.
+   The service may use different protocols for signaling and media, e.g. GSM,
+   CDMA, VoLTE, SIP, XMPP, proprietary solutions, etc.
+   In this API the objects for telephony services are not explicitly exposed,
+   instead the service identifiers are used as optional parameters, in order to
+   ensure backward compatibility with earlier versions of this API.
+   </li>
+   <li>A <dfn id="default-service" title="default service">default telephony service</dfn> is the
+   telephony service which is used when the service is not not explicitly
+   specified in methods of this API.
+   </li>
+   <li>An <dfn id="active-call" title="active call">active call</dfn> is a
+   <a href="#telephonycall"><code>TelephonyCall</code></a> object in the
+   <a href="#call_state-connected" id="call_state-connected"><code>connected</code></a> state and bound
+   to the input and output devices (e.g. microphone, speaker and tone generator).
+   </li>
+   </ul><p></p>
+</div>
+
+<div id="conformance">
+   <h2 id="conformance-0"><span class="secno">2 </span>Conformance</h2>
+   <p>This specification defines conformance criteria that apply to a
+   single product: the <dfn id="ua">user agent</dfn> that implements the
+   interfaces that it contains.
+   </p>
+   <p>Implementations that use ECMAScript to implement the APIs defined in
+   this specification MUST implement them in a manner consistent with the
+   ECMAScript Bindings defined in the Web IDL specification
+   <a href="#refsWEBIDL">[WEBIDL]</a>, as this specification uses that
+   specification and terminology.
+   </p>
+</div>
+
+<div id="terminology">
+   <h2 id="terminology-0"><span class="secno">3 </span>Terminology</h2>
+   <p>The <code><a href="http://dev.w3.org/html5/spec/webappapis.html#eventhandler">
+   EventHandler</a></code> interface represents a callback used for event
+   handlers as defined in <a href="#refsHTML5">[HTML5]</a>.
+   </p>
+   <p>The concepts <dfn id="queue-a-task"><a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task"> queue a task</a></dfn>
+   and <dfn id="fire-a-simple-event"><a href="http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event">
+   fire a simple event</a></dfn> are defined in <a href="#refsHTML5">[HTML5]</a>.
+   </p>
+   <p>The terms <dfn id="event-handler"><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
+   event handler</a></dfn> and
+   <dfn id="event-handler-event-types"><a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
+   event handler event types</a></dfn> are defined in
+   <a href="#refsHTML5">[HTML5]</a>.</p>
+</div>
+
+
+<div id="mainspec">
+  <h2 id="web-messaging-api"><span class="secno">4 </span>Web Messaging API</h2>
+
+  <div> <!-- interface Navigator -->
+    <h3 U0003Ccode="" id="navigator" interface="" title=""><span class="secno">4.1 </span>Navigator</h3>
+    <p class="brief"> Defines the object which exposes the telephony API.</p>
+    <pre class="idl">    partial interface <dfn id="navigator-0">Navigator</dfn> {
+        readonly attribute <a href="#telephonymanager">TelephonyManager</a> <a href="#navigator-telephony" title="Navigator-telephony">telephony</a>;
+    };
+    </pre>
+    <p>The <dfn id="navigator-telephony" title="Navigator-telephony"><code>telephony</code></dfn> property
+    represents the object through which the telephony functionality is accessed.
+    </p>
+    <p> The following example shows how to call a number on the default service.
+    </p>
+    <div class="example"> <pre>    function testCall() {
+        var telCall = navigator.telephony.dial('+34638883076');
+
+        telCall.onstatechange = function(e) {
+            if (e.target.state == 'connected')
+                window.console.log('Connected!');
+        }
+
+        telCall.onerror = function(e) {
+            window.console.error(e);
+        }
+    }
+    </pre> </div>
+  </div> <!-- interface Navigator -->
+
+
+  <div> <!-- interface TelephonyEvent-->
+    <h3 id="interface-telephonyevent"><span class="secno">4.2 </span>Interface <code title="">TelephonyEvent</code></h3>
+    <p>Defines telephony events which conveys a parameter. Different objects
+    implementing the <span>EventTarget</span> interface will specify what type
+    of information the event MUST convey.</p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="telephonyevent">TelephonyEvent</dfn> : <span>Event</span> {
+        readonly attribute any <a href="#telephonyevent-param" title="TelephonyEvent-param">param</a>;
+    };
+    </pre>
+    <p>The <dfn id="telephonyevent-param" title="TelephonyEvent-param"><code>param</code></dfn>
+    property can be <code>null</code>, a single value, an object, and an array
+    of values or objects attached to the event. The value depends on the event
+    target, and it is specified in the documentation of the specific event targets.
+    </p>
+  </div> <!-- interface TelephonyEvent -->
+
+
+  <div> <!-- interface TelephonyManager -->
+    <h3 id="interface-telephonymanager"><span class="secno">4.3 </span>Interface <code title="">TelephonyManager</code></h3>
+    <p>Defines the object handling telephony functionality.
+    </p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="telephonymanager">TelephonyManager</dfn> : EventTarget {
+        readonly attribute DOMString[] <a href="#telephonymanager-services" title="TelephonyManager-services">services</a>;
+        attribute DOMString <a href="#telephonymanager-defaultservice" title="TelephonyManager-defaultService">defaultService</a>;
+        readonly attribute <a href="#telephonycall">TelephonyCall[]</a> <a href="#telephonymanager-calls" title="TelephonyManager-calls">calls</a>;
+        readonly attribute <a href="#telephonycall">TelephonyCall</a> <a href="#telephonymanager-activecall" title="TelephonyManager-activeCall">activeCall</a>;
+        readonly attribute <a href="#telephonyaudiocontrol">TelephonyAudioControl</a> <a href="#telephonymanager-audiocontrol" title="TelephonyManager-audioControl">audioControl</a>;
+        readonly attribute <a href="#telephonyvideocontrol">TelephonyVideoControl</a> <a href="#telephonymanager-videocontrol" title="TelephonyManager-videoControl">videoControl</a>;
+        readonly attribute DOMString[] <a href="#telephonymanager-emergencynumbers" title="TelephonyManager-emergencyNumbers">emergencyNumbers</a>;
+        attribute EventHandler <a href="#telephonymanager-onserviceadded" title="TelephonyManager-onserviceadded">onserviceadded</a>;
+        attribute EventHandler <a href="#telephonymanager-onserviceremoved" title="TelephonyManager-onserviceremoved">onserviceremoved</a>;
+        attribute EventHandler <a href="#telephonymanager-onincoming" title="TelephonyManager-onincoming">onincoming</a>;
+        attribute EventHandler <a href="#telephonymanager-oncallschanged" title="TelephonyManager-oncallschanged">oncallschanged</a>;
+        attribute EventHandler <a href="#telephonymanager-oncapabilitieschanged" title="TelephonyManager-oncapabilitieschanged">oncapabilitieschanged</a>;
+        DOMString <a href="#telephonymanager-owncallerid" title="TelephonyManager-ownCallerId">ownCallerId</a>(optional DOMString <var title="">service</var>);
+        DOMString[] <a href="#telephonymanager-capabilities" title="TelephonyManager-capabilities">capabilities</a>(optional DOMString <var>service</var>);
+        <a href="#telephonycall">TelephonyCall</a> <a href="#telephonymanager-dial" title="TelephonyManager-dial">dial</a>(DOMString <var><a href="#remoteparty">remoteParty</a></var>, optional <a href="#dialparams">DialParams</a> <var>params</var>, optional DOMString <var>service</var>);
+        void <a href="#telephonymanager-sendtones" title="TelephonyManager-sendTones">sendTones</a>(DOMString <var title="">tones</var>, optional unsigned long <var>duration</var>, optional DOMString <var>service</var>);
+    };
+    </pre>
+    <p>The <dfn id="telephonymanager-services" title="TelephonyManager-services"> <code>services</code> </dfn>
+    property MUST provide the array of available <a href="#telephony-service">telephony service</a>
+    identifiers, which MAY have an associated object, but in this API only the
+    identifiers of the services are used.
+    </p>
+    <p>The <dfn id="telephonymanager-defaultservice" title="TelephonyManager-defaultService"> <code>defaultService</code> </dfn>
+    property is the identifier of the default telephony service. Implementations
+    MUST set this property when the <a href="#telephonymanager"><code>TelephonyManager</code></a>
+    object is created.
+    </p>
+    <p>The <dfn id="telephonymanager-audiocontrol" title="TelephonyManager-audioControl"> <code>audioControl</code> </dfn>
+    property is a <span><code><a href="#telephonyaudiocontrol">TelephonyAudioControl</a></code><span> object
+    controlling audio volume, audio routing, etc.
+    This object MUST always control the <a href="#active-call">active call</a>. When there is
+    no active call, it SHOULD control the default settings for all calls.
+   </span></span></p>
+   <p>The <dfn id="telephonymanager-videocontrol" title="TelephonyManager-videoControl"> <code>videoControl</code> </dfn>
+   property is a <span><code><a href="#telephonyvideocontrol">TelephonyVideoControl</a></code><span> object
+   getting and setting video parameters and controlling video routing.
+   This object MUST always control the <a href="#active-call">active call</a>. When there is
+   no active call, it SHOULD control the default settings for all calls.
+  </span></span></p>
+    <p>The <dfn id="telephonymanager-calls" title="TelephonyManager-calls"> <code>calls</code> </dfn>
+    property MUST provide the array of <a href="#telephonycall"><code>TelephonyCall</code></a>
+    objects for controlling ongoing telephony calls.
+    </p>
+    <p>The <dfn id="telephonymanager-activecall" title="TelephonyManager-activeCall"> <code>activeCall</code> </dfn>
+    property MUST provide the <a href="#telephonycall"><code>TelephonyCall</code></a>
+    objects for controlling the <a href="#active-call">active call</a>.
+    </p>
+    <p>The <dfn id="telephonymanager-emergencynumbers" title="TelephonyManager-emergencyNumbers">
+                <code>emergencyNumbers</code> </dfn> property MUST provide the
+    array of emergency telephone numbers. Implementations MUST set this property
+    when the <a href="#telephonymanager"><code>TelephonyManager</code></a> object is created.
+    </p>
+    <p>The <dfn id="telephonymanager-onserviceadded" title="TelephonyManager-onserviceadded">
+           <code>onserviceadded</code> </dfn> property handles the event fired
+    when a telephony service was added or enabled.
+    The event MUST implement the <a href="#telephonyevent"><code>TelephonyEvent</code></a> interface,
+    in which the <a href="#telephonyevent-param" title="TelephonyEvent-param"><code>param</code></a>
+    property MUST be a <code>DOMString</code> type telephony
+    <a href="#telephonycall-serviceid" title="TelephonyCall-serviceId"><code>service identifier</code></a>.
+    </p>
+    <p>The <dfn id="telephonymanager-onserviceremoved" title="TelephonyManager-onserviceremoved">
+            <code>onserviceremoved</code> </dfn> property handles the event
+    fired when a telephony service is removed or disabled.
+    The event MUST implement the <a href="#telephonyevent"><code>TelephonyEvent</code></a> interface,
+    in which the <a href="#telephonyevent-param" title="TelephonyEvent-param"><code>param</code></a>
+    property MUST be a <code>DOMString</code> type telephony
+    <a href="#telephonycall-serviceid" title="TelephonyCall-serviceId"><code>service identifier</code></a>.
+    </p>
+    <p>The <dfn id="telephonymanager-onincoming" title="TelephonyManager-onincoming"> <code>onincoming</code> </dfn>
+    property handles the event fired when there is an incoming call on any
+    enabled <a href="#telephony-service">telephony service</a>.
+    The event MUST implement the <a href="#telephonyevent"><code>TelephonyEvent</code></a> interface,
+    in which the <a href="#telephonyevent-param" title="TelephonyEvent-param"><code>param</code></a>
+    property MUST be a <a href="#telephonycall"><code>TelephonyCall</code></a> type object.
+    </p>
+    <p>The <dfn id="telephonymanager-oncallschanged" title="TelephonyManager-oncallschanged">
+           <code>oncallschanged</code> </dfn> property handles the simple event
+    fired when the <a href="#telephonymanager-calls" title="TelephonyManager-calls"><code>calls</code></a>
+    array has changed with new calls or if calls have been removed.
+    </p>
+    <p>The <dfn id="telephonymanager-oncapabilitieschanged" title="TelephonyManager-oncapabilitieschanged">
+           <code>oncapabilitieschanged</code> </dfn> property handles the event
+    fired when capabilities have changed on a telephony service.
+    The event MUST implement the <a href="#telephonyevent"><code>TelephonyEvent</code></a> interface,
+    in which the <a href="#telephonyevent-param" title="TelephonyEvent-param"><code>param</code></a>
+    property MUST be a <code>DOMString</code> type telephony
+    <a href="#telephonycall-serviceid" title="TelephonyCall-serviceId"><code>service identifier</code></a>.
+    </p>
+    <p>The <dfn id="telephonymanager-owncallerid" title="TelephonyManager-ownCallerId"> <code>ownCallerId</code> </dfn>
+    property is a synchronous method for fetching the caller identifier
+    (e.g. own phone number).
+    When the <a href="#telephonymanager"><code>TelephonyManager</code></a> object is created, the
+    implementation  MUST fetch the caller identifiers for all available telephony
+    services, as well as for telephony services added later. The parameter
+    <code><var>service</var></code> is the identifier of the telephony service
+    on which the method is called. If not specified, the <a href="#default-service">default service</a>
+    MUST be used.
+    </p>
+    <p>The <dfn id="telephonymanager-capabilities" title="TelephonyManager-capabilities">
+           <code>capabilities</code> </dfn> property is a synchronous method for
+    fetching call capabilities for a given telephony service. When the
+    <span><code><a href="#telephonymanager">TelephonyManager</a></code><span> object is created, the implementation
+    MUST fetch and maintain the call capabilities for all available telephony
+    services, as well as for telephony services added later. The parameter
+    <code><var>service</var></code> is the identifier of the telephony service
+    on which the method is called. If not specified, the default service MUST be
+    used. A <dfn id="call-capability" title="call capability">call capability</dfn> represents a feature
+    that a telephony service may support. The value MAY be one of the following:</span></span><ul>
+       <li><code>"emergency"</code>: support for emergency calls;</li>
+       <li><code>"dtmf"</code>: support for sending DTMF tones;</li>
+       <li><code>"ussd"</code>: support for USSD, which is a messaging feature,
+       i.e. there MUST be a messaging service object with the same identifier as
+       the telephony service identifier (meaning that they are the same service);</li>
+       <li><code>"hold"</code>: support for holding calls;</li>
+       <li><code>"video"</code>: support for video calls; </li>
+       <li><code>"conference"</code>: support for conference calls;</li>
+       <li><code>"split"</code>: support for splitting a call conference
+       participant off the conference call into a separate private call;</li>
+       <li><code>"roster"</code>: support for contact list with presence information;</li>
+       <li><code>"filetransfer"</code>: support for file transfer during the call;</li>
+       <li><code>"im"</code>: support for instant messaging during the call;</li>
+       <li><code>"sms"</code>: support for SMS during the call; this is obvious
+       for a cellular subscription, but useful to know for a SIP account</li>
+       <li>The service type is listed as one capability, and is related to the
+       properties of the protocol(s) through which the service is delivered.
+       The value for service type MUST be one of the following:<ul>
+       <li><code>"tel"</code>: used for cellular and PSTN telephony services, as
+       well as for SMS and MMS;</li>
+       <li><code>"sip"</code>: used for SIP telephony services;</li>
+       <li><code>"xmpp"</code>: used for XMPP telephony services.</li>
+       </ul>
+       Other telephony service types MAY be defined by the implementations.
+       </li>
+    </ul>
+    Other call capabilities MAY be defined by the implementations.
+    <p></p>
+    <p>The <dfn id="telephonymanager-dial" title="TelephonyManager-dial"> <code>dial</code> </dfn>
+    property is an asynchronous method for making a telephony call. The parameter
+    <code><a href="#remoteparty"><var>remoteParty</var></a></code> is the identifier (e.g. number) of the
+    called remote party in the  telephony service on which the call is requested.
+    The parameter <code><var>params</var></code> represents the dialing options
+    for the call as a dictionary defined in <a href="#dialparams"><code>DialParams</code></a>.
+    The parameter <code><var>service</var></code> is the identifier of the
+    telephony service on which the call is requested. If not specified, the default
+    service MUST be used.
+    </p>
+    <p>The <dfn id="telephonymanager-sendtones" title="TelephonyManager-sendTones"> <code>sendTones</code> </dfn>
+    property is an asynchronous method for sending DTMF tones on the given
+    telephony service. The parameter <code><var>tones</var></code> is the list of
+    tones to be sent, represented as DOMString.
+    The parameter <code><var>duration</var></code> is the duration of the tones
+    in milliseconds. If the value is not specified, or it is <code>0</code>, then
+    the implementation must define the default timing of the individual tones.
+    The parameter <code><var>service</var></code> is the identifier of the
+    telephony service on which the call is requested. If not specified, the
+    default service MUST be used.
+    </p>
+  </div> <!-- interface TelephonyManager -->
+
+
+  <div> <!-- interface TelephonyCall -->
+    <h3 id="interface-telephonycall"><span class="secno">4.4 </span>Interface <code title="">TelephonyCall</code></h3>
+    <p>Defines the functionality for handling an ongoing call.</p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="telephonycall">TelephonyCall</dfn> : EventTarget {
+        readonly attribute DOMString[] <a href="#telephonycall-participants" title="TelephonyCall-participants">participants</a>;
+        readonly attribute DOMString <a href="#telephonycall-serviceid" title="TelephonyCall-serviceId">serviceId</a>;
+        readonly attribute DOMString <a href="#telephonycall-state" title="TelephonyCall-state">state</a>;
+        readonly attribute DOMString <a href="#telephonycall-statereason" title="TelephonyCall-stateReason">stateReason</a>;
+        readonly attribute DOMError <a href="#telephonycall-error" title="TelephonyCall-error">error</a>;
+        attribute EventHandler <a href="#telephonycall-onstatechange" title="TelephonyCall-onstatechange">onstatechange</a>;
+        attribute EventHandler <a href="#telephonycall-oninitializing" title="TelephonyCall-oninitializing">oninitializing</a>;
+        attribute EventHandler <a href="#telephonycall-oninitialized" title="TelephonyCall-oninitialized">oninitialized</a>;
+        attribute EventHandler <a href="#telephonycall-ondialing" title="TelephonyCall-ondialing">ondialing</a>;
+        attribute EventHandler <a href="#telephonycall-onredirecting" title="TelephonyCall-onredirecting">onredirecting</a>;
+        attribute EventHandler <a href="#telephonycall-onalerting" title="TelephonyCall-onalerting">onalerting</a>;
+        attribute EventHandler <a href="#telephonycall-onconnecting" title="TelephonyCall-onconnecting">onconnecting</a>;
+        attribute EventHandler <a href="#telephonycall-onconnected" title="TelephonyCall-onconnected">onconnected</a>;
+        attribute EventHandler <a href="#telephonycall-onholding" title="TelephonyCall-onholding">onholding</a>;
+        attribute EventHandler <a href="#telephonycall-onheld" title="TelephonyCall-onheld">onheld</a>;
+        attribute EventHandler <a href="#telephonycall-onresuming" title="TelephonyCall-onresuming">onresuming</a>;
+        attribute EventHandler <a href="#telephonycall-ondisconnecting" title="TelephonyCall-ondisconnecting">ondisconnecting</a>;
+        attribute EventHandler <a href="#telephonycall-ondisconnected" title="TelephonyCall-ondisconnected">ondisconnected</a>;
+        attribute EventHandler <a href="#telephonycall-onerror" title="TelephonyCall-onerror">onerror</a>;
+        readonly attribute DOMString[] <a href="#telephonycall-capabilities" title="TelephonyCall-capabilities">capabilities</a>;
+        void <a href="#telephonycall-answer" title="TelephonyCall-answer">answer</a>();
+        void <a href="#telephonycall-disconnect" title="TelephonyCall-disconnect">disconnect</a>();
+        void <a href="#telephonycall-hold" title="TelephonyCall-hold">hold</a>();
+        void <a href="#telephonycall-resume" title="TelephonyCall-resume">resume</a>();
+        void <a href="#telephonycall-redirect" title="TelephonyCall-redirect">redirect</a>(DOMString <var title="">redirectTo</var>, optional DOMString <var title="">service</var>);
+        void <a href="#telephonycall-migrate" title="TelephonyCall-migrate">migrate</a>(DOMString <var title="">service</var>);
+        void <a href="#telephonycall-join" title="TelephonyCall-join">join</a>(<a href="#telephonycall">TelephonyCall</a> <var title="">call</var>);
+        <a href="#telephonyrequest">TelephonyRequest</a> <a href="#telephonycall-split" title="TelephonyCall-split">split</a>(DOMString <var title="">callMember</var>);
+    };
+    </pre>
+    <p>The <dfn id="telephonycall-participants" title="TelephonyCall-participants"> <code>participants</code> </dfn>
+    property is the list of remote party identifiers participating in the call
+    (such as phone numbers), except the caller's identifier.
+    </p>
+    <p>The <dfn id="telephonycall-serviceid" title="TelephonyCall-serviceId"> <code>serviceId</code> </dfn>
+    property is the telephony service identifier on which the call is being made.
+    </p>
+    <p>The <dfn id="telephonycall-state" title="TelephonyCall-state"> <code>state</code> </dfn> property
+    MUST return the call state, which MUST be one of the following values: <ul>
+      <li><dfn id="call_state-initializing"><code>initializing</code></dfn>
+      (string value <code><a href="#call_state-initializing">'initializing'</a></code>) means that a request to establish
+      the connection with the telephony service has been made and it is progressing.
+      Not all telephony services support this state.
+      </li>
+      <li><dfn id="call_state-initialized"><code>initialized</code></dfn>
+      (string value <code><a href="#call_state-initialized">'initialized'</a></code>) means that a request to establish
+      the connection with the telephony service has been made and it was
+      successful. Not all telephony services support this state.
+      </li>
+      <li><dfn id="call_state-dialing"><code>dialing</code></dfn>
+      (string value <code><a href="#call_state-dialing">'dialing'</a></code>) means that a request to establish the
+      call has been made to the telephony backend, and it is progressing in the
+      telephony network. The next expected state is <code><a href="#call_state-connecting">"connecting"</a></code>.
+      </li>
+      <li><dfn id="call_state-connecting"><code>connecting</code></dfn>
+      (string value <code><a href="#call_state-connecting">'connecting'</a></code>) means that a dialed call was
+      signaled from the telephony service as being connecting. In GSM, it means
+      the call routing is proceeding. If the remote party is not reachable, then
+      depending on the settings, the telephony network may signal busy, redirect
+      the call, activate the voicemail service, or disconnect the call and
+      notify the user about the condition by using audio channel. In VoIP calls,
+      media signaling/negotiating call parameters proceeds in this state.
+      </li>
+      <li><dfn id="call_state-alerting"><code>alerting</code></dfn>
+      (string value <code><a href="#call_state-alerting">'alerting'</a></code>) means that in the case of a dialed
+      call, the telephony service has notified about the destination number has
+      been reached and that alerting is taking place.
+      </li>
+      <li><dfn id="call_state-connected"><code>connected</code></dfn>
+      (string value <code><a href="#call_state-connected">'connected'</a></code>) means that the call is ongoing and
+      active.
+      </li>
+      <li><dfn id="call_state-disconnecting"><code>disconnecting</code></dfn>
+      (string value <code><a href="#call_state-disconnecting">'disconnecting'</a></code>) means that a request to disconnect
+      the call has been made to the telephony service and it is progressing.
+      </li>
+      <li><dfn id="call_state-disconnected"><code>disconnected</code></dfn>
+      (string value <code><a href="#call_state-disconnected">'disconnected'</a></code>) means that the telephony service
+      has confirmed that the call has been disconnected.
+      </li>
+      <li><dfn id="call_state-incoming"><code>incoming</code></dfn>
+      (string value <code><a href="#call_state-incoming">'incoming'</a></code>) means that an incoming call has been
+      signaled by the telephony service, which has not been answered yet.
+      </li>
+      <li><dfn id="call_state-waiting"><code>waiting</code></dfn>
+      (string value <code><a href="#call_state-waiting">'waiting'</a></code>) means that an incoming call has been
+      signaled by the telephony service, which is waiting because there is another
+      active call proceeding. The user can put the call on hold, disconnect it,
+      or can answer the call and put the active call on hold.
+      </li>
+      <li><dfn id="call_state-accepted"><code>accepted</code></dfn>
+      (string value <code><a href="#call_state-accepted">'accepted'</a></code>) means that an incoming call has been
+      answered and is being activated.
+      </li>
+      <li><dfn id="call_state-holding"><code>holding</code></dfn>
+      (string value <code><a href="#call_state-holding">'holding'</a></code>) means that the user has pressed the
+      button for putting the call on hold, a request has been made to the
+      telephony service to put the call on hold, and it is progressing.
+      </li>
+      <li><dfn id="call_state-held"><code>held</code></dfn>
+      (string value <code><a href="#call_state-held">'held'</a></code>) means that the call has been put on hold.
+      </li>
+      <li><dfn id="call_state-resuming"><code>resuming</code></dfn>
+      (string value <code><a href="#call_state-resuming">'resuming'</a></code>) means that the user has pressed the
+      button for activating a call on hold, and the call is being resumed.
+      </li>
+      <li><dfn id="call_state-redirecting"><code>redirecting</code></dfn>
+      (string value <code><a href="#call_state-redirecting">'redirecting'</a></code>) means that the call is being
+      redirected to another telephone number.
+      </li>
+      </ul>
+      The implementation MUST follow the call state changes in the supported
+      telephony backend(s) and networks, and MUST keep the <code>state</code>
+      property updated.
+      Except for transitory states related to user interface interactions (e.g.
+      <code><a href="#call_state-holding">"holding"</a></code>, <code><a href="#call_state-resuming">"resuming"</a></code>, <code><a href="#call_state-disconnecting">"disconnecting"</a></code>),
+      and others which may not be present in a particular telephony protocol,
+      all call states are set by the telephony network equipments.
+      Therefore the implementation MUST NOT fire error events for perceived
+      erronous state transitions when the current state was set by the telephony
+      network, but instead MUST always re-synchronize any internal states to the
+      current call state reported by the telephony network.
+      The implementation MUST NOT set the call state to any other value than
+      specified in the descriptions of the methods of this interface.
+      Typical informative call state transitions are the following (states in
+      brackets are intermediary states e.g. between pressing a button and a real
+      call  state):<ul>
+      <li>a new call can be in either <code><a href="#call_state-incoming">incoming</a></code>, or <code><a href="#call_state-waiting">waiting</a></code>,
+      or <code><a href="#call_state-dialing">dialing</a></code> state; for calls which also require setting up
+      the connection, it can also be in <code><a href="#call_state-initializing">initializing</a></code>, then in
+      <code><a href="#call_state-initialized">initialized</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-incoming">incoming</a></code> state the call may go either to
+      <code><a href="#call_state-accepted">accepted</a></code>, or [<code><a href="#call_state-holding">holding</a></code>] <code><a href="#call_state-held">held</a></code>, or
+      <code><a href="#call_state-connected">connected</a></code>, or
+      [<code><a href="#call_state-disconnecting">disconnecting</a></code>] then <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-waiting">waiting</a></code> state the call may go to either
+      <code><a href="#call_state-accepted">accepted</a></code>, or [<code><a href="#call_state-holding">holding</a></code>] then <code><a href="#call_state-held">held</a></code>,
+      or <code><a href="#call_state-connected">connected</a></code>, or  <code><a href="#call_state-disconnected">disconnected</a></code> state</li>
+      <li>from <code><a href="#call_state-accepted">accepted</a></code> state the call may go either to
+      <code><a href="#call_state-connected">connected</a></code>, or [<code><a href="#call_state-disconnecting">disconnecting</a></code>] then
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-dialing">dialing</a></code> state the call can go either to
+      <code><a href="#call_state-connecting">connecting</a></code>, or <code><a href="#call_state-redirecting">redirecting</a></code>,
+      or <code><a href="#call_state-alerting">alerting</a></code>, or <code><a href="#call_state-disconnected">disconnected</a></code> state</li>
+      <li>from <code><a href="#call_state-connecting">connecting</a></code> state the call can go either to
+      <code><a href="#call_state-redirecting">redirecting</a></code>, or <code><a href="#call_state-alerting">alerting</a></code>, or
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-redirecting">redirecting</a></code> state the call can go to
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-alerting">alerting</a></code> state the call can go to either
+      <code><a href="#call_state-connected">connected</a></code>, or [<code><a href="#call_state-disconnecting">disconnecting</a></code>] then
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-connected">connected</a></code> state the call can go either to
+      [<code><a href="#call_state-holding">holding</a></code>] <code>hold</code>, or
+      [<code><a href="#call_state-disconnecting">disconnecting</a></code>] then <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-holding">holding</a></code> state the call can go either to
+      <code><a href="#call_state-held">held</a></code>, or <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-held">held</a></code> state the call can go either to
+      [<code><a href="#call_state-resuming">resuming</a></code>] then <code><a href="#call_state-connected">connected</a></code>, or
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-resuming">resuming</a></code> state the call can go either to
+      <code><a href="#call_state-connected">connected</a></code>, or <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li>from <code><a href="#call_state-disconnecting">disconnecting</a></code> state the call can go to
+      <code><a href="#call_state-disconnected">disconnected</a></code> state;
+      </li>
+      <li><code><a href="#call_state-disconnected">disconnected</a></code> is the final state of a call.</li>
+      </ul>
+    <p></p>
+    <p>The <dfn id="telephonycall-statereason" title="TelephonyCall-stateReason"> <code>stateReason</code> </dfn>
+    property represents additional information to the current call state. For
+    the <a href="#call_state-disconnected" id="call_state-disconnected"><code>disconnected</code></a> state,
+    the values can be the following:<ul>
+    <li><code>"local"</code>: the call was disconnected by the user, or the device,
+    and no more specific reason is known;
+    </li>
+    <li><code>"remote"</code>: the call was disconnected by the remote party, and
+    no more specific reason is known;
+    </li>
+    <li><code>"network"</code>: the call was disconnected by the network, and no
+    more specific reason is known;
+    </li>
+    <li><code>"busy"</code>: the call was disconnected by the network, because
+    the remote party was busy;
+    </li>
+    <li><code>"unreachable"</code>: the call was disconnected by the network,
+    because the remote party was unreachable;
+    </li>
+    <li><code>"no-answer"</code>: the call was disconnected by the network,
+    because the remote party has not answered and the call timed out;
+    </li>
+    <li><code>"network-unreachable"</code>: the call was disconnected because
+    the network was unreachable;
+    </li>
+    <li><code>"barred"</code>: the call was disconnected because it was barred;
+    </li>
+    <li><code>"rejected"</code>: the call was disconnected because the remote
+    party rejected the call;
+    </li>
+    <li><code>"no-account"</code>: the call was not made because there is no
+    telephony service account set up and enabled (e.g. no SIM card);
+    </li>
+    <li><code>"invalid-number"</code>: the call was disconnected by the network,
+    because the remote party identifier was invalid.</li>
+    </ul>
+    <p></p>
+    <p>The <dfn id="telephonycall-error" title="TelephonyCall-error"> <code>error</code> </dfn> property
+    represents the the error, if available.
+    </p>
+    <p>The <dfn id="telephonycall-onstatechange" title="TelephonyCall-onstatechange"> <code>onstatechange</code> </dfn>
+    property is the event handler invoked for every call state change. In addition
+    to this event handler, the specific event handler associated with the call
+    states are called separately, as follows.
+    </p>
+    <p>The <dfn id="telephonycall-oninitializing" title="TelephonyCall-oninitializing">
+    <code>oninitializing</code> </dfn> property is the event handler for the event
+    fired when the call state becomes <code><a href="#call_state-initializing">"initializing"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-oninitialized" title="TelephonyCall-oninitialized"> <code>oninitialized</code> </dfn>
+    event handler for the event fired when when the call state becomes
+    <code><a href="#call_state-initialized">"initialized"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-ondialing" title="TelephonyCall-ondialing"> <code>ondialing</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-dialing">"dialing"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-onredirecting" title="TelephonyCall-onredirecting"> <code>onredirecting</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-redirecting">"redirecting"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-onalerting" title="TelephonyCall-onalerting"> <code>onalerting</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-alerting">"alerting"</a></code>.
+    </p>The <dfn id="telephonycall-onconnecting" title="TelephonyCall-onconnecting"> <code>onconnecting</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-connecting">"connecting"</a></code>.
+    <p></p>
+    <p>The <dfn id="telephonycall-onconnected" title="TelephonyCall-onconnected"> <code>onconnected</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-connected">"connected"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-onholding" title="TelephonyCall-onholding"> <code>onholding</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-holding">"holding"</a></code>, meaning the transitory state before the call state is
+    set to <code><a href="#call_state-held">"held"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-onheld" title="TelephonyCall-onheld"> <code>onheld</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-held">"held"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-onresuming" title="TelephonyCall-onresuming"> <code>onresuming</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-resuming">"resuming"</a></code>, meaning the transitory state between the user pressing
+    the button for activating a call on hold, and between the system confirming
+    the active state of <code><a href="#call_state-connected">"connected"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-ondisconnecting" title="TelephonyCall-ondisconnecting"><code>ondisconnecting</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-disconnecting">"disconnecting"</a></code>.
+    </p>
+    <p>The <dfn id="telephonycall-ondisconnected" title="TelephonyCall-ondisconnected"> <code>ondisconnected</code> </dfn>
+    property is the event handler for the event fired when the call state becomes
+    <code><a href="#call_state-disconnected">"disconnected"</a></code>. By the time this event is fired, the implementation
+    MUST update the <code>stateReason</code> property, if there is
+    any additional information about the disconnect reason available.
+    </p>
+    <p>The <dfn id="telephonycall-onerror" title="TelephonyCall-onerror"> <code>onerror</code> </dfn>
+    property is the event handler for the event fired when an error occured.
+    By the time this event is fired, the implementation MUST update the
+    <code><var>error</var></code> property, if there is any information about
+    the error available.
+    </p>
+    <p>The <dfn id="telephonycall-capabilities" title="TelephonyCall-capabilities"> <code>capabilities</code> </dfn>
+    property returns the array of call capabilities, which is a subset of the
+    <a href="#telephonymanager-capabilities" title="TelephonyManager-capabilities">service capabilities</a> available
+    on the telephony service in use, which have been actively used during the call.
+    </p>
+    <p>The <dfn id="telephonycall-answer" title="TelephonyCall-answer"> <code>answer</code> </dfn>
+    property is an asynchronous method for answering an incoming call. The
+    implementation MUST signal to the telephony system that the incoming call
+    has been answered, and prepare the necessary resources for handling the call.
+    </p>
+    The <dfn id="telephonycall-disconnect" title="TelephonyCall-disconnect"> <code>disconnect</code> </dfn>
+    property is an asynchronous method for initiating call disconnection.
+    <p></p>
+    <p>The <dfn id="telephonycall-hold" title="TelephonyCall-hold"> <code>hold()</code> </dfn>
+    property is an asynchronous method for requesting putting the call on hold.
+    The implementation MUST set the call state to <code><a href="#call_state-holding">"holding"</a></code>, and
+    MUST make the request to the telephony system for holding the call.
+    </p>
+    <p>The <dfn id="telephonycall-resume" title="TelephonyCall-resume"> <code>resume()</code> </dfn>
+    property is an asynchronous method for resuming a call from hold. The
+    implementation MUST set the call state to <code><a href="#call_state-resuming">"resuming"</a></code>, and MUST
+    make the request to the telephony system for activating the call.
+    </p>
+    <p></p>The <dfn id="telephonycall-redirect" title="TelephonyCall-redirect"> <code>redirect</code> </dfn>
+    property is an asynchronous method for redirecting an incoming call to another
+    remote party. The parameter <code><var>redirectTo</var></code> is the remote
+    party identifier of the new destination.
+    The parameter <code><var>service</var></code> is the identifier
+    of the telephony service on which the remote party identifier is valid. The
+    default value MUST be the same telephony service as the one of the incoming
+    call. The implementation MUST execute the following steps:<ul>
+    <li>If the call state if other than <code><a href="#call_state-incoming">"incoming"</a></code> or
+    <code><a href="#call_state-waiting">"waiting"</a></code> , then set the <code>error</code> parameter and
+    fire an error event to the <a href="#telephonycall"><code>TelephonyCall</code></a> object.</li>
+    <li>Otherwise, set the call state to <code><a href="#call_state-redirecting">"redirecting"</a></code>.
+    <li>Request the call redirection from the telephony backend to which the
+    telephony service is connected.</ul>
+    <p></p>
+    <p>The <dfn id="telephonycall-migrate" title="TelephonyCall-migrate"> <code>migrate</code> </dfn>
+    property is an asynchronous method for migrating an ongoing call to another
+    telephony service, for instance from cellular domain to enterprise VoIP
+    system, or vice versa.
+    The parameter <code><var>service</var></code> is the identifier of the new
+    telephony service to be used, MUST be different from that of the
+    current call, and on the remote party identifier(s) MUST be valid on the
+    new service too.
+    The implementation MUST execute the following steps:<ul>
+    <li>If the call state if other than <code><a href="#call_state-connected">"connected"</a></code> or <code><a href="#call_state-held">"held"
+    </a></code>, or if the <code><var>service</var></code> parameter denotes the same
+    telephony service as the current call, then fire an error event to the
+    <a href="#telephonycall"><code>TelephonyCall</code></a> object, but MUST NOT modify the call
+    state. If call migration fails, the original call SHOULD continue.</li>
+    <li>Otherwise, request the call migration from the telephony system, leaving
+    the call state untouched.</li>
+    </ul><p></p>
+    <p> The <dfn id="telephonycall-join" title="TelephonyCall-join"> <code>join</code> </dfn> property is
+    an asynchronous method for merging two calls into a conference call. The
+    parameter <code><var>call</var></code> is the <span><code><a href="#telephonycall">TelephonyCall</a></code>
+    object which is to be joined with the this object. Either object may represent
+    a conference call, but in practice, different telephony backends may have
+    limitations on whether only one of the calls may be a conference call
+    (e.g. in GSM), or both are allowed to be conference calls.
+    </span></p>
+    <p>The <dfn id="telephonycall-split" title="TelephonyCall-split"> <code>split</code> </dfn> property
+    is an asynchronous method for splitting one participant off the conference
+    call into a separate call, put the conference call on hold and activate the
+    private call with the selected call participant. The parameter <code><var>
+    callMember</var></code> is the remote party identifier of the conference call
+    participant which will be split into a separate call.
+    The method MUST return a <a href="#telephonyrequest"><code>TelephonyRequest</code></a> object,
+    which upon the successful completion of the asynchronous operation, MUST have its
+    <code>result</code>property set to the <a href="#telephonycall"><code>TelephonyCall</code></a>
+    object representing the call split from the conference call.
+    The implementation MUST execute the following steps:<ul>
+    <li>If the call is not a conference call, or the parameter <code><var>
+    callMember</var></code> is not part of the conference call, then then set the
+    <code>error</code> paramater and fire an error event to the
+    <a href="#telephonycall"><code>TelephonyCall</code></a> object.
+    </li>
+    <li>Create a <a href="#telephonyrequest"><code>TelephonyRequest</code></a> object and prepare it
+    for handling the asynchronous completion of the operation.</li>
+    <li>Request from the telephony backend splitting the participant off the
+    conference call into a separate call.
+    </li>
+    <li>Handle the completion of the asynchronous request.</li>
+    </ul><p></p>
+  </div> <!-- interface TelephonyCall -->
+
+
+  </div> <!-- dictionary DialParams -->
+    <h3 id="dictionary-dialparams"><span class="secno">4.5 </span>Dictionary <code title="">DialParams</code></h3>
+    <p>Dictionary for representing dialing options.</p>
+    <pre class="idl">    dictionary <dfn id="dialparams">DialParams</dfn> {
+        boolean <a href="#dialparams-hidecallerid" title="DialParams-hideCallerId">hideCallerId</a>;
+        boolean <a href="#dialparams-recorded" title="DialParams-recorded">recorded</a>;
+        boolean <a href="#dialparams-initialvideo" title="DialParams-initialVideo">initialVideo</a>;
+    };
+    </pre>
+    <p>The <dfn id="dialparams-hidecallerid" title="DialParams-hideCallerId"> <code>hideCallerId</code> </dfn>
+    property is a flag controlling whether the caller identifier should be hidden.
+    If the value is <code>true</code>, then the network setting takes effect.
+    If the value is <code>false</code>, the caller identification MUST be hidden.
+    </p>
+    <p>The <dfn id="dialparams-recorded" title="DialParams-recorded"> <code>recorded</code> </dfn>
+    property is a flag controlling whether the call should be recorded or not.
+    If the recording feature is supported, the implementation SHOULD handle the
+    stream recording and managing the user control of the recording. This flag
+    only signals to the implementation that call recording is requested from
+    the start of the call, and the implementation SHOULD set up necessary resources
+    for the recording. The result SHOULD be accessible from the call history record
+    associated with the call.
+    </p>
+    <p>The <dfn id="dialparams-initialvideo" title="DialParams-initialVideo"> <code>initialVideo</code> </dfn>
+    property is a flag controlling whether local video is to be sent from the
+    start of the call. This setting can be modified later. This flag only signals
+    to the implementation that local video is enabled from the start of the call,
+    and the implementation SHOULD set up necessary resources for it.
+    </p>
+   <!-- dictionary DialParams -->
+
+
+  <div> <!-- interface TelephonyAudioControl -->
+    <h3 id="interface-telephonyaudiocontrol"><span class="secno">4.6 </span>Interface <code title="">TelephonyAudioControl</code></h3>
+    <p> Defines an object for controlling audio settings for calls.
+    </p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="telephonyaudiocontrol">TelephonyAudioControl</dfn> : EventHandler {
+        attribute DOMString <a href="#telephonyaudiocontrol-sink" title="TelephonyAudioControl-sink">sink</a>;
+        attribute double <a href="#telephonyaudiocontrol-audiovolume" title="TelephonyAudioControl-audioVolume">audioVolume</a>;
+        attribute unsigned short <a href="#telephonyaudiocontrol-audiovolumesteps" title="TelephonyAudioControl-audioVolumeSteps">audioVolumeSteps</a>;
+        readonly attribute boolean <a href="#telephonyaudiocontrol-audiomuted" title="TelephonyAudioControl-audioMuted">audioMuted</a>;
+        attribute double <a href="#telephonyaudiocontrol-micvolume" title="TelephonyAudioControl-micVolume">micVolume</a>;
+        attribute unsigned short <a href="#telephonyaudiocontrol-micvolumesteps" title="TelephonyAudioControl-micVolumeSteps">micVolumeSteps</a>;
+        attribute boolean <a href="#telephonyaudiocontrol-micmuted" title="TelephonyAudioControl-micMuted">micMuted</a>;
+        attribute EventHandler <a href="#telephonyaudiocontrol-onvolumechanged" title="TelephonyAudioControl-onvolumechanged">onvolumechanged</a>;
+        attribute EventHandler <a href="#telephonyaudiocontrol-onmicrophonechanged" title="TelephonyAudioControl-onmicrophonechanged">onmicrophonechanged</a>;
+        attribute EventHandler <a href="#telephonyaudiocontrol-onaudioroutingchanged" title="TelephonyAudioControl-onaudioroutingchanged">onaudioroutingchanged</a>;
+        attribute EventHandler <a href="#telephonyaudiocontrol-onerror" title="TelephonyAudioControl-onerror">onerror</a>;
+    };
+    </pre>
+    <p>The <dfn id="telephonyaudiocontrol-sink" title="TelephonyAudioControl-sink"><code>sink</code></dfn>
+    property represents the audio sink identifier for the incoming audio stream,
+    for instance earpiece, speaker, line out, headset, Bluetooth device, etc.
+    The retrieval of available audio sinks is not covered in this API.
+    When the application sets this property, the implementation MUST request
+    setting the new audio sink. On success, a <code>audioroutingchanged</code>
+    simple event MUST be fired at the object. On error, a simple <code>error</code>
+    event MUST be fired, and the old sink MUST be continued to be used.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-audiovolume" title="TelephonyAudioControl-audioVolume">
+    <code>audioVolume</code> </dfn> property controls the volume of the incoming
+    audio stream. The value MUST be between 0.0 and 1.0. The value of 0 means
+    the audio is muted, and the value 1.0 means maximum volume.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-audiovolumesteps" title="TelephonyAudioControl-audioVolumeSteps">
+    <code>audioVolumeSteps</code> </dfn> property controls the number of audio
+    volume steps, i.e. the volume scale. Different application classes may have
+    different scales, e.g. a telephony dialer may have a "faster" scale with less
+    steps, and a media player may have a volume control with more resolution.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-audiomuted" title="TelephonyAudioControl-audioMuted">
+    <code>audioMuted</code> </dfn> property is a flag for checking and controlling
+    whether the audio is muted. If the value is set to <code>true</code>, the
+    audio MUST be requested to be muted. If the value is set to <code>false</code>,
+    the audio volume MUST be restored to the level it was before muting.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-micvolume" title="TelephonyAudioControl-micVolume"><code>micVolume</code></dfn>
+    property controls the microphone sensitivity. The value MUST be between 0.0
+    and 1.0. The value 0 means the microphone is muted, and 1.0 means maximum
+    sensitivity.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-micvolumesteps" title="TelephonyAudioControl-micVolumeSteps">
+    <code>micVolumeSteps</code> </dfn> property controls the number of microphone
+    volume steps.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-micmuted" title="TelephonyAudioControl-micMuted">
+    <code>micMuted</code> </dfn> property is a flag controlling if the microphone
+    is muted. If the value is <code>true</code>, the microphone MUST be muted.
+    If the value is set to <code>false</code>, the microphone sensitivity MUST be
+    restored to the level it was before muting.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-onvolumechanged" title="TelephonyAudioControl-onvolumechanged">
+    <code>onvolumechanged</code> </dfn> property is an event handler for audio
+    volume change events, such as when volume is set by the system, or audio
+    volume scale changes, or audio is muted or unmuted.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-onmicrophonechanged" title="TelephonyAudioControl-onmicrophonechanged">
+    <code>onmicrophonechanged</code> </dfn> property is an event handler for
+    microphone volume change events, such as when volume is set by the system,
+    or the volume scale changes, or the microphone is muted or unmuted.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-onaudioroutingchanged" title="TelephonyAudioControl-onaudioroutingchanged">
+    <code>onaudioroutingchanged</code> </dfn> property is the event handler for
+    the <code>audioroutingchanged</code> simple event raised on audio route changes.
+    </p>
+    <p>The <dfn id="telephonyaudiocontrol-onerror" title="TelephonyAudioControl-onerror"> <code>onerror</code> </dfn>
+    property MUST provide a function which is called when the asynchronous
+    operation completes with an error and an <code>error</code> event is fired.
+    </p>
+  </div> <!-- interface TelephonyAudioControl -->
+
+
+  <div> <!-- interface TelephonyVideoControl -->
+    <h3 id="interface-telephonyvideocontrol"><span class="secno">4.7 </span>Interface <code title="">TelephonyVideoControl</code></h3>
+    <p> Defines an object for controlling the minimum set of call video settings
+    needed for implementing a dialer application.
+    </p>
+    <pre class="idl">    interface <dfn id="telephonyvideoparams">TelephonyVideoParams</dfn> {
+        readonly attribute DOMString <a href="#telephonyvideoparams-stream" title="TelephonyVideoParams-stream">stream</a>;
+        attribute DOMString <a href="#telephonyvideoparams-source" title="TelephonyVideoParams-source">source</a>;
+        attribute DOMString <a href="#telephonyvideoparams-sink" title="TelephonyVideoParams-sink">sink</a>;
+        readonly attribute unsigned short <a href="#telephonyvideoparams-height" title="TelephonyVideoParams-height">height</a>;
+        readonly attribute unsigned short <a href="#telephonyvideoparams-width" title="TelephonyVideoParams-width">width</a>;
+        readonly attribute unsigned short <a href="#telephonyvideoparams-maxframerate" title="TelephonyVideoParams-maxFrameRate">maxFrameRate</a>;
+        attribute EventHandler <a href="#telephonyvideoparams-onvideochanged" title="TelephonyVideoParams-onvideochanged">onvideochanged</a>;
+        attribute EventHandler <a href="#telephonyvideoparams-onerror" title="TelephonyVideoParams-onerror">onerror</a>;
+    };
+
+    [NoInterfaceObject]
+    interface <dfn id="telephonyvideocontrol">TelephonyVideoControl</dfn> : EventHandler {
+        attribute boolean <a href="#telephonyvideocontrol-localvideoon" title="TelephonyVideoControl-localVideoOn">localVideoOn</a>;
+        attribute boolean <a href="#telephonyvideocontrol-remotevideoon" title="TelephonyVideoControl-remoteVideoOn">remoteVideoOn</a>;
+        attribute EventHandler <a href="#telephonyvideocontrol-onvideoroutingchanged" title="TelephonyVideoControl-onvideoroutingchanged">onvideoroutingchanged</a>;
+        readonly attribute <a href="#telephonyvideoparams">TelephonyVideoParams</a> <a href="#telephonyvideocontrol-localvideoparams" title="TelephonyVideoControl-localVideoParams">localVideoParams</a>;
+        readonly attribute <a href="#telephonyvideoparams">TelephonyVideoParams</a> <a href="#telephonyvideocontrol-remotevideoparams" title="TelephonyVideoControl-remoteVideoParams">remoteVideoParams</a>;
+    };
+    </pre>
+    <p>The <dfn id="telephonyvideoparams-stream" title="TelephonyVideoParams-stream"><code>stream</code> </dfn>
+    property MUST provide the stream identifier of the video stream, e.g. a
+    <code>MediaStream</code> identifier.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-source" title="TelephonyVideoParams-source"><code>source</code></dfn>
+    property is the source identifier of the outgoing video stream, e.g. a
+    front, back, or external camera identifier. For the incoming (remote) video
+    stream, the property MUST be read-only. When setting this property, the
+    implementation MUST request setting the new video source. On success, a
+    <code>videochanged</code> simple event MUST be fired at the object. On error,
+    a simple <code>error</code> event MUST be fired, and the old source MUST be
+    continued to be used.
+    Retrieving the possible video sources is not covered in this API.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-sink" title="TelephonyVideoParams-sink"><code>sink</code></dfn>
+    property is the sink identifier of the incoming video stream, e.g. the
+    built-in or external display. For the outgoing (local) video stream this
+    property MUST be read-only. When setting this property, the
+    implementation MUST request setting the new video sink. On success, a
+    <code>videochanged</code> simple event MUST be fired at the object. On error,
+    a simple <code>error</code> event MUST be fired, and the old sink MUST be
+    continued to be used.
+    Retrieving the possible video sinks is not covered in this API.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-height" title="TelephonyVideoParams-height"><code>height</code> </dfn>
+    property is the height of the video stream.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-width" title="TelephonyVideoParams-width"><code>width</code></dfn>
+    property is the width of the video stream.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-maxframerate" title="TelephonyVideoParams-maxFrameRate">
+    <code>maxFrameRate</code></dfn> property is the maximum frame rate of the
+    video stream.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-onvideochanged" title="TelephonyVideoParams-onvideochanged">
+    <code>onvideochanged</code></dfn> property is event handler for the simple
+    event fired when the video parameters have changed.
+    </p>
+    <p>The <dfn id="telephonyvideoparams-onerror" title="TelephonyVideoParams-onerror"> <code>onerror</code> </dfn>
+    property MUST provide a function which is called when the asynchronous
+    operation completes with an error and an <code>error</code> event is fired.
+    </p>
+    <p>The <dfn id="telephonyvideocontrol-localvideoon" title="TelephonyVideoControl-localVideoOn">
+    <code>localVideoOn</code> </dfn> property is a flag controlling whether the
+    local video should be sent on the call.
+    </p>
+    <p>The <dfn id="telephonyvideocontrol-remotevideoon" title="TelephonyVideoControl-remoteVideoOn">
+    <code>remoteVideoOn</code> </dfn> property is a flag controlling whether the
+    remote video should be received on the call.
+    </p>
+    <p>The <dfn id="telephonyvideocontrol-onvideoroutingchanged" title="TelephonyVideoControl-onvideoroutingchanged">
+    <code>onvideoroutingchanged</code> </dfn> property is an event handler for
+    the simple event fired when the video routing changes, e.g. when the video
+    source or sink have changed.
+    </p>
+    <p>The <dfn id="telephonyvideocontrol-localvideoparams" title="TelephonyVideoControl-localVideoParams">
+    <code>localVideoParams</code> </dfn> property is an object for retrieving
+    and setting outgoing video stream parameters.
+    </p>
+    <p>The <dfn id="telephonyvideocontrol-remotevideoparams" title="TelephonyVideoControl-remoteVideoParams">
+    <code>remoteVideoParams</code> </dfn> property is an object for retrieving
+    and setting incoming video stream parameters.
+    </p>
+  </div> <!-- interface TelephonyVideoControl -->
+
+
+  <div> <!-- interface CallHistoryEntry -->
+    <h3 id="interface-callhistoryentry"><span class="secno">4.8 </span>Interface <code title="">CallHistoryEntry</code></h3>
+    <p>This interface is informative.
+    Defines the structure of a call history entry, containing the minimum set
+    of properties which SHOULD be saved in a persistent database by the
+    implementation.</p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="callhistoryentry">CallHistoryEntry</dfn> {
+        readonly attribute RemoteParty[] <a href="#callhistoryentry-participants" title="CallHistoryEntry-participants">participants</a>;
+        readonly attribute DOMString <a href="#callhistoryentry-serviceid" title="CallHistoryEntry-serviceId">serviceId</a>;
+        readonly attribute DOMString <a href="#callhistoryentry-disconnectreason" title="CallHistoryEntry-disconnectReason">disconnectReason</a>;
+        readonly attribute DOMString[] <a href="#callhistoryentry-capabilities" title="CallHistoryEntry-capabilities">capabilities</a>;
+        readonly attribute DOMString? <a href="#callhistoryentry-forwardedfrom" title="CallHistoryEntry-forwardedFrom">forwardedFrom</a>;
+        readonly attribute Date <a href="#callhistoryentry-starttime" title="CallHistoryEntry-startTime">startTime</a>;
+        readonly attribute double <a href="#callhistoryentry-duration" title="CallHistoryEntry-duration">duration</a>;
+        attribute DOMString <a href="#callhistoryentry-direction" title="CallHistoryEntry-direction">direction</a>;
+        attribute DOMString? <a href="#callhistoryentry-currency" title="CallHistoryEntry-currency">currency</a>;
+        readonly attribute long <a href="#callhistoryentry-cost" title="CallHistoryEntry-cost">cost</a>;
+        readonly attribute DOMString[]? <a href="#callhistoryentry-recording" title="CallHistoryEntry-recording">recording</a>;
+    };
+    </pre>
+    <p>The <dfn id="callhistoryentry-participants" title="CallHistoryEntry-participants"><code>participants</code></dfn>
+    property is the list of remote parties participating in the call, excluding
+    the caller.
+    The remote party identifier SHOULD be indexed in the call history database.
+    </p>
+    <p>The <dfn id="callhistoryentry-serviceid" title="CallHistoryEntry-serviceId"> <code>serviceId</code> </dfn>
+    property is the telephony service identifier on which the call is being made.
+    This property SHOULD be indexed in the call history database.
+    </p>
+    <p>The <dfn id="callhistoryentry-disconnectreason" title="CallHistoryEntry-disconnectReason">
+    <code>disconnectReason</code> </dfn> property represents the disconnect
+    reason of the call, as defined in the
+    <a href="#telephonycall" id="TelephonyCall-stateReason">TelephonyCall</a> interface.
+    </p>
+    <p>The <dfn id="callhistoryentry-capabilities" title="CallHistoryEntry-capabilities"> <code>capabilities</code> </dfn>
+    property is the array of <span id="call capability">call capabilities,
+    which is a subset of the service capabilities available on the telephony
+    service, which have been actively used during the call.
+    </span></p>
+    <p>The <dfn id="callhistoryentry-forwardedfrom" title="CallHistoryEntry-forwardedFrom"><code>forwardedFrom</code></dfn>
+    property is the remote party identifier from where the call was forwarded.
+    This property SHOULD be indexed in the call history database.
+    </p>
+    <p>The <dfn id="callhistoryentry-starttime" title="CallHistoryEntry-startTime"> <code>startTime</code> </dfn>
+    property is the start time of the call, denoting the moment when
+    charging begins in the telephony service, usually the moment when the media
+    channels are established.
+    This property SHOULD be indexed in the call history database.
+    </p>
+    <p>The <dfn id="callhistoryentry-duration" title="CallHistoryEntry-duration"> <code>duration</code> </dfn>
+    property is the duration of the call in seconds, denoting the time
+    interval during which the media channels are active and charging is ongoing.
+    This property SHOULD be indexed in the call history database.
+    </p>
+    <p></p>The <dfn id="callhistoryentry-direction" title="CallHistoryEntry-direction"> <code>direction</code> </dfn>
+    property tells whether the call was dialed, received, or missed. The value
+    MUST be the one of the following: <ul>
+    <li><code>"dialed"</code> for dialed calls,</li>
+    <li><code>"received"</code> for received calls, </li>
+    <li><code>"missed-new"</code> for missed calls not seen yet,</li>
+    <li><code>"missed"</code> for missed calls.</li>
+    </ul>
+    This property SHOULD be indexed in the call history database.
+    <p></p>
+    <p>The <dfn id="callhistoryentry-currency" title="CallHistoryEntry-currency"> <code>currency</code> </dfn>
+    property is the currency in which the cost is expressed, or null if
+    the cost information is not available. The value MUST be the 3 letter currency
+    code specified by the ISO-4217 standard.
+    </p>
+    <p></p>The <dfn id="callhistoryentry-cost" title="CallHistoryEntry-cost"> <code>cost</code> </dfn>
+    property represents the cost of the call, if the <code>currency</code>
+    property is not null, otherwise it MUST return <code>-1</code>, meaning that
+    the information is not known.
+    The value MUST be expressed in hundredths of the given currency.
+    <p></p>
+    <p>The <dfn id="callhistoryentry-recording" title="CallHistoryEntry-recording"> <code>recording</code> </dfn>
+    property SHOULD return the array of URI's for the recording corresponding to
+    the recorded call. Usually there will be one file per call, but if the
+    recording is stopped and resumed later in the call, the recording MAY be stored
+    in multiple files. The default value MUST be <code>null</code> and means the
+    call has not been recorded.
+    </p>
+  </div> <!-- interface CallHistoryEntry -->
+
+
+  <div> <!-- interface RemoteParty -->
+    <h3 id="interface-remoteparty"><span class="secno">4.9 </span>Interface <code title="">RemoteParty</code></h3>
+    <p>This interface is informative.
+    Defines the structure of a remote party, as represented in call history.
+    In addition to the remote party identifier, it contains those properties which
+    SHOULD be also cached from a resolved contact card, for performance reasons,
+    in order that applications can use them for showing call history in a faster
+    way.
+    </p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="remoteparty">RemoteParty</dfn> {
+        readonly attribute DOMString <a href="#remoteparty-id" title="RemoteParty-id">id</a>;
+        readonly attribute DOMString? <a href="#remoteparty-displayname" title="RemoteParty-displayName">displayName</a>;
+        readonly attribute DOMString? <a href="#remoteparty-icon" title="RemoteParty-icon">icon</a>;
+        readonly attribute Contact? <a href="#remoteparty-contact" title="RemoteParty-contact">contact</a>;
+    };
+    </pre>
+    <p>The <dfn id="remoteparty-id" title="RemoteParty-id"> <code>id</code> </dfn> property is the
+    remote party identifier (e.g. phone number). It can be associated to 0, 1,
+    or multiple contact cards. This property MUST be indexed in the call history
+    database.
+    </p>
+    <p>The <dfn id="remoteparty-displayname" title="RemoteParty-displayName"> <code>displayName</code> </dfn>
+    property is the name to be displayed in call history by the application.
+    The value is determined by the application before saving the call record
+    based on the remote party identifier.
+    This property is a cached or composed value based on the contact card which
+    can be linked to the remote party identifier.
+    It can be used for performance optimizations when the call history
+    is to be shown fast, in order to avoid complex joined queries, eventually
+    spanning over multiple databases.
+    The value MUST be updated by the implementation when there is a change in
+    the contact card associated with the remote party identifier.
+    If the value cannot be determined, the implementation MUST set it to null,
+    and show the remote party identifier (e.g. phone number) instead.
+    </p>
+    <p>The <dfn id="remoteparty-icon" title="RemoteParty-icon"> <code>icon</code> </dfn> property is
+    the URI of an icon associated to the remote party identifier. Similarly to
+    the <code>displayName</code> property, this is a cached value from the contact
+    card associated with the remote party identifier. If not available, the
+    implementation MUST set the value to null.
+    The value MUST be updated by the implementation when there is a change in
+    the contact card associated with the remote party identifier.
+    </p>
+    <p>The <dfn id="remoteparty-contact" title="RemoteParty-contact"> <code>contact</code> </dfn> property
+    is a reference to a contact card associated to the remote party identifier.
+    If not available, the implementation MUST set the value to null.
+    The value MUST be updated by the implementation when there is a change in
+    the contact database associated with the remote party identifier.
+    </p>
+  </div> <!-- interface RemoteParty -->
+
+
+  <div>
+    <h2 id="asynchronous-operations"><span class="secno">5 </span>Asynchronous operations</h2>
+  </div>
+
+
+  <div> <!-- interface TelephonyRequest -->
+    <h3 id="interface-telephonyrequest"><span class="secno">5.1 </span>Interface <code title="">TelephonyRequest</code></h3>
+    <p>Defines the object handling asynchronous operations and iterating over the
+    result set.
+    </p>
+    <pre class="idl">    [NoInterfaceObject]
+    interface <dfn id="telephonyrequest">TelephonyRequest</dfn> : EventTarget {
+        readonly attribute DOMString <a href="#telephonyrequest-state" title="TelephonyRequest-state">state</a>;
+        readonly attribute any <a href="#telephonyrequest-args" title="TelephonyRequest-args">args</a>;
+        readonly attribute any <a href="#telephonyrequest-timeout" title="TelephonyRequest-timeout">timeout</a>;
+        readonly attribute any <a href="#telephonyrequest-result" title="TelephonyRequest-result">result</a>;
+        readonly attribute DOMError <a href="#telephonyrequest-error" title="TelephonyRequest-error">error</a>;
+        attribute EventHandler <a href="#telephonyrequest-onerror" title="TelephonyRequest-onerror">onerror</a>;
+        attribute EventHandler <a href="#telephonyrequest-onsuccess" title="TelephonyRequest-onsuccess">onsuccess</a>;
+        void <a href="#telephonyrequest-cancel" title="TelephonyRequest-cancel">cancel()</a>;
+    };
+    </pre>
+    <p>The <dfn id="telephonyrequest-state" title="TelephonyRequest-state"> <code>state</code> </dfn>
+    property MUST provide the state of the asynchronous request with one of the
+    following values:<ul>
+    <li><code>"none"</code>, meaning inactive state not bound with any
+    asynchronous requests yet. This is the default state after object creation.</li>
+    <li><code>"pending"</code>, meaning a pending asynchronous request is bound
+    and the object is waiting for the completion of the asynchronous operation.</li>
+    <li><code>"aborted"</code>, meaning the operation was succesfully aborted by
+    the <code>cancel</code> method. It can be set if the previous state was
+    <code>"pending"</code> or <code>"iterating"</code>.</li>
+    <li><code>"timeout"</code>, meaning the operation was aborted because a
+    timeout occured. It can be set only when the previous state was
+    <code>"pending"</code>.</li>
+    <li><code>"done"</code>, meaning the asynchronous request has completed and
+    all eventual results have been returned and are available.
+    </ul>
+    The succession of states in the case of a single result is:
+    <code>"none"</code>, <code>"pending"</code>, [<code>"aborted"</code> or
+    <code>"timeout"</code>], <code>"done"</code>.
+    <p></p>
+    <p> The <dfn id="telephonyrequest-timeout" title="TelephonyRequest-timeout"><code>timeout</code></dfn>
+    property can be set to the desired timeout expressed in milliseconds.
+    The default value is <code>0</code>, meaning no timeout is set.
+    If the asynchronous operation takes longer than the specified timeout, then
+    the operation MUST be signaled to be cancelled. After the operation is
+    successfully canceled, an <code>error</code> event MUST be fired
+    with the <code>error</code> property set to <code>TimeoutError</code>, and the
+    <code>state</code> property MUST be set to <code>"timeout"</code>.
+    </p>
+    <p>The <dfn id="telephonyrequest-args" title="TelephonyRequest-args"> <code>args</code> </dfn> property
+    MUST return an array of objects representing the arguments of the asynchronous
+    request.
+    </p>
+    <p>The <dfn id="telephonyrequest-result" title="TelephonyRequest-result"> <code>result</code> </dfn>
+    property MUST provide the result of the asynchronous operation when the
+    status is <code>"done"</code>. The type of the result depends on the operation,
+    such as <code>null</code>, a single value, an object or an array of values or
+    objects.
+    When the state is not <code>"done"</code>, then
+    getting this property MUST throw a <span><code>DOMException</code></span>
+    of type <span><code>INVALID_STATE_ERR</code><span>.
+    Setting this property means the results have been read by the client.
+    When this property is set (typically to <code>null</code>) while the state is
+    <code>"done"</code>, then the object becomes idle and can be collected.
+    </span></span></p>
+    <p>The <dfn id="telephonyrequest-error" title="TelephonyRequest-error"> <code>error</code> </dfn> property
+    MUST provide the error information, if available.
+    </p>
+    <p>The <dfn id="telephonyrequest-onerror" title="TelephonyRequest-onerror"> <code>onerror</code> </dfn>
+    property MUST provide a function which is called when the asynchronous
+    operation completes with an error and a <span>DOMError</span> event is raised.
+    <p>The <dfn id="telephonyrequest-onsuccess" title="TelephonyRequest-onsuccess"> <code>onsuccess</code> </dfn>
+    property MUST provide a function which is called when the asynchronous
+    operation completes successfully and the status is <code>"done"</code>.
+    </p>
+    <p> The <dfn id="telephonyrequest-cancel" title="TelephonyRequest-cancel"><code>cancel</code></dfn>
+    property is a method for cancelling the asynchrounous operation and MUST only
+    be called if the <code>state</code> is <code>"pending"</code>.
+    In other states, the implementation MUST throw a
+    <span><code>DOMException</code></span> of type
+    <span><code>INVALID_STATE_ERR</code><span>.
+    After the operation is successfully canceled, an <code>error</code> event MUST
+    be fired with the <code>error</code> property set to <code>AbortError</code>,
+    and the <code>state</code> property MUST be set to <code>"aborted"</code>.
+    </span></span></p>
+  </div> <!-- interface TelephonyRequest -->
+
+
+ <!-- "mainspec" -->
+
+<div id="references">
+     <h2 class="no-num" id="references-0">References</h2>
+     <div id="anolis-references"> <dl><dt id="refsHTML5">[HTML5]
+<dd><cite><a href="http://dev.w3.org/html5/spec/">HTML5</a></cite>, Ian Hickson. W3C.
+
+<dt id="refsWEBIDL">[WEBIDL]
+<dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">Web IDL</a></cite>, Cameron McCormack. W3C.
+
+</dl></div>
+</div>
+
+<div id="acknowledgements">
+     <h2 class="no-num" id="acknowledgments">Acknowledgements</h2>
+     <p> Thanks to Jonas Sicking and Eduardo Fullea for the discussions which
+     made the draft specification better.</p>
+</div>
+
+
+
