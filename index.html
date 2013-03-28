@@ -57,15 +57,8 @@ Style guide to contributors:
 <section id="abstract">
   This specification defines a System Level API to manage telephony calls.
   A typical use case of the Web Telephony API is the implementation of a
-  'Dialer' application.
-  Multiparty call and multiple SIM cards / telephony services are supported.
-  A minimal structure for call history items is also defined, but this
-  specification does not include any mechanisms on how to store and retrieve
-  call history.
-  Interfaces specific to telephony services (SIM, network, supplementary
-  services, etc) are shortly presented in an informative section, in order to
-  show how they would integrate with this API, but they should be defined in
-  separate specification(s).
+  'Dialer' application supporting multiparty calls and multiple telephony
+  services. A minimal structure for call history items is also defined.
 </section>
 
 
@@ -77,16 +70,20 @@ Style guide to contributors:
 <!----------------------------- Introduction --------------------------------->
 <section class="informative">
   <h2>Introduction</h2>
-  <p>The Telephony API allows applications to manage the full lifecycle of
-  telephony calls, managing call signaling and audio volume settings, but does
-  not handle audio channels management, which is left to the responsibility of
-  the underlying hardware and middleware implementation.</p>
-  <p>An example of use is provided below:
+  <p>The Telephony API allows applications to manage interaction with telephony
+  calls, call signaling and audio volume settings, but does not handle audio
+  channels management.</p>
+  <p>An example of making a telephony call is provided below:
   <pre class="example highlight">
     var telCall = navigator.telephony.dial('+1234567890');
-    telCall.onstatechange = function(e) {
-        if (e.target.state == 'connected')
+
+    telCall.onactive = function(e) {
         window.console.log('Connected!');
+    }
+
+    telCall.ondisconnected = function(e) {
+        window.console.log('Disconnected!');
+        // update call history
     }
 
     telCall.onerror = function(e) {
@@ -130,7 +127,7 @@ Style guide to contributors:
   event handler event types</a></dfn> are defined in [[!HTML5]].</p>
 
   <p>An <dfn>active call</dfn> is a Telephony Call in the
-  <a href='#call-state-connected'><code>connected</code></a> state and bound to
+  <a href='#call-state-active'><code>active</code></a> state and bound to
   the media input and output devices (e.g. microphone, speaker, tone generator).
   </p>
 
@@ -143,21 +140,48 @@ Style guide to contributors:
   call, or by using a default telephony service in the implementation.
   The device may receive phone calls from any active telephony service, even
   simultaneously, in which case the calls must be arbitrated either by the
-  implementation in the background, or the user, by choosing which call to
-  answer.
+  implementation based on a policy, or by the user by choosing which call to
+  accept.
   A telephony service may use different protocols for telephony signaling and
   media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since call states
   may differ depending on the protocol, the telephony call objects must contain
   information which identifies the service and the protocol used for making the
-  call.</p>
+  call.
+  The following specifications have been used for designing the Telephony API:
+  for GSM the <a href='http://www.3gpp.org/ftp/Specs/html-info/23018.htm'>
+  TS 23.018</a> suite, for IMS/SIP the
+  <a href='http://www.3gpp.org/ftp/Specs/html-info/23228.htm'>TS 23.228</a>
+  suite, for XMPP the <a href='http://xmpp.org/extensions/xep-0166.html'>
+  XEP 0166</a> specification.
+  </p>
+
+  <p>A <dfn title="default telephony service">default telephony service</dfn> is
+  the <a>telephony service</a> which is set as default for telephony operations
+  by the implementation. If no telephony service is specified in the methods of
+  this interface, implementations MUST use the default telephony service.</p>
 
   <p>A <dfn title="telephony service id">telephony service id</dfn> uniquely
   identifies a <a>telephony service</a> in the system.</p>
 
-  <p>A <dfn title="active telephony service">active telephony service</dfn> is
-  the <a>telephony service</a> which is set as default for telephony operations
-  by the implementation. If no telephony service is specified in the methods of
-  this interface, implementations MUST use the active telephony service.</p>
+  <p>A <dfn title="multiparty call">multiparty call</dfn> (also referred to as
+  <i>conference call</i>) is a telephony call with multiple remote party
+  participants, which is controlled as a single call,  i.e. can be put on hold,
+  activated, disconnected with all participants. Other  calls can be joined with
+  a multiparty call. New participants can be added, and existing participants
+  can be removed. The following specifications have been used for designing the
+  multiparty call management API: for GSM the <a href='http://www.etsi.org/deliver/etsi_ts/124000_124099/124084/04.00.00_60/ts_124084v040000p.pdf'>3GPP TS 24.08</a>; for SIP the
+  <a href='http://tools.ietf.org/html/rfc5850'>RFC-5850</a>; for XMPP the
+  <a href='http://xmpp.org/extensions/xep-0298.html'>XEP-0298</a>.
+  </p>
+
+  <p>A <dfn title="conference id">conference id</dfn> uniquely identifies a
+  <a>multiparty call</a> in the system and in call history.</p>
+
+  <p>A <dfn title="remote party id">remote party id</dfn> uniquely identifies a
+  participant (a.k.a. remote party) in a telephony call in the given
+  <a>telephony service</a>, such as a phone number.
+  </p>
+
 </section>
 
 
@@ -189,26 +213,40 @@ Style guide to contributors:
 <section>
   <h2><a>TelephonyManager</a> Interface</h2>
   <p>The <a>TelephonyManager</a> interface defines access to telephony
-  functionality, and manages the <a><code>TelephonyCall</code></a> objects
-  lifecycle. There are 3 ways <code>TelephonyCall</code> objects can be
-  created:<ul>
+  functionality, and manages the lifecycle of the call objects, i.e.
+  <a><code>TelephonyCall</code></a> and <a><code>ConferenceCall</code></a>
+  objects, which both implement the <a><code>CallHandler</code></a> interface
+  (the common properties of both types of call objects).
+  There are 3 ways <code>TelephonyCall</code> objects can be created:
+  <ul>
+  <li>when there is a new incoming or waiting call</li>
   <li>using the <code>dial()</code> method</li>
-  <li>when there is an incoming or waiting call</li>
-  <li>when a call is split from a multiparty call</li>
-  </ul>All these methods will be discussed later in this document.
+  <li>using the <code>join()</code> method to create a multiparty call with a
+  new participant <a>remote id</a> given as parameter</li>
+  </ul>
+  There is only one way a <a><code>ConferenceCall</code></a> object can be
+  created: using the <code>join</code> method on a <a><code>TelephonyCall</code>
+  </a> object.
+  There MUST NOT be any way creating a <a><code>CallHandler</code></a> object.
+  All these methods will be discussed in more detail in this document.
   </p>
 
   <dl title="[NoInterfaceObject]
              interface TelephonyManager : EventTarget"
           class="idl">
 
-    <dt>readonly attribute TelephonyCall activeCall</dt>
-    <dd>MUST return a <a>TelephonyCall</a> object representing the <a>active
-    call</a>, otherwise it MUST return <code>null</code>.</dd>
+    <dt>readonly attribute CallHandler? activeCall</dt>
+    <dd>MUST return a <a><code>TelephonyCall</code></a> or <a><code>
+    ConferenceCall</code></a> object representing the <a>active call</a>,
+    otherwise it MUST return <code>null</code>.</dd>
 
-    <dt>readonly attribute TelephonyCall[] calls</dt>
-    <dd>MUST return an array of all <code>TelephonyCall</code> objects present
-    in the system. Otherwise it MUST return an empty list.</dd>
+    <dt>readonly attribute CallHandler[] calls</dt>
+    <dd>MUST return an array of all call objects (<code>TelephonyCall</code>
+    and/or <a><code>ConferenceCall</code></a>) managed by this object.
+    If there are no calls, it MUST return an empty list. Note that
+    <code>TelephonyCall</code>  objects belonging to a multiparty call are
+    managed by the corresponding<a><code>ConferenceCall</code></a> object and
+    MUST NOT be also present in this array.</dd>
 
     <dt>attribute <a>TelephonyAudioControl</a> audioControl</dt>
     <dd>MUST return a <a>TelephonyAudioControl</a> object, exposing
@@ -218,32 +256,31 @@ Style guide to contributors:
     <dd>Indicates the telephone number, or list thereof, of the emergency
     service in the current geographical area.</dd>
 
-    <!-- instead of ownTelNumbers, which returned the/a list of own numbers,
-    TelephonyService id is used (having as a value the phone number). -->
     <dt>readonly attribute DOMString[] serviceIds;
     <dd>MUST return the list of available <a>telephony service id</a>'s. For
     cellular telephony, implementations MUST use the MSISDN (phone number) as
     service identifier.</dd>
 
-    <dt>attribute DOMString activeId;
+    <dt>attribute DOMString defaultServiceId;
     <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
 
     <dt> TelephonyCall dial ()</dt>
-    <dd>Allows to initiate a new telephony call. Returns a <a><code>
-    TelephonyCall</code></a> object, which will manage the asynchronous call
-    signaling events.
+    <dd>Initiates a new telephony call.
+    Returns a <a><code>TelephonyCall</code></a> object, which will manage the
+    asynchronous call signaling events.
       <dl class='parameters'>
         <dt>DOMString number</dt>
         <dd>Indicates the destination number of the call</dd>
 
         <dt>optional DialParams params</dt>
-        <dd>If set, indicates the optional parameters of the call</dd>
+        <dd>If set, indicates the optional parameters of the call, including
+        the telephony service to be used, and whether caller ID is hidden</dd>
       </dl>
     </dd>
 
     <dt>void sendTones()</dt>
     <dd>This method asynchronously emits a DTMF tone sequence with the default
-    or specified duration and delay, in the active or the specified telephony
+    or specified duration and delay, in the default or the specified telephony
     service.
       <dl class='parameters'>
         <dt>DOMString tone</dt>
@@ -261,19 +298,12 @@ Style guide to contributors:
 
     <dt class="no-docs"> attribute EventHandler onincoming</dt>
     <dd>Whenever there is a new call in
-    <a href='#call-state-connected'><code>incoming</code></a> or
-    <a href='#call-state-connected'><code>waiting</code></a> state, the
+    <a href='#call-state-incoming'><code>incoming</code></a> or
+    <a href='#call-state-waiting'><code>waiting</code></a> state, the
     <a>user agent</a> MUST <a>queue a task</a> to fire an event named
     <code>incoming</code> of type <a>TelephonyEvent</a>.
-    The <code>param</code> property of the event MUST be set to the incoming
-    <a><code>TelephonyCall</code></a> object.</dd>
-
-    <dt class="no-docs"> attribute EventHandler oncallsplit</dt>
-    <dd>Whenever a call is split off a multiparty call, the <a>user agent</a>
-    MUST <a>queue a task</a> to fire an event named <code>callsplit</code> of
-    type <code>TelephonyEvent</code>.
-    The <code>param</code> property of the event MUST be set to the new
-    <a><code>TelephonyCall</a></code> object representing the split call.</dd>
+    The <code>param</code> property of the event MUST be set to the
+    <a><code>TelephonyCall</code></a> object controlling the incoming call.</dd>
 
     <dt class="no-docs"> attribute EventHandler oncallschanged</dt>
     <dd>Whenever a call is added to or removed from the <code>calls</code>
@@ -293,11 +323,12 @@ Style guide to contributors:
     <a>telephony service id</a> of the disabled service.</dd>
   </dl>
 
+  <!-- this is redundant information
   <section>
   <h3>Event handlers</h3>
   <p>The following are the <a>event handlers</a> (and their corresponding
   <a>event handler types</a>)that MUST be supported as attributes by the
-  <a>Telephony</a> object.
+  <a>TelephonyManager</a> object.
   <table class="simple">
     <thead>
       <tr>
@@ -317,20 +348,11 @@ Style guide to contributors:
         <td>handle incoming and waiting calls</td>
       </tr>
       <tr>
-        <td><strong><code>onsplit</code></strong></td>
-        <td><code><dfn>split</dfn></code></td>
-        <td><a><code>TelephonyEvent</code></a> with <code>param</code>
-        property set to the new <a><code>TelephonyCall</code></a> object
-        </td>
-        <td>handle split calls</td>
-      </tr>
-      <tr>
         <td><strong><code>oncallschanged</code></strong></td>
         <td><code><dfn>callschanged</dfn></code></td>
-        <td><a><code>TelephonyEvent</code></a> with <code>param</code>
-        property set to an array of changed <a><code>TelephonyCall</code>
-        </a> objects.</td>
-        <td>handle any change in <a><code>TelephonyCall</code></a> objects</td>
+        <td>simple event</td>
+        <td>handle any change of the <code>calls</code> array on the
+        <code>TelephonyManager</code> object</td>
       </tr>
       <tr>
         <td><strong><code>onserviceadded</code></strong></td>
@@ -352,52 +374,62 @@ Style guide to contributors:
       </tr>
     </tbody>
   </table>
-  </section> <!-- Event handlers -->
+  </section> <-- Event handlers -->
       
   <section id="telephonymanager-steps">
   <h3>Steps</h3>
+  <p>The <a><code>TelephonyManager</code></a> object MUST <a>queue a task</a>
+  <dfn title="TCallControl"><i>TCallControl</i></dfn> for each
+  <a><code>TelephonyCall</code></a> or <a><code>ConferenceCall</code></a> object
+  it manages, which MUST listen to any event that results in changing the call,
+  and upon such events, follow the steps described in this specification.</p>
+
   <p> The <code>dial</code> method when invoked MUST run the following steps:
   <ol id="steps-dial">
-    <li>Let <var>telCall</var> be a newly created <code>TelephonyCall</code>
-    object</li>
-    <li>Add the telephone number specified in the <code>number</code> parameter
-    to the <code>participants</code> array of <var>telCall</var></li> 
+    <li>Create a new <code>TelephonyCall</code> object, referred as
+    <var>telCall</var> in these steps
+    </li>
+    <li>Set the <code>remoteParty</code> property of <var>telCall</var>remote
+    party identifier specified in the <code>remoteParty</code> parameter
+    </li>
     <li>If <code>calls</code> array already contains a <a>TelephonyCall</a>
-    object associated to the <code>number</code> parameter, then go to
-    <a href="#error-step">error steps</a>.
-    <li>Otherwise, execute the following steps: <ol>
-      <li>Make a request to the telephony system to dial in the telephone number
-      passed in the <code>number</code> parameter. According to the value of the
-      <code>hideCallerId</code> in the <code>params</code> parameter, own
-      number is requested to be either displayed, hidden or otherwise the
-      default system configuration to this regard is requested to be followed.
-      </li>
-      <li>If the request progress successfully, then <ol>
-        <li>Add <var>telCall</var> to the <code>calls</code> array</li>
-        <li>Set the <code>state</code> of <var>telCall</var> to
-        <a href="#call-state-dialing"><code>dialing</code></a> value</li>
-        <li><a>Queue a task</a> to <a>fire a simple event</a> named
-        <code><a>statechange</a></code> at the <var>telCall</var> object</li>
-        <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
-        dialing</a></code> at the <var>telCall</var> object</li>
-        <li>and finally return to the caller and <a>queue a task</a>
-        <i>TCallControl</i> to monitor call flow progress</ol>
-      <li>If during further steps for call connection there is an error, go to
-      <a href="#error-steps">error steps</a>.</li>
-    </ol>
+    object with identical <code>remoteParty</code> property, then an
+    <code>InvalidModificationError</code> MUST be raised for the for
+    <var>telCall</var> object, as described in the
+    <a href="#error-steps">error steps</a>.</li>
+    <li>Otherwise, make a request to the telephony system to dial in the remote
+    party identifier passed in the <var>remoteParty</var> parameter.
+    According to the value of the <code>hideCallerId</code> in the
+    <code>params</code> parameter, the own number is requested to be either
+    displayed, hidden or otherwise the default system configuration to this
+    regard is requested to be followed.
+    </li>
+    <li>If the request is successful, then <ol>
+      <li>Set the <code>state</code> of <var>telCall</var> to
+      <a href="#call-state-dialing"><code>dialing</code></a> value</li>
+      <li>Add <var>telCall</var> to the <code>calls</code> array</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named
+      <code><a>statechange</a></code> at the <var>telCall</var> object</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
+      dialing</a></code> at the <var>telCall</var> object</li>
+      <li>and finally return to the caller and <a>queue a task</a>
+      <a><i>TCallControl</i></a> to monitor call flow progress</li>
+    </ol></li>
+    <li>If during further steps for call connection there is an error, execute
+    the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
   </ol></p>
   
   <p>Upon a new incoming or waiting call, the <a>user agent</a> MUST execute the
   following steps:
   <ol id="steps-incoming">
-    <li>Let <var title="">incomingCall</var> be a new instance of
+    <li>Let <var>incomingCall</var> be a new instance of
     <code>TelephonyCall</code>.</li>
     <li>Set the <code>state</code> of <var>incomingCall</var> to
     <a href="#call-state-incoming"><code>incoming</code></a> in case there is
-    no other call in <a href="#call-state-connected"><code>connected</code></a>
+    no other call in <a href="#call-state-active"><code>active</code></a>
     state, or otherwise to <a href="#call-state-waiting"><code>waiting</code>
     </a></li>
-    <li>Add <var title="">incomingCall</var> to the <code>calls</code> array
+    <li>Add <var>incomingCall</var> to the <code>calls</code> array
     </li>
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
     statechange</a></code> at the <var>incomingCall</var> object</li>
@@ -407,38 +439,31 @@ Style guide to contributors:
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
     callschanged</a></code> at the <a><code>TelephonyManager</code></a> object
     managing the call</li>
-    <li><a>Queue a task</a> <i>TCallControl</i> to monitor call flow progress.
+    <li><a>Queue a task</a> <a><i>TCallControl</i></a> to monitor call flow
+    progress.
     </li>
   </ol></p>
 
-  <p class="issue">The <code>incoming</code> event has to be defined according
-  to DOM4.
+  <p class="issue">The <code>incoming</code>, <code>serviceadded</code> and
+  <code>serviceremoved</code> events have to be defined according to DOM4.
   </p>
 
-  The task <i>TCallControl</i> MUST listen to any event that results in a
-  call disconnection, and upon such events, follow the steps described for
+  The task <a><i>TCallControl</i></a> MUST listen to any event that results in
+  a call disconnection, and upon such events, follow the steps described for
   <a href='#steps-disconnect-system'>handling disconnected calls</a>.
 
   <p>The <code>sendTones()</code> method when invoked MUST make a request to the
   telephony system to start sending the tones passed in the <code>tones</code>
-  parameter to the active TelephonyCall object, using the default tone duration,
-  and delay, unless a different <a>telephony service</a>, tone duration, and/or
-  delay is specified.
+  parameter to the telephony service used by the active TelephonyCall object,
+  using the default tone duration and delay, unless a different
+  <a>telephony service</a>, tone duration, and/or delay is specified via the
+  parameter.
   If the request is acknowledged, then return to the caller. If there is an
   error, <a>queue a task</a> to <a>fire a simple event</a> named <a><code>error
   </code></a> at the <a><code>TelephonyManager</code></a> object managing the
   call.</p>
   </section> <!-- telephonymanager-steps -->
 
-  <section id="telephonymanager-error-steps">
-  <h3>Error Steps</h3>
-  <p><ol>
-    <li>Set the state of <var>telCall</var> to
-    <a href="#call-state-error"><code>error</code></a></li>
-    <li>queue a task to fire a simple event named <a><code>error</code></a> at
-    the <var>telCall</var> object.</li>
-  </ol></p>
-  </section> <!-- error steps -->
 
 <!------------------------- Dictionary DialParams ---------------------------->
   <section>
@@ -449,12 +474,15 @@ Style guide to contributors:
     called remote party, or otherwise the default system configuration to this
     regard is to be followed. It may have the following values: <code>'display'
     </code>, <code>'hide'</code> and <code>'default'</code>.
-    If not specified, the implementation MUST provide a default value.</dd>
+    If not specified,  the implementation MUST use the
+    <code>defaultServiceId</code> of the <a><code>TelephonyManager</code></a>
+    object.</dd>
 
     <dt>DOMString serviceId</dt>
     <dd>Indicates the <a>telephony service id</a> of the <a>telephony service
-    </a> to be used when dialing. If not specified, the implementation MUST
-    provide a default value.</dd>
+    </a> to be used when dialing. If not specified,  the implementation MUST
+    use the <code>defaultServiceId</code> of the
+    <a><code>TelephonyManager</code></a> object.</dd>
   </dl>
   </section>
 
@@ -475,7 +503,8 @@ Style guide to contributors:
     <dt>DOMString serviceId</dt>
     <dd>Indicates the <a>telephony service id</a> of the <a>telephony service
     </a> to be used when dialing. If not specified, the implementation MUST
-    provide a default value.</dd>
+    use the <code>defaultServiceId</code> of the
+    <a><code>TelephonyManager</code></a> object.</dd>
   </dl>
   </section>
 
@@ -515,103 +544,187 @@ Style guide to contributors:
    <dd>The simple event <code>volumechanged</code> MUST be fired when the audio
    or microphone volume is changed.</dd>
   </dl>
-</section>
+</section> <!-- TelephonyAudioControl -->
+
+
+<!----------------------- Interface TelephonyEvent --------------------------->
+<section>
+  <h2>Interface <code title="">TelephonyEvent</code></h2>
+  <p>Defines telephony events which convey a parameter.</p>
+  <dl title="[NoInterfaceObject]
+            interface TelephonyEvent : EventTarget"
+      class="idl">
+    <dt>readonly attribute any param</dt>
+    <dd>MUST return the value attached to the event. The value depends on the
+    event target, and it is specified in the documentation of the specific event
+    targets. For instance, for <code>incoming</code> event it contains a
+    <a><code>TelephonyCall</code></a> object, for <code>serviceadded</code> and
+    <code>serviceremoved</code> events it contains the <a>service id</a> of the
+    enabled or disabled service, respectively.</dd>
+  </dl>
+</section> <!-- interface TelephonyEvent -->
 
 
 <!------------------------- Interface TelephonyCall -------------------------->
 <section>
   <h2><a>TelephonyCall</a> Interface</h2>
+  <p>Defines the object structure for controlling calls. The properties common
+  between single and multiparty calls are summarized in the <a><code>CallHandler
+  </code></a> interface, but it MUST NOT be possible to control a telephony call
+  with any other objects than a <code>TelephonyCall</code> or
+  <code>ConferenceCall</code>.
   <dl title="[NoInterfaceObject]
-    interface TelephonyCall : EventTarget"
+    interface CallHandler : EventTarget"
     class="idl">
-    <dt>readonly attribute DOMString[] participants</dt>
-    <dd>It MUST return the array of remote party identifiers (telephone numbers)
-    of the call participants, excluding that of the caller.</dd>
+    <dt>readonly attribute DOMString callId</dt>
+    <dd>It MUST return the <a>call id</a> of the telephony call object, unique
+    in the system and call history.</dd>
 
     <dt>readonly attribute DOMString serviceId</dt>
-    <dd>It MUST return the <a>telephony service id</a> of the 
-    <a>telephony service </a> used for the call.</dd>
+    <dd>It MUST return the <a>telephony service id</a> of the
+    <a>telephony service</a> used for the call.</dd>
+
+    <dt>readonly attribute boolean isConference</dt>
+    <dd>It MUST return <code>true</code> if the call is a
+    <a><code>ConferenceCall</code></a>, otherwise the object MUST be a
+    <a><code>TelephonyCall</code></a> object and it MUST return
+    <code>false</code>.</dd>
 
     <dt>readonly attribute DOMString state</dt>
-    <dd>It MUST return the state of the call (see below).</dd>
+    <dd>It MUST return the state of the call.</dd>
 
     <dt>readonly attribute DOMError error</dt>
-    <dd>An error that occured during the call lifecycle. Errors are as defined 
-    in [[!DOM4]].</dd>
+    <dd>An error that occured during executing methods of this interface.
+    Errors are as defined in [[!DOM4]] and described in the
+    <a href="#error-steps">error steps</a>.</dd>
 
-    <dt>void answer()</dt>
-    <dd>Answers an incoming telephone call.</dd>
+    <dt>attribute EventHandler onerror</dt>
+    <dd>Event handler called when the <code>error</code> event is dispatched.
+    </dd>
+    <dt>attribute EventHandler onstatechange</dt>
+    <dd>Event handler called at any state change, when the
+        <code>statechange</code> event is dispatched.</dd>
+    <dt>attribute EventHandler ondialing</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"dialing"</code> and the <code>dialing</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onalerting</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"alerting"</code> and the <code>alerting</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onaccepted</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"accepted"</code> and the <code>accepted</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onconnecting</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"connecting"</code> and the <code>connecting</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onactive</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"active"</code> and the <code>active</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler ondisconnecting</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"disconnecting"</code> and the <code>disconnecting</code> event
+        is dispatched.</dd>
+    <dt>attribute EventHandler ondisconnected</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"disconnected"</code> and the <code>disconnected</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onholding</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"holding"</code> and the <code>holding</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onheld</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"held"</code> and the <code>held</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onresuming</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"resuming"</code> and the <code>resuming</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onredirecting</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"redirecting"</code> and the <code>redirecting</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler ontransferring</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"transferring"</code> and the <code>transferring</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onjoining</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"joining"</code> and the <code>joining</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onmultiparty</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"multiparty"</code> and the <code>multiparty</code> event is
+        dispatched.</dd>
+    <dt>attribute EventHandler onsplitting</dt>
+    <dd>Event handler called when the call state changes to
+        <code>"splitting"</code> and the <code>splitting</code> event is
+        dispatched.</dd>
+  </dl>
+  <dl title="[NoInterfaceObject]
+    interface TelephonyCall : CallHandler"
+    class="idl">
+    <dt>readonly attribute DOMString remoteParty</dt>
+    <dd>It MUST return the remote party identifier (e.g. telephone number) of
+    the call participant. If not available (e.g. callerId has been hidden), then
+    it MUST return empty string.</dd>
+
+    <dt>readonly attribute DOMString conferenceId</dt>
+    <dd>If this call is managed as a part of a multiparty call, then it MUST
+    return the value of the <code>conferenceId</code> property of the
+    <a><code>ConferenceCall</code></id> multiparty call to which this call is
+    part of. Otherwise it MUST return empty string.</dd>
+
+    <dt>void accept()</dt>
+    <dd>Accepts the incoming or waiting telephony call.</dd>
 
     <dt>void disconnect()</dt>
-    <dd>Terminates a telephone call.</dd>
+    <dd>Initiates releasing of the telephony call.</dd>
 
     <dt>void hold()</dt>
-    <dd>Puts a telephone call on hold.</dd>
+    <dd>Initiates putting the telephony call on hold.</dd>
 
     <dt>void resume()</dt>
-    <dd>Resumes a telephone call that had been previously put on hold.</dd>
+    <dd>Initiates resuming the held telephone call.</dd>
 
-    <dt>void redirect(in DOMString redirectNumber)</dt>
-    <dd>Redirects an incoming telephone call to another telephone number.</dd>
-    
-    <dt>void addParticipant(DOMString number)</dt>
-    <dd>Put the current multiparty call on hold, place a new call to the 
-    specified remote party and when active, join with the held multiparty call
-    and activate it.
-      <dl class='parameters'>
-        <dt>DOMString number</dt>
-        <dd>Indicates the destination number of the new call participant</dd>
-      </dl>
-</dd>
-    
-    <dt>void removeParticipant(DOMString number)</dt>
-    <dd>Request dropping a participant from the call.
-      <dl class='parameters'>
-        <dt>DOMString number</dt>
-        <dd>Indicates the call participant to be removed from the multiparty
-        call</dd>
-      </dl>
+    <dt>void redirect(in DOMString remoteParty)</dt>
+    <dd>Initiates deflecting an incoming or waiting telephone call to another
+    remote party.
+    <dl class='parameters'>
+      <dt>DOMString remoteParty</dt>
+      <dd>Indicates the remote party to which the call is redirected.</dd>
+    </dl>
     </dd>
     
-    <dt>void split(DOMString number)</dt>
-    <dd>Splits from the current multiparty call a new private call with the
-    specified call participant, activates it and puts the multiparty call on
-    hold.
-      <dl class='parameters'>
-        <dt>DOMString number</dt>
-        <dd>Indicates the call participant to split off from the multiparty call
-        </dd>
-      </dl>
+    <dt>void transfer(in DOMString thirdParty)</dt>
+    <dd>Initiates transferring the call to a new call between the remote party
+    of this call and another remote party, then disconnects the call.
+    <dl class='parameters'>
+      <dt>DOMString thirdParty</dt>
+      <dd>Indicates the remote party to which the call is transferred.</dd>
+    </dl>
     </dd>
 
-    <dt class="no-docs">attribute EventHandler onstatechange</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler ondialing</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onalerting</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onaccepted</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onconnecting</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onconnected</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler ondisconnecting</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler ondisconnected</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onholding</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onheld</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onresuming</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onredirecting</dt>
-    <dd></dd>
-    <dt class="no-docs">attribute EventHandler onerror</dt>
-    <dd></dd>
+    <dt>ConferenceCall join(optional DOMString remoteParty)
+    </dt>
+    <dd>Without parameters, initiates merging the active and held calls into a
+    multiparty call. When called with the <a>remote party id</a> of the new
+    call participant, puts the current call on hold, dials a new call to the
+    participant, then creates a conference call by merging the current call and
+    the new call. Using this method MUST be the only way to create a
+    <code>ConferenceCall</code> object.</dd>
+    <dl class='parameters'>
+      <dt>DOMString remoteParty</dt>
+      <dd>Indicates the remote party identifier of the new call participant</dd>
+    </dl>
+    </dd>
+
   </dl>
-
+  <!-- this section is redundant now
   <section id="telephony-eventhandlers">
   <h3>Event handlers</h3>
   <p>The following are the <a>event handlers</a> MUST be supported as attributes
@@ -657,10 +770,10 @@ Style guide to contributors:
         <td>fired when the call state changes to <code>"connecting"</code></td>
       </tr>
       <tr>
-        <td><strong><code>onconnected</code></strong></td>
-        <td><code><dfn>connected</dfn></code></td>
+        <td><strong><code>onactive</code></strong></td>
+        <td><code><dfn>active</dfn></code></td>
         <td><a>simple event</a></td>
-        <td>fired when the call state changes to <code>"connected"</code></td>
+        <td>fired when the call state changes to <code>"active"</code></td>
       </tr>
       <tr>
         <td><strong><code>ondisconnecting</code></strong></td>
@@ -701,6 +814,31 @@ Style guide to contributors:
         <td>fired when the call state changes to <code>"redirecting"</code></td>
       </tr>
       <tr>
+        <td><strong><code>ontransferring</code></strong></td>
+        <td><code><dfn>transferring</dfn></code></td>
+        <td><a>simple event</a></td>
+        <td>fired when the call state changes to <code>"transferring"</code></td>
+      </tr>
+      <tr>
+      <tr>
+        <td><strong><code>onjoining</code></strong></td>
+        <td><code><dfn>joining</dfn></code></td>
+        <td><a>simple event</a></td>
+        <td>fired when the call state changes to <code>"joining"</code></td>
+      </tr>
+      <tr>
+        <td><strong><code>onsplitting</code></strong></td>
+        <td><code><dfn>splitting</dfn></code></td>
+        <td><a>simple event</a></td>
+        <td>fired when the call state changes to <code>"splitting"</code></td>
+      </tr>
+      <tr>
+        <td><strong><code>onmultiparty</code></strong></td>
+        <td><code><dfn>multiparty</dfn></code></td>
+        <td><a>simple event</a></td>
+        <td>fired when the call state changes to <code>"multiparty"</code></td>
+      </tr>
+      <tr>
         <td><strong><code>onerror</code></strong></td>
         <td><code><dfn>error</dfn></code></td>
         <td><a>simple event</a></td>
@@ -708,7 +846,10 @@ Style guide to contributors:
       </tr>
     </tbody>
   </table>
-  </section> <!-- telephony-eventhandlers -->
+  </section> <-- telephony-eventhandlers -->
+
+  <p class="issue">The call state events have to be defined according to DOM4.
+  </p>
 
   <section id="telephony-steps">
   <h3>Steps</h3>
@@ -741,20 +882,9 @@ Style guide to contributors:
         </td>
       </tr>
       <tr>
-        <td><dfn id="call-state-connected"><code>connected</code></dfn></td>
-        <td><code>'connected'</code></td>
+        <td><dfn id="call-state-active"><code>active</code></dfn></td>
+        <td><code>"active"</code></td>
         <td>The call is ongoing</td>
-      </tr>
-      <tr>
-        <td><dfn id="call-state-disconnecting"><code>disconnecting</code></td>
-        <td><code>'disconnecting'</code></td>
-        <td>A request to disconnect the call has been made and it is progressing
-        </td>
-      </tr>
-      <tr>
-        <td><dfn id="call-state-disconnected"><code>disconnected</code></dfn></td>
-        <td><code>'disconnected'</code></td>
-        <td>The call has been disconnected</td>
       </tr>
       <tr>
         <td><dfn id="call-state-incoming"><code>incoming</code></dfn></td>
@@ -771,7 +901,7 @@ Style guide to contributors:
       <tr>
         <td><dfn id="call-state-accepted"><code>accepted</code></dfn></td>
         <td><code>'accepted'</code></td>
-        <td>An incoming call has been answered and is being connected</td>
+        <td>An incoming call has been accepted and is being connected</td>
       </tr>
       <tr>
         <td><dfn id="call-state-holding"><code>holding</code></dfn></td>
@@ -794,6 +924,48 @@ Style guide to contributors:
         <td>The call is being redirected to another remote party from the same
         <a>telephony service</a></td>
       </tr>
+      <tr>
+        <td><dfn id="call-state-transferring"><code>transferring</code></dfn>
+        </td>
+        <td><code>'transferring'</code></td>
+        <td>The call is being transferred to another remote party from the same
+        <a>telephony service</a></td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-disconnecting"><code>disconnecting</code></td>
+        <td><code>'disconnecting'</code></td>
+        <td>A request to disconnect the call has been made and it is progressing
+        </td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-disconnected"><code>disconnected</code></dfn>
+        </td>
+        <td><code>'disconnected'</code></td>
+        <td>The call has been disconnected and this object is invalid for call
+        control. In this final state, the implementation MUST raise an
+        <code>ILLEGAL_STATE</code> exception when any method call is
+        attempted.</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-joining"><code>joining</code></dfn></td>
+        <td><code>'joining'</code></td>
+        <td>The call is being joined with another call to become a multiparty
+        call</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-multiparty"><code>multiparty</code></dfn></td>
+        <td><code>'multiparty'</code></td>
+        <td>The call is is locked in a <a><code>ConferenceCall</code></a>
+        object and MUST NOT be managed any more using this object.
+        While in this state, the implementation MUST raise an
+        <code>ILLEGAL_STATE</code> exception when any method call is attempted.
+        </td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-splitting"><code>splitting</code></dfn></td>
+        <td><code>'splitting'</code></td>
+        <td>The call is being split from a multiparty call.</td>
+      </tr>
     </tbody>
   </table></p>
  
@@ -815,7 +987,7 @@ Style guide to contributors:
    -> assignment completed        |
    <- alerting                    | alerting
    <- connect                     |
-   -> connect ack                 | connected
+   -> connect ack                 | active (connected)
    <-> dataspeech                 |
    _________________________________________________________________________
    CDMA states for received calls | Mapping to the API or [modem] state
@@ -835,7 +1007,7 @@ Style guide to contributors:
    -> call alerting               | [ringing]
    [ OK button pressed ]          | accepted
    -> connect                     |
-   <- connect ack                 | connected
+   <- connect ack                 | active (connected)
    <-> dataspeech                 |
    =========================================================================
    GSM states for dialed calls    | Mapping to the API or [modem] state
@@ -854,7 +1026,7 @@ Style guide to contributors:
    <- call confirmed              |
    <- alerting                    | alerting
    <- connect                     |
-   -> connect ack                 | connected
+   -> connect ack                 | active (connected)
    <-> dataspeech                 |
    _________________________________________________________________________
    GSM states for received calls  | Mapping to the API or [modem] state
@@ -870,7 +1042,7 @@ Style guide to contributors:
    -> call alerting               | [ringing]
    [ OK button pressed ]          | accepted
    -> connect                     |
-   <- connect ack                 | connected
+   <- connect ack                 | active (connected)
    <-> dataspeech                 |
    =========================================================================
    SIP/IMS states for dialed calls| Mapping to the API or [SIP stack] state
@@ -887,9 +1059,9 @@ Style guide to contributors:
    [ remote starts ringing ]      |
    <- SIP 180 RINGING             | alerting
    -> PRACK                       |
-   [ remote answers]              |
+   [ remote accepts]              |
    <- SIP 200 OK                  |
-   -> ACK                         | connected
+   -> ACK                         | active (connected)
    <-> dataspeech                 |
    _________________________________________________________________________
    SIP states for received calls  | Mapping to the API or [SIP stack] state
@@ -905,9 +1077,9 @@ Style guide to contributors:
    [ locally ringing ]            | 
    -> SIP 180 RINGING             | [ringing]
    <- PRACK                       |
-   [ answers ]                    | accepted
+   [ accepts ]                    | accepted
    -> SIP 200 OK                  |
-   <- ACK                         | connected
+   <- ACK                         | active (connected)
    <-> dataspeech                 |
    =========================================================================
    XMPP states for dialed calls   | Mapping to the API or [XMPP stack] state
@@ -917,7 +1089,7 @@ Style guide to contributors:
    -> session-initiate            |
    <- ack                         |
    <- session-accept              | alerting
-   -> ack                         | connected
+   -> ack                         | active (connected)
    <-> media session              |
    <- session-terminate           |
    -> ack                         | disconnected
@@ -930,11 +1102,33 @@ Style guide to contributors:
    [ locally ringing ]            | [ringing]
    [ user accepts ]               | accepted
    -> session-accept              |
-   <- ack                         | connected
+   <- ack                         | active (connected)
    <-> media session              |
    -> session-terminate           | disconnecting
    <- ack                         | disconnected
    _________________________________________________________________________
+
+   Multiparty call sequences and states
+   ====================================
+   GSM TS 24.084.
+   "There are four auxiliary states associated with the MPTY service:
+   - Idle;
+   - MPTY request; A request has been made to add this call to the MPTY.
+   - Call in MPTY; This call is in the MPTY.
+   - Split request; A request has been made to remove this call from the MPTY.
+   These Auxiliary states apply in addition to the GSM 04.08 call control
+   states and the GSM 04.83 call hold states. Thus for example, an active
+   call in a held MPTY has the state (Active, Call held, Call in MPTY).
+   Not all states are allowed, for example an MPTY cannot be split while
+   it is held, so (Active, Call held, Split request) is forbidden."
+
+   Instead of this, we offer a model when states describe valid multiparty
+   states. Valid state transitions for a multiparty call are:
+   * joining -> active
+   * active -> holding -> held
+   * held -> resuming -> active (connected)
+   * any state -> [disconnecting]-> disconnected
+
    -->
   
   <p>Some of these states are <dfn>soft states</dfn>, that is, transitory states
@@ -969,8 +1163,8 @@ Style guide to contributors:
   <p>Whenever there is a change in the <code>state</code> attribute the
   <a>user agent</a> MUST:<ol>
   <li>Queue a task to fire a simple event named <code><a>statechange</a></code>
-  <li>Queue a task to fire a simple event which name will be equal to the new
-  value of the state attribute.</li>
+  <li>Queue a task to fire a simple event named with the new value of the state
+  attribute.</li>
   </li>
   </ol></p>
    
@@ -978,23 +1172,23 @@ Style guide to contributors:
   supported in this order: <ol>
   <li><code>"incoming"</code>/<code>"waiting"</code></li>
   <li><code>"accepted"</code></li>
-  <li><code>"connected".</code></li>
+  <li><code>"active".</code></li>
   </ol></p>
   <p class="note">On received calls, telephony protocols also use a
   <code>"ringing"</code> state, set by the mobile terminal when local call
   alerting starts, in order to notify the remote party about the ongoing
   alerting (ringing can actually be e.g. a beep, ring tone, or vibration
-  pattern). This is considered to be responsibility of implementations.
-  If this state is expected to be set on the modem, implementations MUST set it.
-  Dialer applications are not expected to set this state in the current version
-  of the specification.
+  pattern). This is considered to be responsibility of implementations:
+  if the modem expects this state to be set, implementations MUST make sure to
+  set it. Dialer applications are not expected to set this state in the current
+  version of the specification.
   </p>
 
   <p>For call setup on dialed calls, the following call states MUST be 
   supported in this order: <ol>
   <li><code>"dialing"</code></li>
   <li><code>"alerting"</code></li>
-  <li><code>"connected".</code></li></ol></p>
+  <li><code>"active".</code></li></ol></p>
   <p class="note">
   On the telephony services which support the <code>"connecting"</code> call
   state (e.g. GSM and CDMA, for call routing, forwarding, voicemail handling
@@ -1003,17 +1197,28 @@ Style guide to contributors:
   Dialer applications can associate the protocol with the <a>telephony service
   </a> used for the call.
   </p>
+
+  <p>For calls participating in multiparty calls, additional call states MUST be
+  supported:<ol>
+  <li><code>joining</code></li>
+  <li><code>splitting</code></li>
+  <li><code>multiparty</code></li>
+  </ol></p>
   
-  <p>When <i>TCallControl</i> is notified that a dialed call is in the process
-  of being connected, it MUST set <code>state</code> to
+  <p>For call transfer functionality, the additional <code>transferring</code>
+  state MUST be supported.</p>
+
+  <p>When a call monitoring task, previously referred to as
+  <a><i>TCallControl</i></a> is notified that a dialed call is in the
+  process of being connected, it MUST set <code>state</code> to
   <a href="#call-state-connecting"><code>connecting</code></a>.</p>
 
-  <p>When <i>TCallControl</i> is informed that the connection has been
-  established, it MUST set <code>state</code> to
-  <a href="#call-state-connected"><code>connected</code></a>.</p>
+  <p>When <a><i>TCallControl</i></a> is informed that the connection has been
+  established and the call is active, it MUST set <code>state</code> to
+  <a href="#call-state-active"><code>"active"</code></a>.</p>
 
-  <p>If there is any error during call progressing then the
-  <a href="#error-steps">error steps</a> MUST be executed.</p>
+  <p>If there is any error during method calls, then
+  the <a href="#error-steps">error steps</a> MUST be executed.</p>
 
   <p>The <code>disconnect</code> method when invoked MUST run the following
   steps:
@@ -1024,11 +1229,18 @@ Style guide to contributors:
     statechange</a></code> at the <var>telCall</var> object</li>
     <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
     disconnecting</a></code> at the <var>telCall</var> object</li>
-    <li>Request from the telephony system the disconnection of the call</li>
+    <li>Request from the telephony system the disconnection of the call, then
+    return and continue these steps asynchronously.
+    If there is any error, the <a href="#error-steps">error steps</a> MUST be
+    executed.</li>
   </ol>
+  <p>Depending on the protocol, there may be restrictions on methods. For
+  instance, GSM does not permit disconnecting a held call. Also, disconnecting a
+  participant in a held multiparty call is not supported. In such cases, the
+  <a href="#error-steps">error steps</a> MUST be executed.</p>
 
-  <p>When <i>TCallControl</i> is notified of actual call disconnection it MUST
-  follow the next steps:  
+  <p>When <a><i>TCallControl</i></a> is notified of actual call disconnection it
+  MUST follow the next steps:
     <ol id="steps-disconnect-system">
     <li>Set the <code>state</code> of <var>telCall</var> to
     <a href='#call-state-disconnected'><code>disconnected</code></a></li>
@@ -1041,9 +1253,9 @@ Style guide to contributors:
   </ol></p>
   
   <p>The <code>param</code> property of the <code>disconnected</code> event MUST
-  be set to the disconnect reason as <code>DOMString</code>, if available, 
-  otherwise it MUST be set to <code>null</code>. At least the following values 
-  MUST be supported for the disconnect reason: <ul>
+  be set to the <dfn>disconnect reason</dfn> as <code>DOMString</code>, if
+  available, otherwise it MUST be set to <code>null</code>. At least the
+  following values MUST be supported for the disconnect reason: <ul>
   <li><code>"local"</code>: the call was disconnected by the user, or the device,
   and no more specific reason is known</li>
   <li><code>"remote"</code>: the call was disconnected by the remote party, and
@@ -1052,38 +1264,38 @@ Style guide to contributors:
   more specific reason is known</li>
   </ul>
   In addition, the following disconnect reasons SHOULD be supported:<ul>
-  <li><code>"redirected"</code>: the call has been redirected</li>
   <li><code>"busy"</code>: the call was disconnected by the network, because
   the remote party was busy</li>
+  <li><code>"rejected"</code>: the call was disconnected because the remote
+  party rejected the call</li>
+  <li><code>"redirected"</code>: the call has been redirected</li>
   <li><code>"unreachable"</code>: the call was disconnected by the network,
-  because the remote party was unreachable</li>
+  because the remote party was unreachable by the network</li>
   <li><code>"no-answer"</code>: the call was disconnected by the network,
-  because the remote party has not answered and the call has timeouted</li>
+  because the remote party has not answered and the call has timed out</li>
   <li><code>"network-unreachable"</code>: the call was disconnected because
   the network was unreachable</li>
   <li><code>"barred"</code>: the call was disconnected because it was barred
   </li>
-  <li><code>"rejected"</code>: the call was disconnected because the remote
-  party rejected the call</li>
   <li><code>"no-service"</code>: the call was not made because there is no
   telephony service set up and enabled (e.g. no SIM card)</li>
   <li><code>"invalid-number"</code>: the call was disconnected by the network,
   because the remote party identifier was invalid.</li>
   </ul></p>
 
-
   <p>The <code>hold</code> method when invoked MUST run the following steps:<ol>
-  <li>If <code>state</code> is not equal to <a href="#call-state-connected">
-  <code>connected</code></a>, raise an <code>ILLEGAL_STATE</code> exception
+  <li>If <code>state</code> is not equal to <a href="#call-state-active">
+  <code>active</code></a>, raise an <code>ILLEGAL_STATE</code> exception
   </li>
-  <li>Otherwise make a request to the telephony system to hold the call. If the
-  request is acknowledged then set <code>state</code> to
+  <li>Otherwise make a request to the telephony system to hold the call, return,
+  and continue these steps asynchronously.
+  <li>If the request is acknowledged then set <code>state</code> to
   <a href="#call-state-holding"><code>holding</code></a>.
   </li></ol></p>
 
-  <p>When <i>TCallControl</i> is notified that the call has been put on hold it
-  MUST set <code>state</code> to <a href="#call-state-held"><code>held</code>
-  </a>.</p>
+  <p>When <a><i>TCallControl</i></a> is notified that the call has been put on
+  hold it MUST set <code>state</code> to
+  <a href="#call-state-held"><code>held</code> </a>.</p>
 
   <p>The <code>resume</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to <a href="#call-state-held">
@@ -1094,17 +1306,17 @@ Style guide to contributors:
   <a href="#call-state-resuming"><code>resuming</code></a>.</li>
   </ol></p>
 
-  <p>When <i>TCallControl</i> detects that the call has being actually resumed
-  it MUST set <code>state</code> to <a href="#call-state-connected">
-  <code>connected</code></a>.</p>
+  <p>When <a><i>TCallControl</i></a> detects that the call has being actually
+  resumed it MUST set <code>state</code> to <a href="#call-state-active">
+  <code>active</code></a>.</p>
 
-  <p>The <code>answer</code> method when invoked MUST run the following steps:
+  <p>The <code>accept</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to
   <a href="#call-state-incoming"><code>incoming</code></a> or
   <a href="#call-state-waiting"><code>waiting</code></a>, raise an
   <code>ILLEGAL_STATE</code> exception
   </li>
-  <li>Otherwise make a request to the telephony system to answer the call.
+  <li>Otherwise make a request to the telephony system to accept the call.
   If the request is acknowledged then set <code>state</code> to
   <a href="#accepted"><code>accepted</code></a>.
   </li>
@@ -1115,14 +1327,89 @@ Style guide to contributors:
   <code>incoming</code></a> or <a href="#call-state-waiting"><code>waiting
   </code></a>, raise an <code>ILLEGAL_STATE</code> exception</li>
   <li>Otherwise make a request to the telephony system to redirect the call to
-  the number indicated in the <var>redirectNumber</var> parameter.
-  If the request is acknowledged, then set <code>state</code> to
+  the number indicated in the <var>remoteParty</var> parameter, return, and
+  continue these steps asynchronously.</li>
+  </li>If the request is acknowledged, then set <code>state</code> to
   <a href="#call-state-redirecting"><code>redirecting</code></a>.</li>
+  <li>When <a><i>TCallControl</i></a> is notified that the call has been
+  successfully redirected it MUST set <code>state</code> to
+  <a href="#call-state-disconnected"><code>disconnected</code></a>.</li>
   </ol></p>
-  
-  <p>When <i>TCallControl</i> is notified that the call has been successfully
-  redirected it MUST set <code>state</code> to
-  <a href="#call-state-disconnected"><code>disconnected</code></a>.</p>
+  <p class="note">The telephony service in use must have the call deflection
+  feature enabled in order that this method could succeed. For instance, in
+  GSM, the Call Deflection supplementary service must be active.</p>
+
+  <p>The <code>transfer</code> method when invoked MUST run the following steps:
+  <ol><li>If <code>state</code> is not equal to <a href="#call-state-active">
+  <code>active</code></a> or <a href="#call-state-held">
+  <code>held</code></a>, raise an <code>ILLEGAL_STATE</code> exception</li>
+  <li>Otherwise make a request to the telephony system to transfer the call to
+  the number indicated in the <var>thirdParty</var> parameter. Note that in GSM
+  this requires putting the current call on hold, dialing a new call to the
+  third party, then initiating the call transfer procedure. If there is an
+  error, the original call MUST be resumed and the
+  <a href="#error-steps">error steps</a> MUST be executed without modifying the
+  call state. If the request is acknowledged, then set <code>state</code> to
+  <a href="#call-state-transferring"><code>transferring</code></a>.</li>
+  <li>When <a><i>TCallControl</i></a> is notified that the call has been
+  successfully transferred and the original call is disconnected, it MUST set
+  <code>state</code> to
+  <a href="#call-state-disconnected"><code>disconnected</code></a>.</li>
+  </ol></p>
+  <p class="note">The telephony service in use must have the call transfer
+  feature enabled in order that this method could succeed. For instance, in
+  GSM, the Call Transfer supplementary service must be active.</p>
+
+  <p>The <code>join</code> method when invoked MUST run the following
+  steps:<ol>
+  <li>If the <code>remoteParty</code> property is equal to the parameter, or
+  if <code>state</code> is not equal to <a href="#call-state-active">
+    <code>active</code></a> or <a href="#call-state-held"><code>held</code></a>,
+  an <code>InvalidModificationError</code> MUST be raised as described in the
+  <a href="#error-steps">error steps</a>.</li>
+  <li>Otherwise, <ol>in cellular telephony services,
+    <li>put this call on hold</li>
+    <li><a href="#steps-dial">dial</a> a new call to the specified remote party;
+    let the resulting <code> TelephonyCall</code> object be referred as
+    <var>telCall</var> in these steps.</li>
+    </ol>
+    <ol>Alternatively, in other telephony services (e.g. VoIP protocols),
+    <li>Create a new <a>TelephonyCall</a> object, referred as <var>telCall</var>
+    .</li>
+    <li>Set the <code>remoteParty</code> property to the <var>remoteParty</var>
+    parameter of the method call.</li>
+    </ol>
+  </li>
+  <li>Set the <code>state</code> of <var>telCall</var> and this call to
+    <a href="#call-state-joining"><code>joining</code></a>.
+  </li>
+  <li>Then, <ol>
+    <li>in cellular telephony services, make a request to the telephony
+    system to join the active and held calls into a multiparty call</li>
+    <li>In other telephony services (e.g. VoIP protocols), make a request to the
+    telephony system to add the specified remote party to this call.
+    </li>
+  </ol>
+  <li>Create a <a><code>ConferenceCall</code></a> object with a unique
+  <a>conference id, and set its <code>state</code> to <code>"joining"</code>
+  </li>
+  <li>Return the <code>ConferenceCall</code> object, and continue these steps
+  asynchronously.</li>
+  <li>If the request to the telephony system is successful, <ol>
+    <li>set the <code>conferenceId</code> property of the participating calls to
+    the unique identifier generated for the multiparty call.</li>
+    <li>Set the <code>state</code> of <var>telCall</var> to
+    <a href="#call-state-multiparty"><code>multiparty</code></a>.
+  </li>
+  <li>Activate the multiparty call.</li>
+  <li>Add <var>telCall</var> and this call to the <code>calls</code> property of
+  this object and remove them from the <code>calls</code> array of the
+    <a><code>TelephonyManager</code></a> object.
+  </li>
+  <li>If there is any error during the method call, then the
+  <a href="#error-steps">error steps</a> MUST be executed on the
+  <var>telCall</var> object.</li>
+  </ol></p>
 
   <p>The following figure depicts the most usual state transitions for received
   calls:</p>
@@ -1143,65 +1430,312 @@ Style guide to contributors:
   </div>
   <br>
       
-  <p>The <code>addParticipant</code> method when invoked MUST run the following
-  steps:<ol>
-  <li>If the call is not a multiparty call, raise an <code>ILLEGAL_STATE</code>
-  exception</li>
-  <li>Otherwise make a request to the telephony system to add a participant to
-  the multiparty call. Depending on system implementation this may require
-  different steps, but usually this involves: <ol>
-    <li>put the multiparty call on hold</li>
-    <li>make a call to the specified number>/li>
-    <li>join the new call with the multiparty call on hold</li>
-    <li>activate the multiparty call.</li></ol>
-  </li></ol></p>
-  
-  <p>The <code>removeParticipant</code> method when invoked MUST run the
-  following steps: <ol>
-  <li>If the provided remote party identifier (phone number) is not a member of 
-  the current call, raise an <code>ILLEGAL_STATE</code> exception</li>
-  <li>Otherwise, if the call is not a multiparty call, follow the steps for
-  <a href="#steps-disconnect-client">disconnecting</a> the call</li>
-  <li>Otherwise, make a request to the telephony system to remove the call
-  participant from the multiparty call.</li>
-  </ol></p>
-  
-  <p>The <code>split</code> method when invoked MUST run the following steps:
-  <ol><li>If the provided remote party identifier (phone number) is not a member 
-  of the current call, raise an <code>ILLEGAL_STATE</code> exception</li>
-  <li>Otherwise, if the call is not a multiparty call, return gracefully and do
-  not modify the current call</li>
-  <li>Otherwise, make a request to the telephony system to remove the call
-  participant from the multiparty call.</li>
-  </ol></p>
   </section> <!-- telephony-steps -->
       
+
+  <section id="error-steps">
+  <h3>Error Steps</h3>
+  <p>If there is any error during the method calls, the following steps MUST be
+  run:<ol>
+    <li>Set the <code>error</code> property of the <a><code>CallStateHandler
+    </code></a> object appropriately
+    <li>queue a task to fire a simple event named <a><code>error</code></a> at
+    the <a><code>CallStateHandler</code></a> object.</li>
+  </ol></p>
+  <p>The error name, together with the call state determine the error condition.
+  All <code>DOMError</code> error names are supported, out of which the
+  following names MUST be used with the semantics described here:
+  <table class="simple">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>InvalidStateError</td>
+      <td>The call state is invalid, or the an attempted operation conflicts
+      with the call state in the implementation of the telephony modem and
+      middleware</td>
+    </tr>
+    <tr>
+      <td>InvalidModificationError</td>
+      <td>The attempted operation conflicts with the call state or other
+      constraints in the implementation, for instance attempting to disconnect
+      a held call in a GSM network.</td>
+    </tr>
+    <tr>
+      <td>NetworkError</td>
+      <td>There was a telephony network error during the operation</td>
+    </tr>
+    <tr>
+      <td>TimeoutError</td>
+      <td>The attempted operation timed out</td>
+    </tr>
+    <tr>
+      <td>NotSupportedError</td>
+      <td>The attempted operation is not supported by the implementation, or the
+      telephony network. This includes cases when a needed network feature (such
+      as a supplementary service like Call Transfer) is not enabled.</td>
+    </tr>
+    <tr>
+      <td>SecurityError</td>
+      <td>The attempted operation is not permitted.</td>
+    </tr>
+    </tbody>
+  </table></p>
+  </section> <!-- error steps -->
+
 </section> <!-- TelephonyCall -->
 
+
+<!------------------------- Interface ConferenceCall -------------------------->
+<section>
+  <h2><a>ConferenceCall</a> Interface</h2>
+  <p>Describes the object controlling multiparty calls, and managing the
+  <a><code>TelephonyCall</code></a> objects participating in the multiparty
+  call.</p>
+  <dl title="[NoInterfaceObject]
+    interface ConferenceCall : CallStateHandler"
+    class="idl">
+    <dt>readonly attribute DOMString conferenceId</dt>
+    <dd>It MUST return the conference identifier unique in the system and call
+    history.</dd>
+
+    <dt>readonly attribute TelephonyCall[] calls</dt>
+    <dd>It MUST return the array of <a><code>TelephonyCall</code></a> objects
+    managed by the multiparty call object.</dd>
+
+    <dt>void disconnect()</dt>
+    <dd>Initiates releasing the multiparty call, and each participating
+    <a><code>TelephonyCall</code></a> object.</dd>
+
+    <dt>void hold()</dt>
+    <dd>Initiates putting the multiparty call on hold.</dd>
+
+    <dt>void resume()</dt>
+    <dd>Initiates resuming the held multiparty call.</dd>
+
+    <dt>void addParticipant(DOMString remoteParty)
+    </dt>
+    <dd>Initiates adding a new participant to this conference call.</dd>
+    <dl class='parameters'>
+      <dt>DOMString remoteParty</dt>
+      <dd>Indicates the remote party identifier of the new call participant</dd>
+    </dl>
+    </dd>
+
+    <dt>void split(TelephonyCall participantCall)</dt>
+    <dd>Initiates splitting the specified participant
+    <a><code>TelephonyCall</code></a> object, activate it and put this
+    multiparty call on hold.
+      <dl class='parameters'>
+        <dt>TelephonyCall participantCall</dt>
+        <dd>Indicates the <a><code>TelephonyCall</code></a> object of the
+        call participant to be split from the multiparty call.</dd>
+      </dl>
+    </dd>
+
+    <dt>attribute EventHandler onparticipantadded</dt>
+    <dd>Event handler called when a new participant has been added to the call
+    and the <code>participantadded</code> event is dispatched.</dd>
+
+    <dt>attribute EventHandler onparticipantremoved</dt>
+    <dd>Event handler called when a new participant has been removed from the
+    call and the <code>participantadded</code> event is dispatched.</dd>
+  </dl>
+  <section id="multiparty-steps">
+  <h3>Steps</h3>
+  <p>The IDL attribute <dfn title="call-state"><code>state</code></dfn> MUST
+  return the current status of the multiparty call. It MUST be one of the
+  following values:
+  <table class="simple">
+    <thead>
+      <tr>
+        <th>multiparty call state</th>
+        <th>string value</th>
+        <th>description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><dfn id="call-state-joining"><code>joining</code></dfn></td>
+        <td><code>'joining'</code></td>
+        <td>The multiparty call is being created, or joined with another call
+        </td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-active"><code>active</code></dfn></td>
+        <td><code>"active"</code></td>
+        <td>The multiparty call is ongoing</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-splitting"><code>splitting</code></dfn></td>
+        <td><code>'splitting'</code></td>
+        <td>A call is being split from a multiparty call.</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-holding"><code>holding</code></dfn></td>
+        <td><code>'holding'</code></td>
+        <td>The call is being put on hold</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-held"><code>held</code></dfn></td>
+        <td><code>'held'</code></td>
+        <td>The call has been put on hold</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-resuming"><code>resuming</code></td>
+        <td><code>'resuming'</code></td>
+        <td>The call, which was on hold, is being resumed</td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-disconnecting"><code>disconnecting</code></td>
+        <td><code>'disconnecting'</code></td>
+        <td>A request to disconnect the call has been made and it is progressing
+        </td>
+      </tr>
+      <tr>
+        <td><dfn id="call-state-disconnected"><code>disconnected</code></dfn></td>
+        <td><code>'disconnected'</code></td>
+        <td>The multiparty call has been disconnected and this object is invalid
+        for call control. In this final state, the implementation MUST raise an
+        <code>ILLEGAL_STATE</code> exception when any method call is
+        attempted.</td>
+      </tr>
+    </tbody>
+  </table></p>
+  <p>For multiparty calls, the implementation MUST generate a unique identifier
+  stored in the <code>callId</code> property.
+  In GSM, the <code>callId</code> of any participating call could be used in a
+  multiparty operation, and the telephony network will reply with using the same
+  value. But for forward compatibility reasons, the implementation MUST
+  generate a separate <code>callId</code> value for the multiparty call, which
+  MUST be unique in the system and the local call history. For GSM multiparty
+  functionality, The implementation MUST map this to an appropriate transaction
+  identifier accepted by the telephony service.
+  Also, the transaction identifiers received from the network MUST be mapped
+  back by the implementation to the unique conference call identifier of the
+  multiparty call.</p>
+
+  <p>The <code>addParticipant</code> method when invoked MUST run the following
+  steps:<ol>
+  <li>If <code>state</code> is not equal to <a href="#call-state-active">
+  <code>active</code></a> or <a href="#call-state-held"><code>held</code></a>
+  then raise an <code>ILLEGAL_STATE</code> exception
+  </li>
+  <li>If there is already a <a>TelephonyCall</a> object in the multiparty call
+  with identical <code>remoteParty</code> property, an
+  <code>InvalidModificationError</code> MUST be raised as described in the
+  <a href="#error-steps">error steps</a>.</li>
+  <li>Otherwise, in cellular telephony services,
+  <ol>
+    <li>put this call on hold</li>
+    <li><a href="#steps-dial">dial</a> a new call to the specified remote party;
+    let the resulting <code> TelephonyCall</code> object be referred as
+    <var>telCall</var> in these steps.</li>
+  </ol>
+  Alternatively, in other telephony services (e.g. VoIP protocols),
+  <ol>
+    <li>Create a new <a>TelephonyCall</a> object, referred as <var>telCall</var>
+    .</li>
+    <li>Set the <code>remoteParty</code> property to the <var>remoteParty</var>
+    parameter of the method call.</li>
+  </ol>
+  </li>
+  <li>Set the <code>state</code> of <var>telCall</var> to
+    <a href="#call-state-joining"><code>joining</code></a>.
+  </li>
+  <li>Then, <ol>
+    <li>in cellular telephony services, make a request to the telephony
+    system to join the active and held calls into a multiparty call</li>
+    <li>In other telephony services (e.g. VoIP protocols), make a request to the
+    telephony system to add the specified remote party to this multiparty call.
+    </li>
+  </ol>
+  <li>Return, and continue these steps asynchronously.</li>
+  <li>If the request is successful, set the <code>conferenceId</code> property
+  on all calls to the unique identifier generated by the implementation for
+  this multiparty call. Set the <code>state</code> of <var>telCall
+  </var> to <a href="#call-state-multiparty"><code>multiparty</code></a>.
+  </li>
+  <li>Activate this multiparty call.</li>
+  <li>Add <var>telCall</var> to the <code>calls</code> property of this object
+    and remove it from the <code>calls</code> array of the
+    <a><code>TelephonyManager</code></a> object.
+  </li>
+  <li>If there is any error during the method call, then the
+  <a href="#error-steps">error steps</a> MUST be executed on the
+  <var>telCall</var> object.</li>
+  </ol></p>
+
+  <p>The <code>removeParticipant</code> method when invoked MUST run the
+  following steps:<ol>
+  <li>Make a request to the telephony system to drop the call participant from
+  the multiparty call, i.e. disconnecting the call object.</li>
+  <li>If the request is successful, set the state of the call object to
+  <code>"disconnected"</code> and remove it from the <code>calls</code> array
+  of this multiparty call.</li>
+  <li>If there is any error during the method call, then the
+  <a href="#error-steps">error steps</a> MUST be executed on the
+  <code>TelephonyCall</code> object.</li>
+  </ol></p>
+
+  <p>The <code>split</code> method when invoked MUST run the following steps:
+  <ol><li>If the provided <var>participantCall</var> does not identify a valid
+  <a><code>TelephonyCall</code></a> object which is part of this multiparty
+  call, then an <code>InvalidModificationError</code> MUST be raised as
+  described in the <a href="#error-steps">error steps</a>.
+  </li>
+  <li>Otherwise, set the <code>state</code> of the <var>participantCall</var>
+  and that of this <code>ConferenceCall</code> object to
+  <a href="#call-state-splitting"><code>splitting</code></a>.
+  </li>
+  <li>Make a request to the telephony system to split the call participant from
+  the multiparty call</li>
+  <li>Return, and continue these steps asynchronously.
+  </li>
+  <li>If the request was successful, the telephony system will put the
+  multiparty call on hold and activate the split call. The implementation MUST
+  follow the state transitions on the calls as described in this specification.
+  </li>
+  <li>Reset the <code>conferenceId</code> of the split call to empty string.
+  </li>
+  </ol></p>
+  </section> <!-- conference-steps -->
+</section> <!-- ConferenceCall -->
 
 <!----------------------- Interface CallHistoryEntry ------------------------->
 <section class="informative">
   <h2><a>CallHistoryEntry</a> Interface</h2>
   <p>This interface describes the properties which MUST be supported for call
-  history entries.</p>
+  history entries. For multiparty call there MUST be a separate object for each
+  call participant, sharing the same value for the </code>conferenceId</code>
+  property.</p>
   
   <dl title="[NoInterfaceObject]
     interface CallHistoryEntry"
     class="idl">
-    <dt>readonly attribute DOMString[] participants</dt>
-    <dd>It MUST return the array of remote party identifiers (telephone numbers)
-    of the call participants, excluding that of the caller.</dd>
+    <dt>readonly attribute DOMString remoteParty</dt>
+    <dd>It MUST return the remote party identifier (e.g. telephone number)
+    of the call participant.</dd>
     
     <dt>readonly attribute DOMString serviceId</dt>
     <dd>It MUST return the <a>telephony service id</a> of the 
     <a>telephony service </a> used for the call.</dd>
     
+    <dt>readonly attribute DOMString conferenceId</dt>
+    <dd>It MUST return the <a>conference id</a> of the call, if the call has
+    participated in a multiparty call. Otherwise it MUST be set to empty string.
+    </dd>
+
     <dt>readonly attribute Date startTime</dt>
     <dd>The starting time of the call, measured from when the call is in
-    <code>"connected"</code> state.</dd>
+    <code>"active"</code> state.</dd>
     
-    <dt>readonly attribute double duration</dt>
-    <dd>The duration of the call in seconds.</dd>
+    <dt>readonly attribute unsigned long long duration</dt>
+    <dd>The duration of the call expressed in milliseconds.</dd>
     
     <dt>readonly attribute DOMString direction</dt>
     <dd>The direction of the call. The following values MUST be supported:<ol>
@@ -1210,6 +1744,11 @@ Style guide to contributors:
       <li><code>"missed"</code>: for missed calls</li>
       <li><code>"missed-new"</code>: for missed calls not seen yet by the user.
       </li></ol></dd>
+
+    <dt>readonly attribute DOMString disconnectReason</dt>
+    <dd>The <a>disconnect reason</a>. If not available, MUST be set to empty
+    string.</dd>
+
   </dl>
 </section> <!-- CallHistoryEntry -->
 
@@ -1222,3 +1761,92 @@ their technical guidance, implementation work and support.</p>
 
 </body>
 </html>
+
+
+<!-----------------------------------------------------------------------------
+* An example how telephony services with different dynamic service capabilities
+* could be represented. This is work in progress, and it is NOT part of the
+* Telephony specification.
+< !----------------------- Interface TelephonyService -------------------------
+<section>
+  <h2><a>TelephonyService</a> Interface</h2>
+  <p>The interface which manages various <a>telephony service</a>s present in
+  the system. Different services may provide different set of interfaces for
+  managing service specific settings. This interface lists the objects which
+  MAY be supported by particular implementations and services.</p>
+
+  <dl title="[NoInterfaceObject]
+    interface TelephonyService"
+    class="idl">
+    <dt>readonly attribute DOMString id</dt>
+    <dd>It MUST return the <a>telephony service id</a> of the
+    <a>telephony service </a>.</dd>
+
+    <dt>attribute DOMString displayName</dt>
+    <dd>The string value as displayed to the user by the application. It MAY be
+    a localization string identifier.</dd>
+
+    <dt>readonly attribute DOMString provider</dt>
+    <dd>The name of the service provider. MUST be unique in the telephony
+    domain. A provider may have multiple services provisioned, therefore
+    multiple <code>TelephonyService</code> objects may share a provider.</dd>
+
+    <dt>attribute boolean enabled</dt>
+    <dd>MUST return or set the enabled state of the service.</dd>
+
+    <dt>readonly attribute SimInfo? siminfo</dt>
+    <dd>Interface for handling SIM informations (e.g. IMSI, MCC, MNC, etc). If
+    not available, or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute SimSettings? simsettings</dt>
+    <dd>Interface for SIM settings (PIN code, PUK code, etc.) If not available,
+    or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute TelephonyNetwork? network</dt>
+    <dd>Interface for operator network settings (automatic or manual
+    connection, etc. If not available, or not supported the value MUST be
+    <code>null</code>.</dd>
+
+    <dt>readonly attribute CallForwarding? forwarding</dt>
+    <dd>Interface to manage call forwarding. If not available, or not supported,
+    the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute CallBarring? barring</dt>
+    <dd>Interface to manage call barring. If not available, or not supported,
+    the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute CallMeters? meters</dt>
+    <dd>Interface to read and reset call meters. If not available, or not
+    supported, the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute SupplementaryServices? supplementary</dt>
+    <dd>Interface to manage supplementary services (including USSD). If
+    not available, or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute PushNotification? push</dt>
+    <dd>Interface to handle push notifications. If not available, or not
+    supported, the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute TelephonyRadioSettings? radio</dt>
+    <dd>Interface to manage telephony radio settings. The properties of the
+    actual object may depend on the telephony service, protocol, modem and
+    underlying platform. If not available, or not supported the value MUST be
+     <code>null</code>.</dd>
+  </dl>
+ </section> < !-- TelephonyService -->
+
+<!--
+GSM TS 04.08 call control states
+GSM TS 04.83 call hold states
+GSM TS 04.80 error values
+GSM TS 24.084 Phase-4 MPTY
+GSM TS 23.018 Basic call handling; Technical realization
+      http://www.3gpp.org/ftp/Specs/html-info/23018.htm
+IMS TS 23.228 IP Multimedia Subsystem (IMS); Stage 2
+      http://www.3gpp.org/ftp/Specs/html-info/23228.htm
+
+- any call ID will serve as a transaction ID
+- implementation to generate a MPTY_ID which refers to the list of all active
+call ID's in the mpty call
+
+-->
