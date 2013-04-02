@@ -135,9 +135,10 @@ Style guide to contributors:
   exposing telephony functionality associated to a subscriber identity
   registered a with a telephony service provider. For example, in cellular
   telephony a telephony service is associated to a SIM card (subscriber identity
-  module). When making a call, the identity (SIM card, associated
-  to a phone number) must always be specified, either explicitly in the function
-  call, or by using a default telephony service in the implementation.
+  module). When making a call, the identity (e.g. SIM card, associated
+  to an Integrated Circuit Card Identifier, ICC-ID) must always be specified,
+  either explicitly in the function call, or by using a default telephony
+  service in the implementation.
   The device may receive phone calls from any active telephony service, even
   simultaneously, in which case the calls must be arbitrated either by the
   implementation based on a policy, or by the user by choosing which call to
@@ -161,12 +162,13 @@ Style guide to contributors:
   this interface, implementations MUST use the default telephony service.</p>
 
   <p>A <dfn title="telephony service id">telephony service id</dfn> uniquely
-  identifies a <a>telephony service</a> in the system.</p>
+  identifies a <a>telephony service</a> together with a user identity in the
+  system.</p>
 
   <p>A <dfn title="multiparty call">multiparty call</dfn> (also referred to as
   <i>conference call</i>) is a telephony call with multiple remote party
   participants, which is controlled as a single call,  i.e. can be put on hold,
-  activated, disconnected with all participants. Other  calls can be joined with
+  activated, disconnected with all participants. Other calls can be joined with
   a multiparty call. New participants can be added, and existing participants
   can be removed. The following specifications have been used for designing the
   multiparty call management API: for GSM the <a href='http://www.etsi.org/deliver/etsi_ts/124000_124099/124084/04.00.00_60/ts_124084v040000p.pdf'>3GPP TS 24.08</a>; for SIP the
@@ -254,8 +256,8 @@ Style guide to contributors:
 
     <dt>readonly attribute DOMString[] serviceIds;
     <dd>MUST return the list of available <a>telephony service id</a>'s. For
-    cellular telephony, implementations MUST use the MSISDN (phone number) as
-    service identifier.</dd>
+    SIM cards, implementations MAY use the ICC-ID as service identifier, however
+    the MSISDN MUST NOT be used as <a>telephony service id</a>.</dd>
 
     <dt>attribute DOMString defaultServiceId;
     <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
