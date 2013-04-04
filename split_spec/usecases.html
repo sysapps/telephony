@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Use Cases and Requirements for the Web Telephony API</title>
+  <meta charset="UTF-8">
+  <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
+          class='remove'></script>
+  <script class="remove">
+    var respecConfig = {
+          specStatus:           "ED",
+          shortName:            "telephony-usecases",
+          publishDate:          "",
+          previousPublishDate:  "",
+          previousMaturity:     "",
+          edDraftURI:           "http://www.w3.org/2012/sysapps/",
+          // lcEnd:                "",
+          crEnd:                "",
+          editors: [
+            { name: "José M. Cantera", company: "Telefónica",
+                    companyURL: "http://www.tid.es/" },
+            { name: "Eduardo Fullea", company: "Telefónica",
+                    companyURL: "http://www.tid.es/" },
+            { name: "Zoltan Kis", company: "Intel",
+                    companyURL: "http://www.intel.com/" }
+          ],
+          inlineCSS:    true,
+          noIDLIn:      true,
+          extraCSS:     ["../ReSpec.js/css/respec.css"],
+          wg:           "System Applications Working Group",
+          wgURI:        "http://",
+          wgPublicList: "public-sysapps",
+          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/43696/status",
+    };
+  </script>
+</head>
+
+
+<!-----------------------------------------------------------------------------
+Style guide to contributors:
+============================
+- this document uses ReSpec, see
+  http://dev.w3.org/2009/dap/ReSpec.js/documentation.html
+- use 80 characters wide lines, whenever possible (except long links)
+- keep sections 2 empty lines apart
+- put comments in front of sections, for better readability with syntax coloring
+  editors
+- use indentation with care: it may improve readability, but at the expense of
+  line lenght
+- when descriptions of attributes is short, use the <dd> elements even when
+  the text also contains conformance statements (e.g. MUST, SHOULD, MAY).
+  No use repeating the same information in a separate paragraph.
+------------------------------------------------------------------------------>
+
+<body>
+
+<!------------------------------ Abstract ------------------------------------>
+<section id="abstract">
+  This document defines the main use cases and requirements to the
+  <a href='index.html'>Telephony API</a>.
+</section>
+
+
+<!----------------------- Status of this document ---------------------------->
+<section id="sotd">
+</section>
+
+
+<!----------------------------- Terminology ---------------------------------->
+<section>
+  <h2>Terminology</h2>
+  <p>The terminology of the <a href='index.html'>Telephony API</a> is used.
+</section>
+
+
+<!----------------------------- Introduction --------------------------------->
+<section class="informative">
+  <h2>Introduction</h2>
+  <p></p>
+</section>
+
+
+<!------------------------------ Stakeholders -------------------------------->
+<section>
+  <h2>Stakeholders</h2>
+  <p>The Web Telephony API stakeholders are the following:<ol>
+  <li><dfn>implementor</dfn>: implements the API specification in a Web
+  runtime, using the underlying platform features</li>
+  <li><dfn>developer</dfn>: implements applications using the API
+  specification</li>
+  <li><dfn>end user</dfn> or <dfn>user</dfn>: provides input to the
+  applications.
+  </li>
+  </ol></p>
+</section>
+
+
+<!-------------------------------- Use Cases --------------------------------->
+<section>
+  <h2>Use Cases</h2>
+  <p>The main use cases of the <a href='index.html'>Telephony API</a> from the
+  <a>end user</a>s point of view are the following:<ol>
+  <li>make a call to a remote party</li>
+  <li>id multiple subscriber identities are configured, choose which identity
+  should be used for a dialed call</li>
+  <li>set a default subscriber identity, so that the identity is optional to
+  provide before dialing</li>
+  <li>hide the caller identity, if the network supports it</li>
+  <li>send DTMF tones to the telephony network</li>
+  <li>list the usable emergency numbers</li>
+  <li>dial an emergency call without having a SIM card
+  <li>receive phone calls</li>
+  <li>put calls on hold</li>
+  <li>resume held calls</li>
+  <li>handle waiting calls, when the service is available and enabled</li>
+  <li>deflect an incoming call to be handled by another remote party</li>
+  <li>transfer an ongoing call with a remote party to become a call between the
+  remote party and a third party</li>
+  <li>add new call participants to a call or multiparty call</li>
+  <li>remove call participants from a call</li>
+  <li>see and manage call capabilities during a call, such as is multiparty call
+  possible, is video possible, etc</li>
+  <li>use headphones and external displays with calls</li>
+  <li>select between audio sources (microphones) and audio targets (speaker,
+  headphones, etc)</li>
+  <li>set the default sound volume for telephony</li>
+  <li>set the sound volume during a call</li>
+  <li>mute and unmute the microphone for a call</li>
+  <li>set and check network services, such as call forwarding, call barring,
+  network selection mode, call counters, etc.</li>
+  <li>manage the list of past calls through call history.</li>
+  </ol></p>
+
+  <p>The main use cases from the <a>developer</a>s point of view are to use the
+  API to programmatically implement the user use cases from above.
+  In addition,<ol>
+  <li>track the progress of calls through call state change event
+  notifications</li>
+  <li>track enabled and disabled telephony services through event
+  notifications</li>
+  <li>use a well defined structure for call history, for portability reasons
+  </li>
+  </ol></p>
+</section>
+
+
+<!------------------------------ Requirements -------------------------------->
+<section>
+  <h2>Requirements</h2>
+  <p>The <a href='index.html'>Telephony API</a> MUST fulfill the following
+  technical requirements:<ol>
+  <li>The API MUST be agnostic of implementation details such as underlying
+  platform architecture and telephony middleware implementation.</li>
+  </ol></p>
+</section>
+
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Web Telephony Services API</title>
+  <meta charset="UTF-8">
+  <script src='https://www.w3.org/Tools/respec/respec-w3c-common'
+          class='remove'></script>
+  <script class="remove">
+    var respecConfig = {
+          specStatus:           "ED",
+          shortName:            "telephony",
+          publishDate:          "",
+          previousPublishDate:  "",
+          previousMaturity:     "",
+          edDraftURI:           "http://www.w3.org/2012/sysapps/",
+          // lcEnd:                "",
+          crEnd:                "",
+          editors: [
+            { name: "José M. Cantera", company: "Telefónica",
+                    companyURL: "http://www.tid.es/" },
+            { name: "Eduardo Fullea", company: "Telefónica",
+                    companyURL: "http://www.tid.es/" },
+            { name: "Zoltan Kis", company: "Intel",
+                    companyURL: "http://www.intel.com/" }
+          ],
+          inlineCSS:    true,
+          noIDLIn:      true,
+          extraCSS:     ["../ReSpec.js/css/respec.css"],
+          wg:           "System Applications Working Group",
+          wgURI:        "http://",
+          wgPublicList: "public-sysapps",
+          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/43696/status",
+    };
+  </script>
+</head>
+
+<!-----------------------------------------------------------------------------
+Style guide to contributors:
+============================
+- this document uses ReSpec, see
+  http://dev.w3.org/2009/dap/ReSpec.js/documentation.html
+- use 80 characters wide lines, whenever possible (except long links)
+- keep sections 2 empty lines apart
+- put comments in front of sections, for better readability with syntax coloring
+  editors
+- use indentation with care: it may improve readability, but at the expense of
+  line lenght
+- when descriptions of attributes is short, use the <dd> elements even when
+  the text also contains conformance statements (e.g. MUST, SHOULD, MAY).
+  No use repeating the same information in a separate paragraph.
+------------------------------------------------------------------------------>
+
+<body>
+
+<!------------------------------ Abstract ------------------------------------>
+<section id="abstract">
+  This specification defines a System Level API to manage telephony service
+  functionality. It is an extension to the
+  <a href='http://telephony.sysapps.org/'>Telephony API</a>.
+</section>
+
+
+<!----------------------- Status of this document ---------------------------->
+<section id="sotd">
+</section>
+
+
+<!----------------------------- Introduction --------------------------------->
+<section class="informative">
+  <h2>Introduction</h2>
+  <p>The Telephony Services API allows applications to manage interaction with
+  telephony services, such as SIM information, call forwarding, call barring,
+  network selection, USSD, etc. </p>
+  <p>An example of using the API to  is provided below:
+  <pre class="example highlight">
+    var telServiceId = navigator.telephony.defaultServiceId;
+    var telService = navigator.telephony.getService(telServiceId);
+
+    if(telService && telService.ussd) { // USSD is supported
+        var getIMEI = "*#06#";
+        var pending = telService.ussd.send(getIMEI);
+        pending.onsuccess = function(reply) {
+            console.log("IMEI " + reply);
+        }
+    }
+  </pre>
+</section>
+
+
+<!---------------------------- Conformance ----------------------------------->
+<section id="conformance">
+  <p>This specification defines conformance criteria that apply to a single
+  product: the <dfn id="ua">user agent</dfn> that implements the interfaces
+  that it contains.
+  </p>
+  <p>Implementations that use ECMAScript to implement the APIs defined in
+  this specification MUST implement them in a manner consistent with the
+  ECMAScript Bindings defined in the Web IDL specification [[!WEBIDL]], as
+  this specification uses that specification and terminology.</p>
+</section>
+
+
+<!----------------------------- Terminology ---------------------------------->
+<section>
+  <h2>Terminology</h2>
+  <p>The <code>
+  <a href="http://dev.w3.org/html5/spec/webappapis.html#eventhandler">
+  EventHandler</a></code> interface represents a callback used for event
+  handlers as defined in [[!HTML5]].</p>
+
+  <p>The concepts <dfn>
+  <a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">
+       queue a task</a></dfn> and <dfn>
+  <a href="http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event">
+  fire a simple event</a></dfn> are defined in [[!HTML5]].</p>
+
+  <p>The terms <dfn>
+  <a href="http://dev.w3.org/html5/spec/webappapis.html#event-handlers">
+  event handler</a></dfn>  and <dfn>
+<a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
+  event handler event types</a></dfn> are defined in [[!HTML5]].</p>
+
+  <p>An <dfn>active call</dfn> is a Telephony Call in the
+  <a href='#call-state-active'><code>active</code></a> state and bound to
+  the media input and output devices (e.g. microphone, speaker, tone generator).
+  </p>
+
+  <p>A <dfn title="telephony service">telephony service</dfn> is an object
+  exposing telephony functionality associated to a subscriber identity
+  registered a with a telephony service provider. For example, in cellular
+  telephony a telephony service is associated to a SIM card (subscriber identity
+  module). When making a call, the identity (e.g. SIM card, associated
+  to an Integrated Circuit Card Identifier, ICC-ID) must always be specified,
+  either explicitly in the function call, or by using a default telephony
+  service in the implementation.
+  The device may receive phone calls from any active telephony service, even
+  simultaneously, in which case the calls must be arbitrated either by the
+  implementation based on a policy, or by the user by choosing which call to
+  accept.
+  A telephony service may use different protocols for telephony signaling and
+  media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since call states
+  may differ depending on the protocol, the telephony call objects must contain
+  information which identifies the service and the protocol used for making the
+  call.
+  The following specifications have been used for designing the Telephony API:
+  for GSM the <a href='http://www.3gpp.org/ftp/Specs/html-info/23018.htm'>
+  TS 23.018</a> suite, for IMS/SIP the
+  <a href='http://www.3gpp.org/ftp/Specs/html-info/23228.htm'>TS 23.228</a>
+  suite, for XMPP the <a href='http://xmpp.org/extensions/xep-0166.html'>
+  XEP 0166</a> specification.
+  </p>
+</section>
+
+
+<!------------------------ Security and privacy ------------------------------>
+<section>
+  <h2>Security and privacy considerations</h2>
+  <p>This API must be only exposed to trusted content.</p>
+</section>
+
+
+<!--------------------  Extended Interface TelephonyManager ------------------>
+<section>
+  <h2><a>TelephonyManager</a> Interface</h2>
+  <p>The <a href='http://telephony.sysapps.org/#TelephonyManager'><code>
+  TelephonyManager</code></a> interface is extended with a method for obtaining
+  a <a><code>TelephonyService</code></a> object from a <a>telephony service id
+  </a>.</p>
+
+  <dl title="[NoInterfaceObject]
+             partial interface TelephonyManager"
+          class="idl">
+
+    <dt>TelephonyService getService(DOMString serviceId)</dt>
+    <dd>It MUST synchronously retrieve the telephony service object associated
+    to the <a>telephony service id</a>.
+      <dl class='parameters'>
+      <dt>DOMString serviceId</dt>
+      <dd>Indicates the <a>telephony service id</a> of the
+      <a>telephony service</a> to be retrieved.</dd>
+      </dl>
+    </dd>
+  </dl>
+
+  <section id="telephonymanager-steps">
+  <h3>Steps</h3>
+  <p> The implementation MUST maintain <code>TelephonyService</code> objects
+  and a map to <a>telephony service id</a>'s. The <code>getService</code> method
+  when invoked MUST retrieve and return the <code>TelephonyService</code> object
+  associated to the service identifier provided as parameter.</p>
+  </section> <!-- telephonymanager-steps -->
+</section> <!-- TelephonyManager -->
+
+
+<!-----------------------------------------------------------------------------
+* An example how telephony services with different dynamic service capabilities
+* could be represented. This is work in progress, and it is NOT part of the
+* Telephony specification.
+-->
+<!----------------------- Interface TelephonyService ------------------------->
+<section>
+  <h2><a>TelephonyService</a> Interface</h2>
+  <p>The interface which manages various <a>telephony service</a>s present in
+  the system. Different services may provide different set of interfaces for
+  managing service specific settings. This interface lists the objects which
+  MAY be supported by particular implementations and services.</p>
+
+  <dl title="[NoInterfaceObject]
+    interface TelephonyService"
+    class="idl">
+    <dt>readonly attribute DOMString id</dt>
+    <dd>It MUST return the <a>telephony service id</a> of the
+    <a>telephony service </a>.</dd>
+
+    <dt>attribute DOMString displayName</dt>
+    <dd>The string value as displayed to the user by the application. It MAY be
+    a localization string identifier.</dd>
+
+    <dt>readonly attribute DOMString provider</dt>
+    <dd>The name of the service provider. MUST be unique in the telephony
+    domain. A provider may have multiple services provisioned, therefore
+    multiple <code>TelephonyService</code> objects may share a provider.</dd>
+
+    <dt>attribute boolean enabled</dt>
+    <dd>MUST return or set the enabled state of the service.</dd>
+
+    <dt>readonly attribute SimInfo? siminfo</dt>
+    <dd>Interface for handling SIM informations (e.g. IMSI, MCC, MNC, etc). If
+    not available, or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute SimSettings? simsettings</dt>
+    <dd>Interface for SIM settings (PIN code, PUK code, etc.) If not available,
+    or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute TelephonyNetwork? network</dt>
+    <dd>Interface for operator network settings (automatic or manual
+    connection, etc. If not available, or not supported the value MUST be
+    <code>null</code>.</dd>
+
+    <dt>readonly attribute Ussd? ussd</dt>
+    <dd>Interface to manage USSD service. If
+    not available, or not supported the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute CallForwarding? forwarding</dt>
+    <dd>Interface to manage call forwarding. If not available, or not supported,
+    the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute CallBarring? barring</dt>
+    <dd>Interface to manage call barring. If not available, or not supported,
+    the value MUST be <code>null</code>.</dd>
+
+    <dt>readonly attribute CallMeters? meters</dt>
+    <dd>Interface to read and reset call meters. If not available, or not
+    supported, the value MUST be <code>null</code>.</dd>
+  </dl>
+ </section> < !-- TelephonyService -->
+
+
+<!-------------------- Interface TelephonyVideoControl ----------------------->
+<section>
+  <h2><a>TelephonyVideoControl</a> Interface</h2>
+  <p>The <a>TelephonyVideoControl</a> interface represents the object
+  for controlling audio volume, microphone volume, and muting state.</li>
+  </p>
+  <dl title="[NoInterfaceObject]
+           interface TelephonyAudioControl : EventTarget"
+        class="idl">
+
+    <dt>attribute boolean localVideoOn</dt>
+    <dd></dd>
+
+    <dt>attribute boolean remoteVideoOn</dt>
+    <dd></dd>
+
+    <dt>attribute VideoParams localVideoParams</dt>
+    <dd></dd>
+
+    <dt>attribute VideoParams remoteVideoParams</dt>
+    <dd></dd>
+
+    <dt class='no-docs'> attribute Eventhandler onvideoroutingchanged</dt>
+    <dd>The simple event <code>volumechanged</code> MUST be fired when the
+    video target device is changed.</dd>
+  </dl>
+</section> <!-- TelephonyVideoControl -->
+
+
+<section>
+<h2>Acknowledgements</h2>
+<p>The editors would like to express their gratitude to the Mozilla B2G Team for
+their technical guidance, implementation work and support.</p>
+</section>
+
+</body>
+</html>
