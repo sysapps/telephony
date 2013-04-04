@@ -252,7 +252,7 @@ Style guide to contributors:
     and/or <a><code>ConferenceCall</code></a>) managed by this object.
     If there are no calls, it MUST return an empty list. Note that
     <code>TelephonyCall</code>  objects belonging to a multiparty call are
-    managed by the corresponding<a><code>ConferenceCall</code></a> object and
+    managed by the corresponding <a><code>ConferenceCall</code></a> object and
     MUST NOT be also present in this array.</dd>
 
     <dt>attribute <a>TelephonyAudioControl</a> audioControl</dt>
@@ -396,8 +396,8 @@ Style guide to contributors:
     <li>Create a new <code>TelephonyCall</code> object, referred as
     <var>telCall</var> in these steps
     </li>
-    <li>Set the <code>remoteParty</code> property of <var>telCall</var>remote
-    party identifier specified in the <code>remoteParty</code> parameter
+    <li>Set the <code>remoteParty</code> property of <var>telCall</var> to the
+    remote party identifier specified in the <code>remoteParty</code> parameter
     </li>
     <li>If <code>calls</code> array already contains a <a>TelephonyCall</a>
     object with identical <code>remoteParty</code> property, then an
@@ -1355,10 +1355,11 @@ Style guide to contributors:
 
   <p>The <code>join</code> method when invoked MUST run the following
   steps:<ol>
-  <li>If the <code>remoteParty</code> property is equal to the parameter, or
-  if <code>state</code> is not equal to <code>"active"</code> or
-  <code>held</code>, an <code>InvalidModificationError</code> MUST be raised as
-  described in the <a href="#error-steps">error steps</a>.</li>
+  <li>If the <code>remoteParty</code> property is equal to the
+  <var>remoteParty</var> parameter of the method call, or if <code>state</code>
+  is not equal to <code>"active"</code> or <code>held</code>, an
+  <code>InvalidModificationError</code> MUST be raised as described in the <a
+  href="#error-steps">error steps</a>.</li>
   <li>Otherwise, <ol>in cellular telephony services,
     <li>put this call on hold</li>
     <li><a href="#steps-dial">dial</a> a new call to the specified remote party;
@@ -1394,9 +1395,13 @@ Style guide to contributors:
     <code>"multiparty"</code>.
   </li>
   <li>Activate the multiparty call.</li>
-  <li>Add <var>telCall</var> and this call to the <code>calls</code> property of
-  this object and remove them from the <code>calls</code> array of the
-    <a><code>TelephonyManager</code></a> object.
+  <li>Add the two calls participating in the multiparty call to the
+  <code>calls</code> property of the multiparty call object and remove them from
+  the <code>calls</code> array of the <a><code>TelephonyManager</code></a>
+  object.
+  </li>
+  <li>Add the multiparty call to the <code>calls</code> array of the
+  <a><code>TelephonyManager</code></a> object.
   </li>
   <li>If there is any error during the method call, then the
   <a href="#error-steps">error steps</a> MUST be executed on the
@@ -1429,10 +1434,10 @@ Style guide to contributors:
   <h3>Error Steps</h3>
   <p>If there is any error during the method calls, the following steps MUST be
   run:<ol>
-    <li>Set the <code>error</code> property of the <a><code>CallStateHandler
+    <li>Set the <code>error</code> property of the <a><code>CallHandler
     </code></a> object appropriately
     <li>queue a task to fire a simple event named <a><code>error</code></a> at
-    the <a><code>CallStateHandler</code></a> object.</li>
+    the <a><code>CallHandler</code></a> object.</li>
   </ol></p>
   <p>The error name, together with the call state determine the error condition.
   All <code>DOMError</code> error names are supported, out of which the
@@ -1489,7 +1494,7 @@ Style guide to contributors:
   <a><code>TelephonyCall</code></a> objects participating in the multiparty
   call.</p>
   <dl title="[NoInterfaceObject]
-    interface ConferenceCall : CallStateHandler"
+    interface ConferenceCall : CallHandler"
     class="idl">
     <dt>readonly attribute DOMString conferenceId</dt>
     <dd>It MUST return the conference identifier unique in the system and call
