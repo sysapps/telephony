@@ -159,7 +159,16 @@ Style guide to contributors:
   <p>A <dfn title="default telephony service">default telephony service</dfn> is
   the <a>telephony service</a> which is set as default for telephony operations
   by the implementation. If no telephony service is specified in the methods of
-  this interface, implementations MUST use the default telephony service.</p>
+  this interface, implementations MUST use the default telephony service. Even
+  if there is no SIM card and no other telephony services are available, but
+  emergency calls are known to be possible (e.g. because a cellular modem is
+  present), it is considered as a default service with only emergency call
+  capability, and the implementation MUST define a <a>telephony service id</a>
+  for it. If not even emergency calls are possible (e.g. it is a purely IP base
+  d implementation and there is no cellular modem), or if the implementation
+  cannot determine whether emergency calls are supported, the implementation
+  MUST use empty string for default <a>telephony service id</a>.
+  </p>
 
   <p>A <dfn title="telephony service id">telephony service id</dfn> uniquely
   identifies a <a>telephony service</a> together with a user identity in the
