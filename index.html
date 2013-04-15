@@ -285,16 +285,15 @@ Style guide to contributors:
     or specified duration and delay, in the default or the specified telephony
     service.
       <dl class='parameters'>
-        <dt>DOMString tone</dt>
-        <dd>Indicates the DTMF tone, or sequence thereof, to be emitted. Its
-        value can be any sequence of the following characters (0-9; A-D; *; #),
-        each identifying a tone.
+        <dt>DOMString tones</dt>
+        <dd>Indicates the sequence of DTMF tones to be emitted. Its
+        value can be any sequence of the following characters (0-9; A-D; *; #).
         </dd>
 
         <dt>optional ToneParams params</dt>
         <dd>If set, indicates the <a>telephony service id</a> to be used, the
-        tone durations and delay before a tone. If not set, implementations
-        MUST use default values for these.</dd>
+        tone duration (mark) and delay before a tone (space). If not set,
+        implementations MUST use default values for these.</dd>
       </dl>
     </dd>
 
@@ -493,11 +492,12 @@ Style guide to contributors:
   <h3><a>ToneParams</a> Dictionary</h3>
   <dl title="dictionary ToneParams" class="idl">
     <dt>unsigned long duration</dt>
-    <dd>Indicates the duration in milliseconds of the DTMF tones to be sent.
-    If not specified, the implementation MUST provide a default value.</dd>
+    <dd>Indicates the duration (mark) in milliseconds of the DTMF tones to be
+    sent. If not specified, the implementation MUST provide a default value.
+    </dd>
 
     <dt>unsigned long gap</dt>
-    <dd>Indicates the duration in milliseconds of the time gap before sending
+    <dd>Indicates the duration in milliseconds of the time gap (space) before
     a DTMF tone. If not specified, the implementation MUST provide a default
     value.</dd>
 
