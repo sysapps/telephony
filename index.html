@@ -71,8 +71,7 @@ Style guide to contributors:
 <section class="informative">
   <h2>Introduction</h2>
   <p>The Telephony API allows applications to manage interaction with telephony
-  calls, call signaling and audio volume settings, but does not handle audio
-  channels management.</p>
+  call signaling, but does not handle audio channels management.</p>
   <p>An example of making a telephony call is provided below:
   <pre class="example highlight">
     var telCall = navigator.telephony.dial('+1234567890');
@@ -254,10 +253,6 @@ Style guide to contributors:
     <code>TelephonyCall</code>  objects belonging to a multiparty call are
     managed by the corresponding <a><code>ConferenceCall</code></a> object and
     MUST NOT be also present in this array.</dd>
-
-    <dt>attribute <a>TelephonyAudioControl</a> audioControl</dt>
-    <dd>MUST return a <a>TelephonyAudioControl</a> object, exposing
-    functionality for audio volume settings.</dd>
 
     <dt>readonly attribute DOMString[] emergencyNumbers</dt>
     <dd>Indicates the telephone number, or list thereof, of the emergency
@@ -515,42 +510,6 @@ Style guide to contributors:
   </section>
 
 </section> <!-- TelephonyManager -->
-
-
-<!-------------------- Interface TelephonyAudioControl ----------------------->
-<section>
-  <h2><a>TelephonyAudioControl</a> Interface</h2>
-  <p>The <a>TelephonyAudioControl</a> interface represents the object
-  for controlling audio volume, microphone volume, and muting state.</li>
-  </p>
-  <dl title="[NoInterfaceObject]
-           interface TelephonyAudioControl : EventTarget"
-        class="idl">
-
-    <dt>attribute double audioVolume</dt>
-    <dd>MUST return or set the normalized volume of the active audio output,
-    ranging from 0.0 (silent) to 1.0 (loudest).</dd>
-
-    <dt>attribute boolean audioMuted</dt>
-    <dd>MUST return or set <code>true</code> when the active audio target (e.g.
-    speaker or headset) is muted, and <code>false</code> otherwise. 
-    When unmuting, volume MUST be restored to the value of <a>audioVolume</a>
-     attribute.</dd>
-
-    <dt>attribute double micVolume</dt>
-    <dd>MUST return or set the normalized volume of the microphone input level,
-    ranging from 0.0 (silent) to 1.0 (loudest).</dd>
-
-    <dt>attribute boolean micMuted</dt>
-    <dd>MUST return or set <code>true</code> when the active microphone is 
-    muted, and <code>false</code> otherwise. When unmuted, the microphone volume
-    MUST be restored to the value of <a>micVolume</a> attribute.</dd>
-
-   <dt class='no-docs'> attribute Eventhandler onvolumechanged</dt>
-   <dd>The simple event <code>volumechanged</code> MUST be fired when the audio
-   or microphone volume is changed.</dd>
-  </dl>
-</section> <!-- TelephonyAudioControl -->
 
 
 <!----------------------- Interface TelephonyEvent --------------------------->
