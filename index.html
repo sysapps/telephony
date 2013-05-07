@@ -89,6 +89,11 @@ Style guide to contributors:
         window.console.error(e);
     }
   </pre>
+  The use cases for this specification are collected in the
+  <a href=' http://www.w3.org/wiki/System_Applications_WG:_Telephony_API'> page.
+  This version of the API conforms to the GSM and CDMA specification suites, but
+  the same API would work also for SIP and XMPP calls, except multiparty call
+  handling, which is modeled after the cellular multiparty calls.
 </section>
 
 
@@ -148,11 +153,8 @@ Style guide to contributors:
   information which identifies the service and the protocol used for making the
   call.
   The following specifications have been used for designing the Telephony API:
-  for GSM the <a href='http://www.3gpp.org/ftp/Specs/html-info/23018.htm'>
-  TS 23.018</a> suite, for IMS/SIP the
-  <a href='http://www.3gpp.org/ftp/Specs/html-info/23228.htm'>TS 23.228</a>
-  suite, for XMPP the <a href='http://xmpp.org/extensions/xep-0166.html'>
-  XEP 0166</a> specification.
+  for GSM the [[!GSM-CALL]] suite, for IMS/SIP the [[!IMS]] suite, for XMPP the
+  <a href='http://xmpp.org/extensions/xep-0166.html'>XEP 0166</a> specification.
   </p>
 
   <p>A <dfn title="default telephony service">default telephony service</dfn> is
@@ -179,9 +181,10 @@ Style guide to contributors:
   activated, disconnected with all participants. Other calls can be joined with
   a multiparty call. New participants can be added, and existing participants
   can be removed. The following specifications have been used for designing the
-  multiparty call management API: for GSM the <a href='http://www.etsi.org/deliver/etsi_ts/124000_124099/124084/04.00.00_60/ts_124084v040000p.pdf'>3GPP TS 24.08</a>; for SIP the
-  <a href='http://tools.ietf.org/html/rfc5850'>RFC-5850</a>; for XMPP the
-  <a href='http://xmpp.org/extensions/xep-0298.html'>XEP-0298</a>.
+  multiparty call management API: for GSM the
+  <a href='http://www.etsi.org/deliver/etsi_ts/124000_124099/124084/04.00.00_60/ts_124084v040000p.pdf'>3GPP TS 24.08</a> specification; for SIP
+  the <a href='http://tools.ietf.org/html/rfc5850'>RFC-5850</a>; for XMPP the
+  <a href='http://xmpp.org/extensions/xep-0298.html'>XEP-0298</a> specification.
   </p>
 
   <p>A <dfn title="conference id">conference id</dfn> uniquely identifies a
