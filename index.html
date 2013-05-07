@@ -131,8 +131,10 @@ Style guide to contributors:
   event handler event types</a></dfn> are defined in [[!HTML5]].</p>
 
   <p>An <dfn>active call</dfn> is a Telephony Call in the
-  <a href='#call-state-active'><code>active</code></a> state and bound to
-  the media input and output devices (e.g. microphone, speaker, tone generator).
+  <a href='#call-state-active'><code>active</code></a> state representing a
+  connected call which is and bound to the media input and output devices
+  (e.g. microphone, speaker, tone generator). Note that a call on hold is also
+  connected from call signaling point of view, but not bound to media resources.
   </p>
 
   <p>A <dfn title="telephony service">telephony service</dfn> is an object
@@ -290,9 +292,9 @@ Style guide to contributors:
     </dd>
 
     <dt>void sendTones()</dt>
-    <dd>This method asynchronously emits a DTMF tone sequence with the default
-    or specified duration and delay, in the default or the specified telephony
-    service.
+    <dd>This method asynchronously emits a DTMF tone sequence with the platform
+    default or specified duration and delay, in the platform default or the
+    specified telephony service.
       <dl class='parameters'>
         <dt>DOMString tones</dt>
         <dd>Indicates the sequence of DTMF tones to be emitted. Its
@@ -307,12 +309,8 @@ Style guide to contributors:
     </dd>
 
     <dt>void startTone()</dt>
-    <dd>This method triggers starting emitting a DTMF tone with the default
-    or specified delay before the tone, in the default or the specified
-    telephony service. If the platform does not support long press DTMF, then a
-    <code>NotSupportedError</code> MUST be raised on the
-    <a><code>TelephonyManager</code></a> object. Applications may then use the
-    <code>sendTones</code> method for sending DTMF.
+    <dd>This method starts emitting a DTMF tone with the platform default or
+    specified delay, in the platform default or the specified telephony service.
       <dl class='parameters'>
         <dt>byte tone</dt>
         <dd>Indicates the DTMF tone. Its
@@ -328,8 +326,8 @@ Style guide to contributors:
     </dd>
 
     <dt>void stopTone(optional DOMString serviceId)</dt>
-    <dd>This method triggers stopping emitting a DTMF tone in the default or
-    the specified telephony service.
+    <dd>This method stops emitting a DTMF tone in the default or the specified
+    telephony service.
     </dd>
 
     <dt class="no-docs"> attribute EventHandler onincoming</dt>
@@ -433,9 +431,8 @@ Style guide to contributors:
     </li>
     <li>If <code>calls</code> array already contains a <a>TelephonyCall</a>
     object with identical <code>remoteParty</code> property, then an
-    <code>InvalidModificationError</code> MUST be raised for the for
-    <var>telCall</var> object, as described in the
-    <a href="#error-steps">error steps</a>.</li>
+    <code>InvalidModificationError</code> MUST be thrown.
+    </li>
     <li>Otherwise, make a request to the telephony system to dial in the remote
     party identifier passed in the <var>remoteParty</var> parameter.
     According to the value of the <code>hideCallerId</code> in the
@@ -465,10 +462,8 @@ Style guide to contributors:
     <var>telCall</var> in these steps
     </li>
     <li>Check if the system is capable of making emergency calls. If not, then
-    a <code>NotSupportedError</code> MUST be raised for the for the
-    <var>telCall</var> object, as described in the
-    <a href="#error-steps">error steps</a>.</li>
-    <li></li>
+    a <code>NotSupportedError</code> MUST be thrown.
+    </li>
     <li>Otherwise, make a request to the telephony system to dial one of the
     emergency numbers found in the <code>emergencyNumbers</code> array.
     </li>
@@ -485,6 +480,50 @@ Style guide to contributors:
     </ol></li>
     <li>If during further steps for call connection there is an error, execute
     the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
+  </ol></p>
+
+  <p> The <code>sendTones</code> method when invoked MUST run the following
+  steps:
+  <ol id="steps-starttone">
+    <li>If the provided parameters are invalid, throw an
+    <code>InvalidStateError</code> error
+    </li>
+    <li>Otherwise, request from the telephony system to send the specified
+    tones.
+    <!--If there is an error, throw an <code>InvalidModificationError</code>.-->
+    </li>
+  </ol></p>
+
+  <p> The <code>startTone</code> method when invoked MUST run the following
+  steps:
+  <ol id="steps-starttone">
+    <li>If the platform does not support long press DTMF tones, throw a
+    <code>NotSupported</code> error. In this case applications may then use the
+    <code>sendTones</code> method for sending DTMF.
+    </li>
+    <li>If the provided parameters are invalid, throw an
+    <code>InvalidStateError</code> error
+    </li>
+    <li>Otherwise, request from the telephony system to start sending the
+    specified tone. The tone SHOULD play until the <code>stopTone</code> method
+    is called.
+    </li>
+  </ol></p>
+
+  <p> The <code>stopTone</code> method when invoked MUST run the following
+  steps:
+  <ol id="steps-stoptone">
+    <li>If the platform does not support long press DTMF tones, throw a
+    <code>NotSupported</code> error
+    </li>
+    <li>If the provided parameters are invalid, or there is no tone playing on
+    the specified telephony service, throw an <code>InvalidStateError</code>
+    error
+    </li>
+    <li>Otherwise, request from the telephony system to stop sending the
+    specified tone. <!--If there is an error, throw an
+    <code>InvalidModificationError</code> error.-->
+    </li>
   </ol></p>
 
   <p>Upon a new incoming or waiting call, the <a>user agent</a> MUST execute the
@@ -986,7 +1025,7 @@ Style guide to contributors:
         </td>
         <td><code>'disconnected'</code></td>
         <td>The call has been disconnected and this object is invalid for call
-        control. In this final state, the implementation MUST raise an
+        control. In this final state, the implementation MUST throw an
         <code>ILLEGAL_STATE</code> exception when any method call is
         attempted.</td>
       </tr>
@@ -1001,7 +1040,7 @@ Style guide to contributors:
         <td><code>'multiparty'</code></td>
         <td>The call is is locked in a <a><code>ConferenceCall</code></a>
         object and MUST NOT be managed any more using this object.
-        While in this state, the implementation MUST raise an
+        While in this state, the implementation MUST throw an
         <code>ILLEGAL_STATE</code> exception when any method call is attempted.
         </td>
       </tr>
@@ -1318,8 +1357,7 @@ Style guide to contributors:
 
   <p>The <code>hold</code> method when invoked MUST run the following steps:<ol>
   <li>If <code>state</code> is not equal to <code>active</code></a>, then an
-  <code>InvalidStateError</code> MUST be raised as described in the
-  <a href="#error-steps">error steps</a>.
+  <code>InvalidStateError</code> MUST be thrown.
   </li>
   <li>Otherwise make a request to the telephony system to hold the call</li>
   <li>Return, and continue these steps asynchronously.
@@ -1332,8 +1370,7 @@ Style guide to contributors:
 
   <p>The <code>resume</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to <code>"held"</code>, then an
-  <code>InvalidStateError</code> MUST be raised as described in the
-  <a href="#error-steps">error steps</a>.
+  <code>InvalidStateError</code> MUST be thrown..
   </li>
   <li>Otherwise make a request to the telephony system to resume the call. If
   the request is acknowledged, then set <code>state</code> to
@@ -1345,8 +1382,7 @@ Style guide to contributors:
 
   <p>The <code>accept</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to <code>"incoming"</code></a> or
-  <code>"waiting"</code>, then an <code>InvalidStateError</code> MUST be raised
-  as described in the <a href="#error-steps">error steps</a>.
+  <code>"waiting"</code>, then an <code>InvalidStateError</code> MUST be thrown.
   </li>
   <li>Otherwise make a request to the telephony system to accept the call.
   If the request is acknowledged then set <code>state</code> to
@@ -1356,8 +1392,8 @@ Style guide to contributors:
 
   <p>The <code>redirect</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to <code>"incoming"</code> or
-  <code>"waiting"</code>, then an <code>InvalidStateError</code> MUST be raised
-  as described in the <a href="#error-steps">error steps</a>.</li>
+  <code>"waiting"</code>, then an <code>InvalidStateError</code> MUST be thrown.
+  </li>
   <li>Otherwise make a request to the telephony system to redirect the call to
   the number indicated in the <var>remoteParty</var> parameter, return, and
   continue these steps asynchronously.</li>
@@ -1373,8 +1409,8 @@ Style guide to contributors:
 
   <p>The <code>transfer</code> method when invoked MUST run the following steps:
   <ol><li>If <code>state</code> is not equal to <code>"active"</code></a> or
-  <code>"held"</code>, then an <code>InvalidStateError</code> MUST be raised as
-  described in the <a href="#error-steps">error steps</a>.</li>
+  <code>"held"</code>, then an <code>InvalidStateError</code> MUST be thrown.
+  </li>
   <li>Otherwise make a request to the telephony system to transfer the call to
   the number indicated in the <var>thirdParty</var> parameter. Note that in GSM
   this requires putting the current call on hold, dialing a new call to the
@@ -1396,8 +1432,8 @@ Style guide to contributors:
   <li>If the <code>remoteParty</code> property is equal to the
   <var>remoteParty</var> parameter of the method call, or if <code>state</code>
   is not equal to <code>"active"</code> or <code>held</code>, an
-  <code>InvalidModificationError</code> MUST be raised as described in the <a
-  href="#error-steps">error steps</a>.</li>
+  <code>InvalidModificationError</code> MUST be thrown.
+  </li>
   <li>Otherwise, <ol>in cellular telephony services,
     <li>put this call on hold</li>
     <li><a href="#steps-dial">dial</a> a new call to the specified remote party;
@@ -1470,8 +1506,8 @@ Style guide to contributors:
 
   <section id="error-steps">
   <h3>Error Steps</h3>
-  <p>If there is any error during the method calls, the following steps MUST be
-  run:<ol>
+  <p>If there is any error during the method calls which is not handled by
+  exceptions, the following steps MUST be run:<ol>
     <li>Set the <code>error</code> property of the <a><code>CallHandler
     </code></a> object appropriately
     <li>queue a task to fire a simple event named <a><code>error</code></a> at
@@ -1635,7 +1671,7 @@ Style guide to contributors:
         <td><dfn id="call-state-disconnected"><code>disconnected</code></dfn></td>
         <td><code>'disconnected'</code></td>
         <td>The multiparty call has been disconnected and this object is invalid
-        for call control. In this final state, the implementation MUST raise an
+        for call control. In this final state, the implementation MUST throw an
         <code>ILLEGAL_STATE</code> exception when any method call is
         attempted.</td>
       </tr>
@@ -1657,13 +1693,12 @@ Style guide to contributors:
   <p>The <code>addParticipant</code> method when invoked MUST run the following
   steps:<ol>
   <li>If <code>state</code> is not equal to <code>"active"</code> or
-  <code>"held"</code>, then an <code>InvalidStateError</code> MUST be raised as
-  described in the <a href="#error-steps">error steps</a>.
+  <code>"held"</code>, then an <code>InvalidStateError</code> MUST be thrown.
   </li>
   <li>If there is already a <a>TelephonyCall</a> object in the multiparty call
   with identical <code>remoteParty</code> property, an
-  <code>InvalidModificationError</code> MUST be raised as described in the
-  <a href="#error-steps">error steps</a>.</li>
+  <code>InvalidModificationError</code> MUST be thrown.
+  </li>
   <li>Otherwise, in cellular telephony services,
   <ol>
     <li>put this call on hold</li>
@@ -1719,8 +1754,7 @@ Style guide to contributors:
   <p>The <code>split</code> method when invoked MUST run the following steps:
   <ol><li>If the provided <var>participantCall</var> does not identify a valid
   <a><code>TelephonyCall</code></a> object which is part of this multiparty
-  call, then an <code>InvalidModificationError</code> MUST be raised as
-  described in the <a href="#error-steps">error steps</a>.
+  call, then an <code>InvalidModificationError</code> MUST be thrown.</a>.
   </li>
   <li>Otherwise, set the <code>state</code> of the <var>participantCall</var>
   and that of this <code>ConferenceCall</code> object to
