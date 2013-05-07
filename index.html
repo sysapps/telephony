@@ -306,6 +306,32 @@ Style guide to contributors:
       </dl>
     </dd>
 
+    <dt>void startTone()</dt>
+    <dd>This method triggers starting emitting a DTMF tone with the default
+    or specified delay before the tone, in the default or the specified
+    telephony service. If the platform does not support long press DTMF, then a
+    <code>NotSupportedError</code> MUST be raised on the
+    <a><code>TelephonyManager</code></a> object. Applications may then use the
+    <code>sendTones</code> method for sending DTMF.
+      <dl class='parameters'>
+        <dt>byte tone</dt>
+        <dd>Indicates the DTMF tone. Its
+        value can be any sequence of the following characters (0-9; A-D; *; #).
+        </dd>
+
+        <dt>optional ToneParams params</dt>
+        <dd>If set, indicates the <a>telephony service id</a> to be used, and
+        the delay before a tone. The <code>duration</code> parameter is ignored.
+        If not set, implementations MUST use default values for telephony
+        service and delay.</dd>
+      </dl>
+    </dd>
+
+    <dt>void stopTone(optional DOMString serviceId)</dt>
+    <dd>This method triggers stopping emitting a DTMF tone in the default or
+    the specified telephony service.
+    </dd>
+
     <dt class="no-docs"> attribute EventHandler onincoming</dt>
     <dd>Whenever there is a new call in
     <a href='#call-state-incoming'><code>incoming</code></a> or
