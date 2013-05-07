@@ -269,6 +269,12 @@ Style guide to contributors:
     <dt>attribute DOMString defaultServiceId</dt>
     <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
 
+    <dt> TelephonyCall dialEmergency ()</dt>
+    <dd>Initiates a new emergency telephony call.
+    Returns a <a><code>TelephonyCall</code></a> object, which will manage the
+    asynchronous call signaling events.
+    </dd>
+
     <dt> TelephonyCall dial ()</dt>
     <dd>Initiates a new telephony call.
     Returns a <a><code>TelephonyCall</code></a> object, which will manage the
@@ -426,6 +432,35 @@ Style guide to contributors:
     the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
   </ol></p>
   
+  <p> The <code>dialEmergency</code> method when invoked MUST run the following
+  steps:
+  <ol id="steps-dialemergency">
+    <li>Create a new <code>TelephonyCall</code> object, referred as
+    <var>telCall</var> in these steps
+    </li>
+    <li>Check if the system is capable of making emergency calls. If not, then
+    a <code>NotSupportedError</code> MUST be raised for the for the
+    <var>telCall</var> object, as described in the
+    <a href="#error-steps">error steps</a>.</li>
+    <li></li>
+    <li>Otherwise, make a request to the telephony system to dial one of the
+    emergency numbers found in the <code>emergencyNumbers</code> array.
+    </li>
+    <li>If the request is successful, then <ol>
+      <li>Set the <code>state</code> of <var>telCall</var> to
+      <code>"dialing"</code> value</li>
+      <li>Add <var>telCall</var> to the <code>calls</code> array</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named
+      <code><a>statechange</a></code> at the <var>telCall</var> object</li>
+      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
+      dialing</a></code> at the <var>telCall</var> object</li>
+      <li>and finally return to the caller and <a>queue a task</a>
+      <a><i>TCallControl</i></a> to monitor call flow progress</li>
+    </ol></li>
+    <li>If during further steps for call connection there is an error, execute
+    the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
+  </ol></p>
+
   <p>Upon a new incoming or waiting call, the <a>user agent</a> MUST execute the
   following steps:
   <ol id="steps-incoming">
