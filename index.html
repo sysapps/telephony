@@ -90,7 +90,8 @@ Style guide to contributors:
     }
   </pre>
   The use cases for this specification are collected in the
-  <a href=' http://www.w3.org/wiki/System_Applications_WG:_Telephony_API'> page.
+  <a href='http://www.w3.org/wiki/System_Applications_WG:_Telephony_API'>wiki
+  page</a> of this API.
   This version of the API conforms to the GSM and CDMA specification suites, but
   the same API would work also for SIP and XMPP calls, except multiparty call
   handling, which is modeled after the cellular multiparty calls.
@@ -140,8 +141,8 @@ Style guide to contributors:
   <p>A <dfn title="telephony service">telephony service</dfn> is an object
   exposing telephony functionality associated to a subscriber identity
   registered a with a telephony service provider. For example, in cellular
-  telephony a telephony service is associated to a SIM card (subscriber identity
-  module). When making a call, the identity (e.g. SIM card, associated
+  telephony a telephony service is associated to a SIM card (Subscriber Identity
+  Module). When making a call, the identity (e.g. SIM card, associated
   to an Integrated Circuit Card Identifier, ICC-ID) must always be specified,
   either explicitly in the function call, or by using a default telephony
   service in the implementation.
@@ -161,16 +162,7 @@ Style guide to contributors:
 
   <p>A <dfn title="default telephony service">default telephony service</dfn> is
   the <a>telephony service</a> which is set as default for telephony operations
-  by the implementation. If no telephony service is specified in the methods of
-  this interface, implementations MUST use the default telephony service. Even
-  if there is no SIM card and no other telephony services are available, but
-  emergency calls are known to be possible (e.g. because a cellular modem is
-  present), it is considered as a default service with only emergency call
-  capability, and the implementation MUST define a <a>telephony service id</a>
-  for it. If not even emergency calls are possible (e.g. it is a purely IP base
-  d implementation and there is no cellular modem), or if the implementation
-  cannot determine whether emergency calls are supported, the implementation
-  MUST use empty string for default <a>telephony service id</a>.
+  by the implementation.
   </p>
 
   <p>A <dfn title="telephony service id">telephony service id</dfn> uniquely
@@ -261,7 +253,7 @@ Style guide to contributors:
 
     <dt>readonly attribute DOMString[] emergencyNumbers</dt>
     <dd>Indicates the telephone number, or list thereof, of the emergency
-    service in the current geographical area.</dd>
+    services in the current geographical area.</dd>
 
     <dt>readonly attribute DOMString[] serviceIds</dt>
     <dd>MUST return the list of available <a>telephony service id</a>'s. For
@@ -271,18 +263,12 @@ Style guide to contributors:
     <dt>attribute DOMString defaultServiceId</dt>
     <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
 
-    <dt> TelephonyCall dialEmergency ()</dt>
-    <dd>Initiates a new emergency telephony call.
-    Returns a <a><code>TelephonyCall</code></a> object, which will manage the
-    asynchronous call signaling events.
-    </dd>
-
     <dt> TelephonyCall dial ()</dt>
     <dd>Initiates a new telephony call.
     Returns a <a><code>TelephonyCall</code></a> object, which will manage the
     asynchronous call signaling events.
       <dl class='parameters'>
-        <dt>DOMString number</dt>
+        <dt>DOMString remoteParty</dt>
         <dd>Indicates the destination number of the call</dd>
 
         <dt>optional DialParams params</dt>
@@ -434,11 +420,23 @@ Style guide to contributors:
     <code>InvalidModificationError</code> MUST be thrown.
     </li>
     <li>Otherwise, make a request to the telephony system to dial in the remote
-    party identifier passed in the <var>remoteParty</var> parameter.
+    party identifier passed in the <var>remoteParty</var> parameter. Note that
+    the value can be also an emergency number.
     According to the value of the <code>hideCallerId</code> in the
     <code>params</code> parameter, the own number is requested to be either
     displayed, hidden or otherwise the default system configuration to this
-    regard is requested to be followed.
+    regard is requested to be followed. The call MUST be made using the
+    <a>telephony service</a> specified in the <code>service</code> property of
+    the <code>params</code> parameter. If not specified, then the implementation
+    MUST use the <a>default telephony service</a>. Even if there is no SIM card
+    and no other telephony services are available, but emergency calls are known
+    to be possible (e.g. because a cellular modem is present), it is considered
+    as a default service with only emergency call capability, and the
+    implementation MUST define a <a>telephony service id</a> for it.
+    When not even emergency calls are possible (e.g. it is a purely IP based
+    implementation and there is no cellular modem), the implementation MAY use
+    empty string for default <a>telephony service id</a>, but it is encouraged
+    that a default service is created, with the methods returning an error.
     </li>
     <li>If the request is successful, then <ol>
       <li>Set the <code>state</code> of <var>telCall</var> to
@@ -455,33 +453,6 @@ Style guide to contributors:
     the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
   </ol></p>
   
-  <p> The <code>dialEmergency</code> method when invoked MUST run the following
-  steps:
-  <ol id="steps-dialemergency">
-    <li>Create a new <code>TelephonyCall</code> object, referred as
-    <var>telCall</var> in these steps
-    </li>
-    <li>Check if the system is capable of making emergency calls. If not, then
-    a <code>NotSupportedError</code> MUST be thrown.
-    </li>
-    <li>Otherwise, make a request to the telephony system to dial one of the
-    emergency numbers found in the <code>emergencyNumbers</code> array.
-    </li>
-    <li>If the request is successful, then <ol>
-      <li>Set the <code>state</code> of <var>telCall</var> to
-      <code>"dialing"</code> value</li>
-      <li>Add <var>telCall</var> to the <code>calls</code> array</li>
-      <li><a>Queue a task</a> to <a>fire a simple event</a> named
-      <code><a>statechange</a></code> at the <var>telCall</var> object</li>
-      <li><a>Queue a task</a> to <a>fire a simple event</a> named <code><a>
-      dialing</a></code> at the <var>telCall</var> object</li>
-      <li>and finally return to the caller and <a>queue a task</a>
-      <a><i>TCallControl</i></a> to monitor call flow progress</li>
-    </ol></li>
-    <li>If during further steps for call connection there is an error, execute
-    the <a href="#error-steps">error steps</a> for <var>telCall</var>.</li>
-  </ol></p>
-
   <p> The <code>sendTones</code> method when invoked MUST run the following
   steps:
   <ol id="steps-starttone">
@@ -1817,6 +1788,10 @@ Style guide to contributors:
     <dd>The <a>disconnect reason</a>. If not available, MUST be set to empty
     string.</dd>
 
+    <dt>readonly attribute boolean emergency</dt>
+    <dd>If the call was an emergency call, the implementation MUST be set this
+    property to <code>true</code>, otherwise to <code>false</code>.</dd>
+
   </dl>
 </section> <!-- CallHistoryEntry -->
 
@@ -1824,8 +1799,10 @@ Style guide to contributors:
 <section>
 <h2>Acknowledgements</h2>
 <p>The editors would like to express their gratitude to the Mozilla B2G Team for
-their technical guidance, implementation work and support, and specially to
-Ben Turner and Jonas Sicking, authors of B2G WebTelephony API.</p>
+their technical guidance, implementation work and support, especially to
+Ben Turner and Jonas Sicking, the authors of B2G WebTelephony API. Also, kudos
+to Denis Kenzior and Oleg Zhurakivskiy of Intel OTC for advices and support.
+</p>
 </section>
 
 </body>
