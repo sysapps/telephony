@@ -436,7 +436,8 @@ Style guide to contributors:
     When not even emergency calls are possible (e.g. it is a purely IP based
     implementation and there is no cellular modem), the implementation MAY use
     empty string for default <a>telephony service id</a>, but it is encouraged
-    that a default service is created, with the methods returning an error.
+    that a default service is created, with the methods raising an
+    <code>NotSupported</code> error.
     </li>
     <li>If the request is successful, then <ol>
       <li>Set the <code>state</code> of <var>telCall</var> to
@@ -1789,7 +1790,7 @@ Style guide to contributors:
     string.</dd>
 
     <dt>readonly attribute boolean emergency</dt>
-    <dd>If the call was an emergency call, the implementation MUST be set this
+    <dd>If the call was an emergency call, the implementation MUST set this
     property to <code>true</code>, otherwise to <code>false</code>.</dd>
 
   </dl>
@@ -1800,8 +1801,10 @@ Style guide to contributors:
 <h2>Acknowledgements</h2>
 <p>The editors would like to express their gratitude to the Mozilla B2G Team for
 their technical guidance, implementation work and support, especially to
-Ben Turner and Jonas Sicking, the authors of B2G WebTelephony API. Also, kudos
-to Denis Kenzior and Oleg Zhurakivskiy of Intel OTC for advices and support.
+Ben Turner and Jonas Sicking, the authors of the
+<cite><a href="https://wiki.mozilla.org/WebAPI/WebTelephony">B2G WebTelephony
+API</a></cite>. Also, kudos to Denis Kenzior
+(<cite><a href="https://ofono.org/">ofono</a></cite> maintainer) and Oleg Zhurakivskiy of Intel OTC, and many others for their advice and support.
 </p>
 </section>
 
