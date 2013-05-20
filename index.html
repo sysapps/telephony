@@ -285,12 +285,12 @@ Style guide to contributors:
     </dd>
 
     <dt>void sendTones()</dt>
-    <dd>This method asynchronously emits a DTMF tone sequence with the platform
+    <dd>This method asynchronously emits a [[!DTMF]] tone sequence with the platform
     default or specified duration and delay, in the platform default or the
     specified telephony service.
       <dl class='parameters'>
         <dt>DOMString tones</dt>
-        <dd>Indicates the sequence of DTMF tones to be emitted. Its
+        <dd>Indicates the sequence of [[!DTMF]] tones to be emitted. Its
         value can be any sequence of the following characters (0-9; A-D; *; #).
         </dd>
 
@@ -302,11 +302,11 @@ Style guide to contributors:
     </dd>
 
     <dt>void startTone()</dt>
-    <dd>This method starts emitting a DTMF tone with the platform default or
+    <dd>This method starts emitting a [[!DTMF]] tone with the platform default or
     specified delay, in the platform default or the specified telephony service.
       <dl class='parameters'>
         <dt>byte tone</dt>
-        <dd>Indicates the DTMF tone. Its
+        <dd>Indicates the [[!DTMF]] tone. Its
         value can be any sequence of the following characters (0-9; A-D; *; #).
         </dd>
 
@@ -319,7 +319,7 @@ Style guide to contributors:
     </dd>
 
     <dt>void stopTone(optional DOMString serviceId)</dt>
-    <dd>This method stops emitting a DTMF tone in the default or the specified
+    <dd>This method stops emitting a [[!DTMF]] tone in the default or the specified
     telephony service.
     </dd>
 
@@ -476,9 +476,9 @@ Style guide to contributors:
   <p> The <code>startTone</code> method when invoked MUST run the following
   steps:
   <ol id="steps-starttone">
-    <li>If the platform does not support long press DTMF tones, throw a
+    <li>If the platform does not support long press [[!DTMF]] tones, throw a
     <code>NotSupported</code> error. In this case applications may then use the
-    <code>sendTones</code> method for sending DTMF.
+    <code>sendTones</code> method for sending [[!DTMF]].
     </li>
     <li>If the provided parameters are invalid, throw an
     <code>InvalidStateError</code> error
@@ -492,7 +492,7 @@ Style guide to contributors:
   <p> The <code>stopTone</code> method when invoked MUST run the following
   steps:
   <ol id="steps-stoptone">
-    <li>If the platform does not support long press DTMF tones, throw a
+    <li>If the platform does not support long press [[!DTMF]] tones, throw a
     <code>NotSupported</code> error
     </li>
     <li>If the provided parameters are invalid, or there is no tone playing on
@@ -577,13 +577,13 @@ Style guide to contributors:
   <h3><a>ToneParams</a> Dictionary</h3>
   <dl title="dictionary ToneParams" class="idl">
     <dt>unsigned long duration</dt>
-    <dd>Indicates the duration (mark) in milliseconds of the DTMF tones to be
+    <dd>Indicates the duration (mark) in milliseconds of the [[!DTMF]] tones to be
     sent. If not specified, the implementation MUST provide a default value.
     </dd>
 
     <dt>unsigned long gap</dt>
     <dd>Indicates the duration in milliseconds of the time gap (space) before
-    a DTMF tone. If not specified, the implementation MUST provide a default
+    a [[!DTMF]] tone. If not specified, the implementation MUST provide a default
     value.</dd>
 
     <dt>DOMString serviceId</dt>
