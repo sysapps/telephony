@@ -1485,12 +1485,13 @@ Style guide to contributors:
   <section id="error-steps">
   <h3>Error Steps</h3>
   <p>If there is any error during the method calls which is not handled by
-  exceptions, the following steps MUST be run:<ol>
-    <li>Set the <code>error</code> property of the <a><code>CallHandler
-    </code></a> object appropriately
-    <li>queue a task to fire a simple event named <a><code>error</code></a> at
-    the <a><code>CallHandler</code></a> object.</li>
-  </ol></p>
+  exceptions, the following steps MUST be run:</p> 
+  <ol>
+    <li>Set the <code>error</code> property of the <a>TelephonyCall</a> or 
+    <a>ConferenceCall</a> object appropriately</li>
+    <li>Queue a task to fire a simple event named <a><code>error</code></a> at
+    the <a>TelephonyCall</a> or <a>ConferenceCall</a> object.</li>
+  </ol>
   <p>The error name, together with the call state determine the error condition.
   All <code>DOMError</code> error names are supported, out of which the
   following names MUST be used with the semantics described here:
