@@ -619,17 +619,11 @@ Style guide to contributors:
   </dl>
 </section> <!-- interface TelephonyServiceEvent -->
 
-
-<!------------------------- Interface TelephonyCall -------------------------->
-<section>
-  <h2><a>TelephonyCall</a> Interface</h2>
-  <p>Defines the object structure for controlling calls. The properties common
-  between single and multiparty calls are summarized in the <a><code>CallHandler
-  </code></a> interface, but it MUST NOT be possible to control a telephony call
-  with any other objects than a <code>TelephonyCall</code> or
-  <code>ConferenceCall</code>.
-  <dl title="[NoInterfaceObject]
-    interface CallHandler : EventTarget"
+<!------------------------- Interface CallHandler -------------------------->
+<section> 
+	<h2>CallHandler interface</h2>
+	<dl title="[NoInterfaceObject]
+    interface CallHandler"
     class="idl">
     <dt>readonly attribute DOMString callId</dt>
     <dd>It MUST return the <a>call id</a> of the telephony call object, unique
@@ -720,7 +714,19 @@ Style guide to contributors:
         <code>"splitting"</code> and the <code>splitting</code> event is
         dispatched.</dd>
   </dl>
-  <dl title="interface TelephonyCall"
+</section>   <!-- CallHandler Interface -->
+
+
+<!------------------------- Interface TelephonyCall -------------------------->
+<section>
+  <h2><a>TelephonyCall</a> Interface</h2>
+  <p>Defines the object structure for controlling calls. The properties common
+  between single and multiparty calls are summarized in the <a><code>CallHandler
+  </code></a> interface, but it MUST NOT be possible to control a telephony call
+  with any other objects than a <code>TelephonyCall</code> or
+  <code>ConferenceCall</code>.
+  
+  <dl title="interface TelephonyCall : EventTarget"
     class="idl">
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number) of
@@ -1538,7 +1544,7 @@ Style guide to contributors:
   <p>Describes the object controlling multiparty calls, and managing the
   <a><code>TelephonyCall</code></a> objects participating in the multiparty
   call.</p>
-  <dl title="interface ConferenceCall"
+  <dl title="interface ConferenceCall : EventTarget"
     class="idl">
     <dt>readonly attribute DOMString conferenceId</dt>
     <dd>It MUST return the conference identifier unique in the system and call
@@ -1586,6 +1592,11 @@ Style guide to contributors:
     <dd>Event handler called when a new participant has been removed from the
     call and the <code>participantadded</code> event is dispatched.</dd>
   </dl>
+  
+  <dl title="ConferenceCall implements CallHandler"
+    class="idl">
+  </dl>
+  
   <section id="multiparty-steps">
   <h3>Steps</h3>
   <p>The IDL attribute <dfn title="call-state"><code>state</code></dfn> MUST
