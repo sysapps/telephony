@@ -232,17 +232,17 @@ Style guide to contributors:
   <a><code>TelephonyCall</code></a> object.
   All these methods will be discussed in more detail in this document.
   </p>
-
-  <dl title="[NoInterfaceObject]
-             interface TelephonyManager : EventTarget"
+	
+  <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
+  <dl title="interface TelephonyManager : EventTarget"
           class="idl">
 
-    <dt>readonly attribute CallHandler? activeCall</dt>
+    <dt>readonly attribute (TelephonyCall or ConferenceCall)? activeCall</dt>
     <dd>MUST return a <a><code>TelephonyCall</code></a> or <a><code>
     ConferenceCall</code></a> object representing the <a>active call</a>,
     otherwise it MUST return <code>null</code>.</dd>
 
-    <dt>readonly attribute CallHandler[] calls</dt>
+    <dt>readonly attribute Call[] calls</dt>
     <dd>MUST return an array of all call objects (<code>TelephonyCall</code>
     and/or <a><code>ConferenceCall</code></a>) managed by this object.
     If there are no calls, it MUST return an empty list. Note that
@@ -342,10 +342,6 @@ Style guide to contributors:
     <a>telephony service</a> is disabled in the system. The
     <code>serviceId</code> property of the event MUST contain the
     <a>telephony service id</a> of the disabled service.</dd>
-  </dl>
-
-  <dl title="TelephonyCall implements CallHandler"
-    class="idl">
   </dl>
 
   <!--section>
@@ -595,7 +591,7 @@ Style guide to contributors:
 
 <!------------------------ Interface TelephonyEvent -------------------------->
 <section>
-  <h2>Interface <code title="">TelephonyEvent</code></h2>
+  <h2><a>TelephonyEvent</a> Interface</h2>
   <p>Defines a telephony events for <a><code>TelephonyCall</code></a> state
   changes, including handling incoming and waiting calls.</p>
   <dl title="[NoInterfaceObject]
@@ -610,7 +606,7 @@ Style guide to contributors:
 
 <!-------------------- Interface TelephonyServiceEvent ----------------------->
 <section>
-  <h2>Interface <code title="">TelephonyServiceEvent</code></h2>
+  <h2><a>TelephonyServiceEvent</a> Interface</h2>
   <p>Defines a telephony event for notifying a changed <a>telephony service</a>.
   </p>
   <dl title="[NoInterfaceObject]
@@ -624,7 +620,7 @@ Style guide to contributors:
 
 <!------------------------- Interface CallHandler -------------------------->
 <section> 
-	<h2>interface <a>CallHandler</a></h2>
+	<h2><a>CallHandler</a> interface</h2>
     <p>The <code>CallHandler</code> interface provides common properties and
     event handling infrastructure that is 
     <a href="http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a> 
@@ -728,7 +724,7 @@ Style guide to contributors:
 
 <!------------------------- Interface TelephonyCall -------------------------->
 <section>
-  <h2>Interface <a>TelephonyCall</a></h2>
+  <h2><a>TelephonyCall</a> Interface</h2>
   <p>Defines the object structure for controlling calls.</p>
   
 <dl title="interface TelephonyCall : EventTarget"
@@ -1545,10 +1541,13 @@ Style guide to contributors:
 
 <!------------------------- Interface ConferenceCall -------------------------->
 <section>
-  <h2>Interface <a>ConferenceCall</a></h2>
+  <h2><a>ConferenceCall</a> Interface</h2>
   <p>Describes the object controlling multiparty calls, and managing the
   <a><code>TelephonyCall</code></a> objects participating in the multiparty
   call.</p>
+  
+  <dl title="ConferenceCall implements CallHandler" class="idl"></dl>
+  
   <dl title="interface ConferenceCall : EventTarget"
     class="idl">
     <dt>readonly attribute DOMString conferenceId</dt>
@@ -1596,10 +1595,6 @@ Style guide to contributors:
     <dt>attribute EventHandler onparticipantremoved</dt>
     <dd>Event handler called when a new participant has been removed from the
     call and the <code>participantadded</code> event is dispatched.</dd>
-  </dl>
-  
-  <dl title="ConferenceCall implements CallHandler"
-    class="idl">
   </dl>
   
   <section id="multiparty-steps">
@@ -1810,6 +1805,10 @@ Style guide to contributors:
   </dl>
 </section> <!-- CallHistoryEntry -->
 
+ <section>
+ <h2>Call type defintion</h2>
+ <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl"></dl>
+ </section>
  
 <section>
 <h2>Acknowledgements</h2>
