@@ -148,21 +148,20 @@ Style guide to contributors:
   connected from call signaling point of view, but not bound to media resources.
   </p>
 
-  <p>A <dfn title="telephony service">telephony service</dfn> is an object
-  exposing telephony functionality associated to a subscriber identity
+  <p>A <dfn title="telephony service">telephony service</dfn> exposes telephony
+  functionality associated to a subscriber identity
   registered a with a telephony service provider. For example, in cellular
   telephony a telephony service is associated to a SIM card (Subscriber Identity
   Module). When making a call, the identity (e.g. SIM card, associated
-  to an Integrated Circuit Card Identifier, ICC-ID) must always be specified,
+  to an Integrated Circuit Card Identifier, ICC-ID) is always provided,
   either explicitly in the function call, or by using a default telephony
   service in the implementation.
-  The device may receive phone calls from any active telephony service, even
-  simultaneously, in which case the calls must be arbitrated either by the
-  implementation based on a policy, or by the user by choosing which call to
-  accept.
-  A telephony service may use different protocols for telephony signaling and
+  The device can receive phone calls from any active telephony service, even
+  simultaneously, in which case the user agent arbitrates the calls either 
+  by a policy, or by the user by choosing which call to accept.
+  A telephony service can use different protocols for telephony signaling and
   media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since call states
-  may differ depending on the protocol, the telephony call objects must contain
+  can differ depending on the protocol, the telephony call objects  contain
   information which identifies the service and the protocol used for making the
   call.
   </p>
