@@ -229,13 +229,6 @@ Style guide to contributors:
   (the common properties of both types of call objects).
   Any <a><code>CallHandler</code></a> object MUST be either a
   <a><code>TelephonyCall</code></a> or a <a><code>ConferenceCall</code></a>.</p>
-  <p>A <a><code>TelephonyCall</code></a> object can be created only by using the
-  <code>dial()</code> method, or when there is a new incoming or waiting call.
-  There is only one way a <a><code>ConferenceCall</code></a> object can be
-  created: using the <code>join()</code> method on a
-  <a><code>TelephonyCall</code></a> object.
-  All these methods will be discussed in more detail in this document.
-  </p>
   
   <p>While multiple telephony services may be used for making
     calls, received calls from all telephony services are handled through
@@ -636,7 +629,11 @@ Style guide to contributors:
   between single and multiparty calls are summarized in the <a><code>CallHandler
   </code></a> interface, but it MUST NOT be possible to control a telephony call
   with any other objects than a <code>TelephonyCall</code> or
-  <code>ConferenceCall</code>.
+  <code>ConferenceCall</code>.</p>
+  
+  <p>A <a><code>TelephonyCall</code></a> object can be created only by using the
+  <code>dial()</code> method, or when there is a new incoming or waiting call.</p>
+  
   <dl title="[NoInterfaceObject]
     interface CallHandler : EventTarget"
     class="idl">
@@ -1548,6 +1545,11 @@ Style guide to contributors:
   <p>Describes the object controlling multiparty calls, and managing the
   <a><code>TelephonyCall</code></a> objects participating in the multiparty
   call.</p>
+  
+  <p>
+  There is only one way a <a>ConferenceCall</a> object can be created: using 
+  the <code>join()</code> method on a <a>TelephonyCall</a> object.
+  </p>
   <dl title="[NoInterfaceObject]
     interface ConferenceCall : CallHandler"
     class="idl">
