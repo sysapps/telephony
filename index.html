@@ -221,8 +221,9 @@ Style guide to contributors:
   <h2><a>TelephonyManager</a> Interface</h2>
   <p>The <a>TelephonyManager</a> interface defines access to telephony
   functionality, and manages the lifecycle of the call objects, i.e.
-  <a><code>TelephonyCall</code></a> and <a><code>ConferenceCall</code></a>
-  objects, which both implement the <a><code>CallHandler</code></a> interface
+  <a>TelephonyCall</a> and <a>ConferenceCall</a> objects, which both 
+  <a href="http://www.w3.org/TR/WebIDL/#idl-implements-statements">implement</a> 
+  the <a>CallHandler</a> interface
   (the common properties of both types of call objects).</p>
   <p>A <a><code>TelephonyCall</code></a> object can be created only by using the
   <code>dial()</code> method, or when there is a new incoming or waiting call.
@@ -730,7 +731,7 @@ Style guide to contributors:
   <h2>Interface <a>TelephonyCall</a></h2>
   <p>Defines the object structure for controlling calls.</p>
   
-  <dl title="interface TelephonyCall : EventTarget"
+<dl title="interface TelephonyCall : EventTarget"
     class="idl">
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number) of
