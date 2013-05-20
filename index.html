@@ -214,10 +214,7 @@ Style guide to contributors:
   <dl title="partial interface Navigator" class="idl">
     <dt>readonly attribute TelephonyManager telephony</dt>
     <dd>The object that exposes the telephony functionality, e.g. making and
-    receiving calls. While multiple telephony services may be used for making
-    calls, received calls from all telephony services are handled through
-    this object, since all calls are competing for the same resources, and
-    arbitration is needed.</dd>
+    receiving calls.</dd>
   </dl>
 </section>
 
@@ -238,6 +235,12 @@ Style guide to contributors:
   created: using the <code>join()</code> method on a
   <a><code>TelephonyCall</code></a> object.
   All these methods will be discussed in more detail in this document.
+  </p>
+  
+  <p>While multiple telephony services may be used for making
+    calls, received calls from all telephony services are handled through
+    this object, since all calls are competing for the same resources, and
+    arbitration is needed.
   </p>
 
   <dl title="[NoInterfaceObject]
