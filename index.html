@@ -70,9 +70,10 @@ Style guide to contributors:
 <!----------------------------- Introduction --------------------------------->
 <section class="informative">
   <h2>Introduction</h2>
-  <p>The Telephony API allows applications to manage interaction with telephony
-  call signaling, but does not handle audio channels management.</p>
-  <p>An example of making a telephony call is provided below:
+  <p>The <cite>Telephony API</cite> allows applications to manage interaction 
+  with telephony call signaling, but does not handle audio channels management.
+  </p>
+  <p>An example of making a telephony call is provided below:</p>
   <pre class="example highlight">
     var telCall = navigator.telephony.dial('+1234567890');
 
@@ -89,12 +90,21 @@ Style guide to contributors:
         window.console.error(e);
     }
   </pre>
-  The use cases for this specification are collected in the
+
+  <p>The use cases for this specification are collected in the
   <a href='http://www.w3.org/wiki/System_Applications_WG:_Telephony_API'>wiki
-  page</a> of this API.
-  This version of the API conforms to the GSM and CDMA specification suites, but
-  the same API would work also for SIP and XMPP calls, except multiparty call
-  handling, which is modeled after the cellular multiparty calls.
+  page</a> of this API.</p>
+  
+  <p>The following specifications have been used for designing the <cite>Web 
+  Telephony API</cite>: for 
+  <abbr title="Global System for Mobile Communications">GSM</abbr> the 
+  [[!GSM-CALL]] suite, for IMS/SIP the [[!IMS]] suite, for XMPP the
+  <a href='http://xmpp.org/extensions/xep-0166.html'>XEP 0166</a> specification.
+  </p>
+  
+  <p>This version of the API conforms to the GSM and CDMA specification suites, 
+  but the same API would work also for SIP and XMPP calls, except multiparty call
+  handling, which is modeled after the cellular multiparty calls.</p>
 </section>
 
 
@@ -155,9 +165,6 @@ Style guide to contributors:
   may differ depending on the protocol, the telephony call objects must contain
   information which identifies the service and the protocol used for making the
   call.
-  The following specifications have been used for designing the Telephony API:
-  for GSM the [[!GSM-CALL]] suite, for IMS/SIP the [[!IMS]] suite, for XMPP the
-  <a href='http://xmpp.org/extensions/xep-0166.html'>XEP 0166</a> specification.
   </p>
 
   <p>A <dfn title="default telephony service">default telephony service</dfn> is
