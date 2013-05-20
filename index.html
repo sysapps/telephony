@@ -345,6 +345,10 @@ Style guide to contributors:
     <a>telephony service id</a> of the disabled service.</dd>
   </dl>
 
+  <dl title="TelephonyCall implements CallHandler"
+    class="idl">
+  </dl>
+
   <!--section>
   <h3>Event handlers</h3>
   <p>The following are the <a>event handlers</a> (and their corresponding
@@ -621,7 +625,13 @@ Style guide to contributors:
 
 <!------------------------- Interface CallHandler -------------------------->
 <section> 
-	<h2>CallHandler interface</h2>
+	<h2>interface <a>CallHandler</a></h2>
+    <p>The <code>CallHandler</code> interface provides common properties and
+    event handling infrastructure that is 
+    <a href="http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a> 
+    by other interfaces in this specifcation (i.e., it serves as an editorial aid in
+    this specification, and has no functional utility on its own).</p> 
+     
 	<dl title="[NoInterfaceObject]
     interface CallHandler"
     class="idl">
@@ -719,12 +729,8 @@ Style guide to contributors:
 
 <!------------------------- Interface TelephonyCall -------------------------->
 <section>
-  <h2><a>TelephonyCall</a> Interface</h2>
-  <p>Defines the object structure for controlling calls. The properties common
-  between single and multiparty calls are summarized in the <a><code>CallHandler
-  </code></a> interface, but it MUST NOT be possible to control a telephony call
-  with any other objects than a <code>TelephonyCall</code> or
-  <code>ConferenceCall</code>.
+  <h2>Interface <a>TelephonyCall</a></h2>
+  <p>Defines the object structure for controlling calls.</p>
   
   <dl title="interface TelephonyCall : EventTarget"
     class="idl">
@@ -1540,7 +1546,7 @@ Style guide to contributors:
 
 <!------------------------- Interface ConferenceCall -------------------------->
 <section>
-  <h2><a>ConferenceCall</a> Interface</h2>
+  <h2>Interface <a>ConferenceCall</a></h2>
   <p>Describes the object controlling multiparty calls, and managing the
   <a><code>TelephonyCall</code></a> objects participating in the multiparty
   call.</p>
