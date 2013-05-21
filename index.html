@@ -1481,62 +1481,6 @@ Style guide to contributors:
   <br>
       
   </section> <!-- telephony-steps -->
-      
-
-  <section id="error-steps">
-  <h3>Error Steps</h3>
-  <p>If there is any error during the method calls which is not handled by
-  exceptions, the following steps MUST be run:<ol>
-    <li>Set the <code>error</code> property of the <a><code>CallHandler
-    </code></a> object appropriately
-    <li>queue a task to fire a simple event named <a><code>error</code></a> at
-    the <a><code>CallHandler</code></a> object.</li>
-  </ol></p>
-  <p>The error name, together with the call state determine the error condition.
-  All <code>DOMError</code> error names are supported, out of which the
-  following names MUST be used with the semantics described here:
-  <table class="simple">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td>InvalidStateError</td>
-      <td>The call state is invalid, or the an attempted operation conflicts
-      with the call state in the implementation of the telephony modem and
-      middleware</td>
-    </tr>
-    <tr>
-      <td>InvalidModificationError</td>
-      <td>The attempted operation conflicts with the call state or other
-      constraints in the implementation, for instance attempting to disconnect
-      a held call in a GSM network.</td>
-    </tr>
-    <tr>
-      <td>NetworkError</td>
-      <td>There was a telephony network error during the operation</td>
-    </tr>
-    <tr>
-      <td>TimeoutError</td>
-      <td>The attempted operation timed out</td>
-    </tr>
-    <tr>
-      <td>NotSupportedError</td>
-      <td>The attempted operation is not supported by the implementation, or the
-      telephony network. This includes cases when a needed network feature (such
-      as a supplementary service like Call Transfer) is not enabled.</td>
-    </tr>
-    <tr>
-      <td>SecurityError</td>
-      <td>The attempted operation is not permitted.</td>
-    </tr>
-    </tbody>
-  </table></p>
-  </section> <!-- error steps -->
-
 </section> <!-- TelephonyCall -->
 
 
