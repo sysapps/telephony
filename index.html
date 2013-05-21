@@ -551,14 +551,11 @@ Style guide to contributors:
   <section>
   <h3><a>DialParams</a> Dictionary</h3>
   <dl title="dictionary DialParams" class="idl">
-    <dt>DOMString hideCallerId</dt>
+    <dt>boolean hideCallerId</dt>
     <dd>Indicates whether the own number is to be hidden or displayed to the
-    called remote party, or otherwise the default system configuration to this
-    regard is to be followed. It may have the following values: <code>'display'
-    </code>, <code>'hide'</code> and <code>'default'</code>.
-    If not specified,  the implementation MUST use the
-    <code>defaultServiceId</code> of the <a><code>TelephonyManager</code></a>
-    object.</dd>
+    remote party being called. If missing, the user agent uses the 
+    default configuration for the telephony service that initiated the call.
+    </dd>
 
     <dt>DOMString serviceId</dt>
     <dd>Indicates the <a>telephony service id</a> of the <a>telephony service
