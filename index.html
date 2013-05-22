@@ -608,8 +608,7 @@ Style guide to contributors:
   <h2><a>TelephonyEvent</a> Interface</h2>
   <p>Defines a telephony events for <a><code>TelephonyCall</code></a> state
   changes, including handling incoming and waiting calls.</p>
-  <dl title="[NoInterfaceObject]
-            interface TelephonyEvent : EventTarget"
+  <dl title="interface TelephonyEvent : EventTarget"
       class="idl">
     <dt>readonly attribute TelephonyCall call</dt>
     <dd>MUST return the <a><code>TelephonyCall</code></a> object on which the
@@ -623,8 +622,7 @@ Style guide to contributors:
   <h2><a>TelephonyServiceEvent</a> Interface</h2>
   <p>Defines a telephony event for notifying a changed <a>telephony service</a>.
   </p>
-  <dl title="[NoInterfaceObject]
-            interface TelephonyServiceEvent : EventTarget"
+  <dl title="interface TelephonyServiceEvent : EventTarget"
       class="idl">
     <dt>readonly attribute DOMString serviceId</dt>
     <dd>MUST return the <a>telephony service id</a> of the
@@ -1688,8 +1686,7 @@ Style guide to contributors:
   call participant, sharing the same value for the </code>conferenceId</code>
   property.</p>
   
-  <dl title="[NoInterfaceObject]
-    interface CallHistoryEntry"
+  <dl title="[NoInterfaceObject] interface CallHistoryEntry"
     class="idl">
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number)
