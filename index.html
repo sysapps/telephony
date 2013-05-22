@@ -654,7 +654,8 @@ Style guide to contributors:
 
     <dt>readonly attribute boolean conference</dt>
     <dd>When getting, the user agent MUST return <code>true</code> if the <a>Call</a> 
-    is an instance of <a>ConferenceCall</a>, <code>false</code> otherwise.</dd>
+    is participating in a <a>ConferenceCall</a> (i.e., is present in the <a>calls</a> 
+    attribute of a <a>ConferenceCall</a> object), <code>false</code> otherwise.</dd>
 
     <dt>readonly attribute CallState state</dt>
     <dd>Whe getting, the user agent MUST return the <a>CallState</a> value 
