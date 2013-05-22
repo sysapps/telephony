@@ -275,8 +275,9 @@ Style guide to contributors:
     <dd>When getting, the user agent MUST return an array, which can be empty, 
     of <a>telephony service id</a>'s.</dd>
 
-    <dt>attribute DOMString defaultServiceId</dt>
-    <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
+    <dt>attribute readonly DOMString defaultServiceId</dt>
+    <dd>When getting, the user agent MUST return the <a>DOMString</a> that
+    represents the id of the <a>default telephony service</a>.</dd>
 
     <dt> TelephonyCall dial ()</dt>
     <dd>Initiates a new telephony call.
