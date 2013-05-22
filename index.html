@@ -69,15 +69,24 @@ Style guide to contributors:
 
 <!------------------------------ Abstract ------------------------------------>
 <section id="abstract">
-  This specification defines a System Level API to manage telephony calls.
-  A typical use case of the Web Telephony API is the implementation of a
-  'Dialer' application supporting multiparty calls and multiple telephony
+  This specification defines an API to manage telephone calls.
+  A typical use case of the <cite>Web Telephony API</cite> is the implementation 
+  of a 'Dialer' application supporting multiparty calls and multiple telephony
   services. A minimal structure for call history items is also defined.
 </section>
 
 
 <!----------------------- Status of this document ---------------------------->
 <section id="sotd">
+    <p>
+      Implementors should be aware that this specification is not stable.
+      <strong>Implementors who are not taking part in the discussions are
+      likely to find the specification changing out from under them in
+      incompatible ways.</strong> Vendors interested in implementing this
+      specification before it eventually reaches the Candidate Recommendation
+      stage should join the aforementioned mailing lists and take part in the
+      discussions.
+    </p>
 </section>
 
 
@@ -114,11 +123,10 @@ Style guide to contributors:
   <abbr title="Global System for Mobile Communications">GSM</abbr> the 
   [[!GSM-CALL]] suite, for IMS/SIP the [[!IMS]] suite, for XMPP the
   [[!JINGLE]] specification.
-  </p>
-  
-  <p>This version of the API conforms to the GSM and CDMA specification suites, 
-  but the same API would work also for SIP and XMPP calls, except multiparty call
+  The same API would work also for SIP and XMPP calls, except multiparty call
   handling, which is modeled after the cellular multiparty calls.</p>
+  <p>Future versions of this specification may add SIP and XMPP conference 
+  support.</p>
 </section>
 
 
@@ -140,8 +148,9 @@ Style guide to contributors:
   <h2>Terminology</h2>
   <p>The <code>
   <a href="http://dev.w3.org/html5/spec/webappapis.html#eventhandler">
-  EventHandler</a></code> interface represents a callback used for event
-  handlers as defined in [[!HTML5]].</p>
+  EventHandler</a></code> interface represents a callback used for 
+  <a href="http://www.w3.org/html/wg/drafts/html/master/webappapis.html#event-handlers">
+  event handlers</a> as defined in [[!HTML5]].</p>
 
   <p>The concepts <dfn>
   <a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">
@@ -155,12 +164,12 @@ Style guide to contributors:
 <a href="http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
   event handler event types</a></dfn> are defined in [[!HTML5]].</p>
 
-  <p>An <dfn>active call</dfn> is a Telephony Call in the
-  <a href='#call-state-active'><code>active</code></a> state representing a
+  <p>An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the 
+  <a href='#call-state-active'>active</a> state representing a
   connected call which is and bound to the media input and output devices
-  (e.g. microphone, speaker, tone generator). Note that a call on hold is also
-  connected from call signaling point of view, but not bound to media resources.
-  </p>
+  (e.g. microphone, speaker, tone generator). Note that a call on <a>hold</a> is also
+  active from call signaling point of view, but not bound to media 
+  input and output devices. </p>
 
   <p>A <dfn title="telephony service">telephony service</dfn> exposes telephony
   functionality associated to a subscriber identity
@@ -194,7 +203,7 @@ Style guide to contributors:
   participants, which is controlled as a single call,  i.e. can be put on hold,
   activated, disconnected with all participants. Other calls can be joined with
   a multiparty call. This version supports GSM multiparty calls and CDMA 3-way
-  calls. Future versions may add SIP and XMPP conference support.
+  calls.</p>
   <!--New participants can be added, and existing participants can be removed.
   The following specifications have been used for designing the
   multiparty call management API: for GSM the
@@ -202,7 +211,7 @@ Style guide to contributors:
   the <a href='http://tools.ietf.org/html/rfc5850'>RFC-5850</a>; for XMPP the
   <a href='http://xmpp.org/extensions/xep-0298.html'>XEP-0298</a> specification.
   -->
-  </p>
+
 
   <p>A <dfn title="conference id">conference id</dfn> uniquely identifies a
   <a>multiparty call</a> in the system and in call history.</p>
@@ -224,9 +233,9 @@ Style guide to contributors:
 
 <!---------------------- Extended interface Navigator ------------------------>
 <section>
-  <h2><a>Telephony</a> object</h2>
-  <p>The <a>TelephonyManager</a> interface is exposed on the <code>Navigator
-  </code> object.
+  <h2>Extensions to <code>Navigator</code> object</h2>
+  <p>The <a>TelephonyManager</a> interface is exposed on [[!HTML]]'s 
+  <code>Navigator</code> object.
   </p>
   <dl title="partial interface Navigator" class="idl">
     <dt>readonly attribute TelephonyManager telephony</dt>
@@ -239,23 +248,12 @@ Style guide to contributors:
 <!------------------------ Interface TelephonyManager ------------------------>
 <section>
   <h2><a>TelephonyManager</a> Interface</h2>
-  <p>The <a>TelephonyManager</a> interface defines access to telephony
-  functionality, and manages the lifecycle of the call objects, i.e.
-  <a>TelephonyCall</a> and <a>ConferenceCall</a> objects, which both 
-  <a href="http://www.w3.org/TR/WebIDL/#idl-implements-statements">implement</a> 
-  the <a>CallHandler</a> interface
-  (the common properties of both types of call objects).</p>
-  <p>A <a><code>TelephonyCall</code></a> object can be created only by using the
-  <code>dial()</code> method, or when there is a new incoming or waiting call.
-  There is only one way a <a><code>ConferenceCall</code></a> object can be
-  created: using the <code>join()</code> method on a
-  <a><code>TelephonyCall</code></a> object.
-  All these methods will be discussed in more detail in this document.
-  </p>
+  <p>The <a>TelephonyManager</a> interface provides access to telephony
+  functionality, and manages the lifecycle of the <a>Call</a> objects.</p>
 
   <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
   <dl title="interface TelephonyManager : EventTarget" class="idl">
-    <dt>readonly attribute (TelephonyCall or ConferenceCall)? activeCall</dt>
+    <dt>readonly attribute Call? activeCall</dt>
     <dd>MUST return a <a><code>TelephonyCall</code></a> or <a><code>
     ConferenceCall</code></a> object representing the <a>active call</a>,
     otherwise it MUST return <code>null</code>.</dd>
@@ -1767,7 +1765,7 @@ Style guide to contributors:
 </section> <!-- CallHistoryEntry -->
 
  <section>
- <h2>Call type defintion</h2>
+ <h2><code>Call</code> typedef</h2>
  <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl"></dl>
  </section>
  
