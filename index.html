@@ -123,11 +123,10 @@ Style guide to contributors:
   <abbr title="Global System for Mobile Communications">GSM</abbr> the 
   [[!GSM-CALL]] suite, for IMS/SIP the [[!IMS]] suite, for XMPP the
   [[!JINGLE]] specification.
-  </p>
-  
-  <p>This version of the API conforms to the GSM and CDMA specification suites, 
-  but the same API would work also for SIP and XMPP calls, except multiparty call
+  The same API would work also for SIP and XMPP calls, except multiparty call
   handling, which is modeled after the cellular multiparty calls.</p>
+  <p>Future versions of this specification may add SIP and XMPP conference 
+  support.</p>
 </section>
 
 
@@ -204,8 +203,8 @@ Style guide to contributors:
   participants, which is controlled as a single call,  i.e. can be put on hold,
   activated, disconnected with all participants. Other calls can be joined with
   a multiparty call. This version supports GSM multiparty calls and CDMA 3-way
-  calls. Future versions may add SIP and XMPP conference support.
-  </p>
+  calls. </p>
+  <p class="note"> </p>
   <!--New participants can be added, and existing participants can be removed.
   The following specifications have been used for designing the
   multiparty call management API: for GSM the
