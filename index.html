@@ -679,7 +679,8 @@ Style guide to contributors:
 <section>
   <h2><a>TelephonyCall</a> Interface</h2>
   <p>Defines the object structure for controlling calls.</p>
-  <dl title="interface TelephonyCall : CallHandler"
+  <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
+  <dl title="interface TelephonyCall : EventHandler"
     class="idl">
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number) of
