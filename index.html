@@ -253,7 +253,7 @@ Style guide to contributors:
 
   <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
   <dl title="interface TelephonyManager : EventTarget" class="idl">
-    <dt>readonly attribute (TelephonyCall or ConferenceCall)? activeCall</dt>
+    <dt>readonly attribute Call? activeCall</dt>
     <dd>MUST return a <a><code>TelephonyCall</code></a> or <a><code>
     ConferenceCall</code></a> object representing the <a>active call</a>,
     otherwise it MUST return <code>null</code>.</dd>
