@@ -191,12 +191,13 @@ Style guide to contributors:
 
   <p>A <dfn title="default telephony service">default telephony service</dfn> is
   the <a>telephony service</a> which is set as default for telephony operations
-  by the implementation.
+  by the implementation. 
   </p>
 
   <p>A <dfn title="telephony service id">telephony service id</dfn> uniquely
   identifies a <a>telephony service</a> together with a user identity in the
-  system.</p>
+  system. For SIM cards, this can include the ICC-ID as service identifier. 
+  However, the MSISDN MUST NOT be used as telephony service id.</p>
 
   <p>A <dfn title="multiparty call">multiparty call</dfn> (also referred to as
   <i>conference call</i>) is a telephony call with multiple remote party
@@ -271,9 +272,8 @@ Style guide to contributors:
     geographical area.</dd>
 
     <dt>readonly attribute DOMString[] serviceIds</dt>
-    <dd>MUST return the list of available <a>telephony service id</a>'s. For
-    SIM cards, implementations MAY use the ICC-ID as service identifier, however
-    the MSISDN MUST NOT be used as <a>telephony service id</a>.</dd>
+    <dd>When getting, the user agent MUST return an array, which can be empty, 
+    of <a>telephony service id</a>'s.</dd>
 
     <dt>attribute DOMString defaultServiceId</dt>
     <dd>MUST return, or set the default <a>telephony service id</a>.</dd>
