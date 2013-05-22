@@ -69,15 +69,16 @@ Style guide to contributors:
 
 <!------------------------------ Abstract ------------------------------------>
 <section id="abstract">
-  This specification defines a System Level API to manage telephony calls.
-  A typical use case of the Web Telephony API is the implementation of a
-  'Dialer' application supporting multiparty calls and multiple telephony
+  This specification defines an API to manage telephone calls.
+  A typical use case of the <cite>Web Telephony API</cite> is the implementation 
+  of a 'Dialer' application supporting multiparty calls and multiple telephony
   services. A minimal structure for call history items is also defined.
 </section>
 
 
 <!----------------------- Status of this document ---------------------------->
 <section id="sotd">
+
 </section>
 
 
@@ -224,9 +225,9 @@ Style guide to contributors:
 
 <!---------------------- Extended interface Navigator ------------------------>
 <section>
-  <h2><a>Telephony</a> object</h2>
-  <p>The <a>TelephonyManager</a> interface is exposed on the <code>Navigator
-  </code> object.
+  <h2>Extensions to <code>Navigator</code> object</h2>
+  <p>The <a>TelephonyManager</a> interface is exposed on [[!HTML]]'s 
+  <code>Navigator</code> object.
   </p>
   <dl title="partial interface Navigator" class="idl">
     <dt>readonly attribute TelephonyManager telephony</dt>
@@ -1767,7 +1768,7 @@ Style guide to contributors:
 </section> <!-- CallHistoryEntry -->
 
  <section>
- <h2>Call type defintion</h2>
+ <h2><code>Call</code> typedef</h2>
  <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl"></dl>
  </section>
  
