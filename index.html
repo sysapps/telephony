@@ -645,18 +645,17 @@ Style guide to contributors:
     interface CallHandler"
     class="idl">
     <dt>readonly attribute DOMString callId</dt>
-    <dd>It MUST return the <a>call id</a> of the telephony call object, unique
-    in the system and call history.</dd>
+    <dd>When getting, the user agent MUST return the <a>call id</a> of 
+    the <a>Call</a> object, unique in the system and call history. </dd>
 
     <dt>readonly attribute DOMString serviceId</dt>
-    <dd>It MUST return the <a>telephony service id</a> of the
-    <a>telephony service</a> used for the call.</dd>
+    <dd>When getting, the user agent MUST return the <a>telephony service id</a> 
+    of the <a>telephony service</a> associated with this call.</dd>
 
     <dt>readonly attribute boolean conference</dt>
-    <dd>It MUST return <code>true</code> if the call is a
-    <a><code>ConferenceCall</code></a>, otherwise the object MUST be a
-    <a><code>TelephonyCall</code></a> object and it MUST return
-    <code>false</code>.</dd>
+    <dd>When getting, the user agent MUST return <code>true</code> 
+    if the call is an instance of <a>ConferenceCall</a>, 
+    <code>false</code> otherwise.</dd>
 
     <dt>readonly attribute CallState state</dt>
     <dd>It MUST return the state of the call.</dd>
