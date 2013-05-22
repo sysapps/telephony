@@ -248,19 +248,8 @@ Style guide to contributors:
 <!------------------------ Interface TelephonyManager ------------------------>
 <section>
   <h2><a>TelephonyManager</a> Interface</h2>
-  <p>The <a>TelephonyManager</a> interface defines access to telephony
-  functionality, and manages the lifecycle of the call objects, i.e.
-  <a>TelephonyCall</a> and <a>ConferenceCall</a> objects, which both 
-  <a href="http://www.w3.org/TR/WebIDL/#idl-implements-statements">implement</a> 
-  the <a>CallHandler</a> interface
-  (the common properties of both types of call objects).</p>
-  <p>A <a><code>TelephonyCall</code></a> object can be created only by using the
-  <code>dial()</code> method, or when there is a new incoming or waiting call.
-  There is only one way a <a><code>ConferenceCall</code></a> object can be
-  created: using the <code>join()</code> method on a
-  <a><code>TelephonyCall</code></a> object.
-  All these methods will be discussed in more detail in this document.
-  </p>
+  <p>The <a>TelephonyManager</a> interface provides access to telephony
+  functionality, and manages the lifecycle of the <a>Call</a> objects.</p>
 
   <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
   <dl title="interface TelephonyManager : EventTarget" class="idl">
