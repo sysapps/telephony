@@ -641,8 +641,7 @@ Style guide to contributors:
     by other interfaces in this specifcation (i.e., it serves as an editorial aid in
     this specification, and has no functional utility on its own).</p> 
      
-	<dl title="[NoInterfaceObject]
-    interface CallHandler"
+	<dl title="[NoInterfaceObject] interface CallHandler"
     class="idl">
     <dt>readonly attribute DOMString callId</dt>
     <dd>When getting, the user agent MUST return the <a>call id</a> of 
@@ -673,8 +672,14 @@ Style guide to contributors:
     <dd>Event handler called at any state change, when the
         <code>statechange</code> event is dispatched.</dd>
   </dl>
-  <dl title="[NoInterfaceObject]
-    interface TelephonyCall : CallHandler"
+</section>   <!-- CallHandler Interface -->
+
+
+<!------------------------- Interface TelephonyCall -------------------------->
+<section>
+  <h2><a>TelephonyCall</a> Interface</h2>
+  <p>Defines the object structure for controlling calls.</p>
+  <dl title="interface TelephonyCall : CallHandler"
     class="idl">
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number) of
@@ -790,48 +795,7 @@ Style guide to contributors:
         <code>"splitting"</code> and the <code>splitting</code> event is
         dispatched.</dd>
   </dl>
-</section>   <!-- CallHandler Interface -->
 
-
-<!------------------------- Interface TelephonyCall -------------------------->
-<section>
-  <h2><a>TelephonyCall</a> Interface</h2>
-  <p>Defines the object structure for controlling calls.</p>
-  
-<dl title="interface TelephonyCall : EventTarget"
-    class="idl">
-    <dt>readonly attribute DOMString remoteParty</dt>
-    <dd>It MUST return the remote party identifier (e.g. telephone number) of
-    the call participant. If not available (e.g. callerId has been hidden), then
-    it MUST return empty string.</dd>
-
-    <dt>readonly attribute DOMString conferenceId</dt>
-    <dd>If this call is managed as a part of a multiparty call, then it MUST
-    return the value of the <code>conferenceId</code> property of the
-    <a><code>ConferenceCall</code></a> multiparty call to which this call is
-    part of. Otherwise it MUST return empty string.</dd>
-
-    <dt>void accept()</dt>
-    <dd>Accepts the incoming or waiting telephony call.</dd>
-
-    <dt>void disconnect()</dt>
-    <dd>Initiates releasing of the telephony call.</dd>
-
-    <dt>void hold()</dt>
-    <dd>Initiates putting the telephony call on hold.</dd>
-
-    <dt>void resume()</dt>
-    <dd>Initiates resuming the held telephone call.</dd>
-
-    <dt>void redirect(in DOMString remoteParty)</dt>
-    <dd>Initiates deflecting an incoming or waiting telephone call to another
-    remote party.
-    <dl class='parameters'>
-      <dt>DOMString remoteParty</dt>
-      <dd>Indicates the remote party to which the call is redirected.</dd>
-    </dl>
-    </dd>
-  </dl>
   <!-- this section is redundant now
   <section id="telephony-eventhandlers">
   <h3>Event handlers</h3>
