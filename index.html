@@ -259,9 +259,8 @@ Style guide to contributors:
     return <code>null</code>.</dd>
 
     <dt>readonly attribute Call[] calls</dt>
-    <dd>MUST return an array of all call objects (<code>TelephonyCall</code>
-    and/or <a><code>ConferenceCall</code></a>) managed by this object.
-    If there are no calls, it MUST return an empty list. Note that
+    <dd>When getting, the user agent MUST return an array, which can be empty, 
+    of <a>Call</a> objects managed by this objects. Note that
     <code>TelephonyCall</code>  objects belonging to a multiparty call are
     managed by the corresponding <a><code>ConferenceCall</code></a> object and
     MUST NOT be also present in this array.</dd>
