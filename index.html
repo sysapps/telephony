@@ -266,8 +266,9 @@ Style guide to contributors:
     MUST NOT be also present in this array.</dd>
 
     <dt>readonly attribute DOMString[] emergencyNumbers</dt>
-    <dd>Indicates the telephone number, or list thereof, of the emergency
-    services in the current geographical area.</dd>
+    <dd>When getting, the user agent MUST return an array, which can be empty, 
+    of telephone numbers for the emergency services in the current 
+    geographical area.</dd>
 
     <dt>readonly attribute DOMString[] serviceIds</dt>
     <dd>MUST return the list of available <a>telephony service id</a>'s. For
