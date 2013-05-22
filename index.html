@@ -653,12 +653,12 @@ Style guide to contributors:
     of the <a>telephony service</a> associated with this call.</dd>
 
     <dt>readonly attribute boolean conference</dt>
-    <dd>When getting, the user agent MUST return <code>true</code> 
-    if the call is an instance of <a>ConferenceCall</a>, 
-    <code>false</code> otherwise.</dd>
+    <dd>When getting, the user agent MUST return <code>true</code> if the <a>Call</a> 
+    is an instance of <a>ConferenceCall</a>, <code>false</code> otherwise.</dd>
 
     <dt>readonly attribute CallState state</dt>
-    <dd>It MUST return the state of the call.</dd>
+    <dd>Whe getting, the user agent MUST return the <a>CallState</a> value 
+    that represents the state of for the <a>Call</a>.</dd>
 
     <dt>readonly attribute DOMError error</dt>
     <dd>An error that occured during executing methods of this interface.
