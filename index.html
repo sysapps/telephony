@@ -254,9 +254,9 @@ Style guide to contributors:
   <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
   <dl title="interface TelephonyManager : EventTarget" class="idl">
     <dt>readonly attribute Call? activeCall</dt>
-    <dd>MUST return a <a><code>TelephonyCall</code></a> or <a><code>
-    ConferenceCall</code></a> object representing the <a>active call</a>,
-    otherwise it MUST return <code>null</code>.</dd>
+    <dd>When getting, the user agent MUST return a <a>Call</a> object 
+    representing the <a>active call</a>. If there is no active <a>Call</a>
+    return <code>null</code>.</dd>
 
     <dt>readonly attribute Call[] calls</dt>
     <dd>MUST return an array of all call objects (<code>TelephonyCall</code>
