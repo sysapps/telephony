@@ -642,8 +642,8 @@ Style guide to contributors:
   <dl title="interface TelephonyServiceEvent : Event"
       class="idl">
     <dt>readonly attribute DOMString serviceId</dt>
-    <dd>MUST return the <a>telephony service id</a> of the
-    <a>telephony service</a>.</dd>
+    <dd>When getting, the user agent MUST return the <a>telephony service id</a> 
+    of the <a>telephony service</a> that triggered the event.</dd>
   </dl>
 </section> <!-- interface TelephonyServiceEvent -->
 
@@ -671,13 +671,12 @@ Style guide to contributors:
     that represents the state of for the <a>Call</a>.</dd>
 
     <dt>attribute EventHandler onerror</dt>
-    <dd>Event handler called when the <code>error</code> event is dispatched.
-    </dd>
+    <dd>Event handler dispatched when there is an error during the life cycle of a call.</dd>
     <dt>attribute EventHandler onstatechange</dt>
-    <dd>Event handler called at any state change, when the
-        <code>statechange</code> event is dispatched.</dd>
+    <dd>Event handler dispatched when the <a>state</a> changes.</dd>
   </dl>
-</section>   <!-- CallHandler Interface -->
+</section>   
+<!-- CallHandler Interface -->
 
 
 <!------------------------- Interface TelephonyCall -------------------------->
