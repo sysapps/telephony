@@ -360,60 +360,6 @@ Style guide to contributors:
     <code>serviceId</code> property of the event MUST contain the
     <a>telephony service id</a> of the disabled service.</dd>
   </dl>
-
-  <!--section>
-  <h3>Event handlers</h3>
-  <p>The following are the <a>event handlers</a> (and their corresponding
-  <a>event handler types</a>)that MUST be supported as attributes by the
-  <a>TelephonyManager</a> object.
-  <table class="simple">
-    <thead>
-      <tr>
-        <th>event handler</th>
-        <th>event name</th>
-        <th>event type</th>
-        <th>short description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong><code>onincoming</code></strong></td>
-        <td><code><dfn>incoming</dfn></code></td>
-        <td><a><code>TelephonyEvent</code></a> with <code>call</code>
-        property set to the new <a><code>TelephonyCall</code></a> object
-        </td>
-        <td>handle incoming and waiting calls</td>
-      </tr>
-      <tr>
-        <td><strong><code>oncallschanged</code></strong></td>
-        <td><code><dfn>callschanged</dfn></code></td>
-        <td>simple event</td>
-        <td>handle any change of the <code>calls</code> array on the
-        <code>TelephonyManager</code> object</td>
-      </tr>
-      <tr>
-        <td><strong><code>onserviceadded</code></strong></td>
-        <td><code><dfn>serviceadded</dfn></code></td>
-        <td><a><code>TelephonyServiceEvent</code></a> with
-        <code>serviceId</code> property set to the enabled
-        <a>telephony service id</a> as <code>DOMString</code>
-        </td>
-        <td>handle new <a>telephony service</a>s</td>
-        </td>
-      </tr>
-      <tr>
-        <td><strong><code>onserviceremoved</code></strong></td>
-        <td><code><dfn>serviceremoved</dfn></code></td>
-        <td><a><code>TelephonyServiceEvent</code></a> with
-        <code>serviceId</code> property set to the disabled
-        <a>telephony service id</a> as <code>DOMString</code>
-        </td>
-        <td>handle disabled <a>telephony service</a>s</td>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </section> <-- Event handlers -->
       
   <section id="telephonymanager-steps">
   <h3>Steps</h3>
