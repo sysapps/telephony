@@ -273,6 +273,17 @@ Style guide to contributors:
     <dt>attribute readonly DOMString defaultServiceId</dt>
     <dd>When getting, the user agent MUST return the <a>DOMString</a> that
     represents the id of the <a>default telephony service</a>.</dd>
+    
+    <dt>Future changeDefaultService(DOMString serviceID)</dt>
+    <dd>Provides a means to change the <a>default telephony service</a> used by
+    the user agent. When invoked, the user agent runs the <a>steps to change the 
+    default service</a>.
+    	<dl class='parameters'>
+        <dt>DOMString serviceID</dt>
+        <dd>A <a>service id</a> for a <a>telephony service</a> known to the 
+        user agent.</dd>
+      </dl>
+    </dd>
 
     <dt> TelephonyCall dial ()</dt>
     <dd>Initiates a new telephony call.
@@ -354,6 +365,8 @@ Style guide to contributors:
     <a>telephony service</a> is disabled in the system. The
     <code>serviceId</code> property of the event MUST contain the
     <a>telephony service id</a> of the disabled service.</dd>
+    <dt>attribute <span class="no-docs">EventHandler</span> onservicechanged</dt>
+    <dd>Handles a change of <a>default telephony service</a> from one to another. </dd>
   </dl>
 
   <section id="telephonymanager-steps">
@@ -363,8 +376,92 @@ Style guide to contributors:
   <a>TelephonyCall</a> or <a><code>ConferenceCall</code></a> object
   it manages, which MUST listen to any event that results in changing the call,
   and upon such events, follow the steps described in this specification.</p>
-
-  <p>The <code>dial</code> method when invoked MUST run the following steps:</p>
+ 
+  <p>
+    The <dfn>steps to request to update the default service</dfn> are as
+    follows:
+  </p>
+  <ol>
+    <li>Let <var>potential service</var> be the first argument passed to this
+    operation.
+    </li>
+    <li>Let <var>future</var> be a new <a href=
+    "http://web-alarms.sysapps.org/#future">Future</a> object and
+    <var>resolver</var> its associated resolver.
+    </li>
+    <li>Return <em>future</em> and continue the following steps
+    asynchronously.
+    </li>
+    <li>If <var>potential service</var> does not exactly match the identifier
+    of any <a>telephony service</a> known to the user agent, run the
+    following sub-steps and terminate this algorithm:
+      <ol>
+        <li>Let <em>error</em> be a new <a href=
+        "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose name
+        is "<a href=
+        "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
+        </li>
+        <li>Invoke <em>resolver</em>'s reject(value) method with
+        <em>error</em> as the value argument.
+        </li>
+      </ol>
+    </li>
+    <li>If <var>potential service</var> exactly matches the service id of the
+    current default telephony service, run the following sub-steps and
+    terminate this algorithm:
+      <ol>
+        <li>Invoke <em>resolver</em>'s accept(value) method with
+        <var>potential service</var> as the value argument.
+        </li>
+      </ol>
+    </li>
+    <li>Otherwise, run the <a>steps to change the default service</a>, with
+    <var>potential service</var> as the <a>telephony service id</a>, and
+    <var>future</var> as the <a href="http://web-alarms.sysapps.org/#future">
+      Future</a>.
+    </li>
+  </ol>
+  <p>
+    The <dfn>steps to change the default service</dfn> are given by the
+    following algorithm. This abstract operation takes as an argument a
+    <a>telephony service id</a> and an optional <a href=
+    "http://web-alarms.sysapps.org/#future">Future</a>.
+  </p>
+  <ol>
+    <li>Make a platform/system specific request to the underlying system to
+    change from the current default telephony service to the one identified
+    by <var>service id</var>.
+    </li>
+    <li>Possibly wait indefinately.
+    </li>
+    <li>If it's not possible (for whatever reason: timeout, security, etc.)
+    to change the default telephony service, and if <var>future</var> was
+    passed, run the following sub steps and terminate this algorithm:
+      <ol>
+        <li>Let <em>error</em> be a new DOMError object whose name is
+        "NoModificationAllowedError".
+        </li>
+        <li>Call <em>resolver</em>'s reject(value) method with <em>error</em>
+        as the value argument.
+        </li>
+      </ol>
+    </li>
+    <li>Otherwise, if queue a task to:
+      <ol>
+        <li>Change the <a>defaultServiceId</a> attribute to the <a>telephony
+        service id</a> of the new default telephony service.
+        </li>
+        <li>If <a href="http://web-alarms.sysapps.org/#future">Future</a> was
+        passed, invoke <em>resolver</em>'s accept(value) method with the id
+        of the new default service as as value argument.
+        </li>
+        <li>Fire a simple event named <code>servicechange</code> at the
+        <a>telephony</a> attribute of the navigator object.
+        </li>
+      </ol>
+    </li>
+  </ol>
+<p>The <code>dial</code> method when invoked MUST run the following steps:</p>
   <ol id="steps-dial">
     <li>Create a new <code>TelephonyCall</code> object, referred as
     <var>telCall</var> in these steps
