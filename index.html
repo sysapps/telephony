@@ -666,11 +666,6 @@ Style guide to contributors:
     <dd>When getting, the user agent MUST return the <a>telephony service id</a> 
     of the <a>telephony service</a> associated with this call.</dd>
 
-    <dt>readonly attribute boolean conference</dt>
-    <dd>When getting, the user agent MUST return <code>true</code> if the <a>Call</a> 
-    is participating in a <a>ConferenceCall</a> (i.e., is present in the <a>calls</a> 
-    attribute of a <a>ConferenceCall</a> object), <code>false</code> otherwise.</dd>
-
     <dt>readonly attribute CallState state</dt>
     <dd>Whe getting, the user agent MUST return the <a>CallState</a> value 
     that represents the state of for the <a>Call</a>.</dd>
@@ -692,6 +687,11 @@ Style guide to contributors:
   <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
   <dl title="interface TelephonyCall : EventHandler"
     class="idl">
+    <dt>readonly attribute boolean inCconference</dt>
+    <dd>When getting, the user agent MUST return <code>true</code> if the <a>Call</a> 
+    is participating in a <a>ConferenceCall</a> (i.e., is present in the <a>calls</a> 
+    attribute of a <a>ConferenceCall</a> object), <code>false</code> otherwise.</dd>
+    
     <dt>readonly attribute DOMString remoteParty</dt>
     <dd>It MUST return the remote party identifier (e.g. telephone number) of
     the call participant. If not available (e.g. callerId has been hidden), then
