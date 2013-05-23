@@ -473,12 +473,8 @@ Style guide to contributors:
   <p> The <code>sendTones</code> method when invoked MUST run the following
   steps:
   <ol id="steps-starttone">
-    <li>If the provided parameters are invalid, throw an
-    <code>InvalidStateError</code> error
-    </li>
-    <li>Otherwise, request from the telephony system to send the specified
-    tones.
-    <!--If there is an error, throw an <code>InvalidModificationError</code>.-->
+    <li>Request from the telephony system to send the specified
+      tones. 
     </li>
   </ol></p>
 
@@ -489,12 +485,9 @@ Style guide to contributors:
     <code>NotSupported</code> error. In this case applications may then use the
     <code>sendTones</code> method for sending [[!DTMF]].
     </li>
-    <li>If the provided parameters are invalid, throw an
-    <code>InvalidStateError</code> error
-    </li>
     <li>Otherwise, request from the telephony system to start sending the
-    specified tone. The tone SHOULD play until the <code>stopTone</code> method
-    is called.
+      specified tone. The tone SHOULD play until the <code>stopTone</code> method
+      is called.
     </li>
   </ol></p>
 
