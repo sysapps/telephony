@@ -602,6 +602,23 @@ Style guide to contributors:
 
 </section> <!-- TelephonyManager -->
 
+<!------------------------ Interface TelephonyErrorEvent --------------------->
+<section>
+  <h2><a>TelephonyErrorEvent</a> Interface</h2>
+  <p>Represents an error that occured during the lifecycle of a telephony call.</p>
+  <dl title="interface TelephonyEvent : Event"
+      class="idl">
+    <dt>readonly attribute TelephonyCall call</dt>
+    <dd>When getting, the user agent MUST return the <a>TelephonyCall</a> 
+    object which caused the event to be fired.</dd>
+    
+    <dt>readonly attribute DOMError error</dt>
+    <dd>When getting, the user agent MUST return the <a>DOMError</a> 
+    object that describes the error that occured.</dd>
+  </dl>
+</section> <!-- interface TelephonyEvent -->
+
+
 
 <!------------------------ Interface TelephonyEvent -------------------------->
 <section>
@@ -657,11 +674,6 @@ Style guide to contributors:
     <dt>readonly attribute CallState state</dt>
     <dd>Whe getting, the user agent MUST return the <a>CallState</a> value 
     that represents the state of for the <a>Call</a>.</dd>
-
-    <dt>readonly attribute DOMError error</dt>
-    <dd>An error that occured during executing methods of this interface.
-    Errors are as defined in [[!DOM4]] and described in the
-    <a href="#error-steps">error steps</a>.</dd>
 
     <dt>attribute EventHandler onerror</dt>
     <dd>Event handler called when the <code>error</code> event is dispatched.
