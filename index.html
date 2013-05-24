@@ -857,13 +857,26 @@ Style guide to contributors:
       </p>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
         <dt>
+          void resume()
+        </dt>
+        <dd>
+          Initiates resuming a held <a>Call</a>.
+        </dd>
+        <dt>
+          void hold()
+        </dt>
+        <dd>
+          Initiates putting the <a>Call</a> on hold.
+        </dd>
+        <dt>
           void disconnect()
         </dt>
         <dd>
-          If invoked on a <a>TelephonyCall</a>, it initiates releasing of the telephony call.
-          If invoked on a <a>ConferenceCall</a>, Initiates releasing the multiparty call, and each participating
+          If invoked on a <a>TelephonyCall</a>, it initiates releasing of the
+          telephony call. If invoked on a <a>ConferenceCall</a>, Initiates
+          releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
-        </dd>      
+        </dd>
         <dt>
           readonly attribute DOMString callId
         </dt>
@@ -941,18 +954,6 @@ Style guide to contributors:
         </dt>
         <dd>
           Accepts the incoming or waiting telephony call.
-        </dd>
-        <dt>
-          void hold()
-        </dt>
-        <dd>
-          Initiates putting the telephony call on hold.
-        </dd>
-        <dt>
-          void resume()
-        </dt>
-        <dd>
-          Initiates resuming the held telephone call.
         </dd>
         <dt>
           void redirect(in DOMString remoteParty)
@@ -1551,18 +1552,6 @@ Style guide to contributors:
         <dd>
           It MUST return the array of <a>TelephonyCall</a> objects managed by
           the multiparty call object.
-        </dd>
-        <dt>
-          void hold()
-        </dt>
-        <dd>
-          Initiates putting the multiparty call on hold.
-        </dd>
-        <dt>
-          void resume()
-        </dt>
-        <dd>
-          Initiates resuming the held multiparty call.
         </dd>
         <dt>
           void split(TelephonyCall participantCall)
