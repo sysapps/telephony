@@ -918,21 +918,22 @@ var respecConfig = {
           object), <code>false</code> otherwise.
         </dd>
         <dt>
-          readonly attribute DOMString remoteParty
+          readonly attribute DOMString? remoteParty
         </dt>
         <dd>
-          It MUST return the remote party identifier (e.g. telephone number) of
-          the call participant. If not available (e.g. callerId has been
-          hidden), then it MUST return empty string.
+          When getting, the user agent MUST return the remote party identifier
+          (e.g. telephone number) of the call participant. If not available
+          (e.g. callerId has been hidden), return <code>null</code>.
         </dd>
         <dt>
-          readonly attribute DOMString conferenceId
+          readonly attribute DOMString? conferenceId
         </dt>
         <dd>
-          If this call is managed as a part of a multiparty call, then it MUST
-          return the value of the <code>conferenceId</code> property of the
+          When getting, if this call is managed as a part of a multiparty call
+          then the user agent MUST return the value of the
+          <code>conferenceId</code> property of the
           <a><code>ConferenceCall</code></a> multiparty call to which this call
-          is part of. Otherwise it MUST return empty string.
+          is part of. Otherwise, return null.
         </dd>
         <dt>
           void accept()
@@ -1793,8 +1794,8 @@ var respecConfig = {
           implementation MUST follow the state transitions on the calls as
           described in this specification.
           </li>
-          <li>Reset the <code>conferenceId</code> of the split call to empty
-          string.
+          <li>Reset the <code>conferenceId</code> of the split call to
+          <code>null</code>.
           </li>
         </ol>
       </section><!-- conference-steps -->
@@ -2129,12 +2130,12 @@ var respecConfig = {
           service</a> used for the call.
         </dd>
         <dt>
-          readonly attribute DOMString conferenceId
+          readonly attribute DOMString? conferenceId
         </dt>
         <dd>
-          It MUST return the <a>conference id</a> of the call, if the call has
-          participated in a multiparty call. Otherwise it MUST be set to empty
-          string.
+          When getting, the user agent MUST return the <a>conference id</a> of
+          the call, if the call has participated in a multiparty call.
+          Otherwise, return <code>null</code>. string.
         </dd>
         <dt>
           readonly attribute Date startTime
@@ -2171,18 +2172,18 @@ var respecConfig = {
           </ol>
         </dd>
         <dt>
-          readonly attribute DOMString disconnectReason
+          readonly attribute DOMString? disconnectReason
         </dt>
         <dd>
-          The <a>disconnect reason</a>. If not available, MUST be set to empty
-          string.
+          When getting, the user agent MUST return the <a>DisconnectReason</a>
+          if available, or return <code>null</code> otherwise.
         </dd>
         <dt>
           readonly attribute boolean emergency
         </dt>
         <dd>
-          If the call was an emergency call, the implementation MUST set this
-          property to <code>true</code>, otherwise to <code>false</code>.
+          When getting, the user agent MUST return true if the call was an
+          emergency call, or false otherwise.
         </dd>
       </dl>
     </section><!-- CallHistoryEntry -->
