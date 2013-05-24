@@ -857,6 +857,14 @@ Style guide to contributors:
       </p>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
         <dt>
+          void disconnect()
+        </dt>
+        <dd>
+          If invoked on a <a>TelephonyCall</a>, it initiates releasing of the telephony call.
+          If invoked on a <a>ConferenceCall</a>, Initiates releasing the multiparty call, and each participating
+          <a>TelephonyCall</a> object.
+        </dd>      
+        <dt>
           readonly attribute DOMString callId
         </dt>
         <dd>
@@ -933,12 +941,6 @@ Style guide to contributors:
         </dt>
         <dd>
           Accepts the incoming or waiting telephony call.
-        </dd>
-        <dt>
-          void disconnect()
-        </dt>
-        <dd>
-          Initiates releasing of the telephony call.
         </dd>
         <dt>
           void hold()
@@ -1549,13 +1551,6 @@ Style guide to contributors:
         <dd>
           It MUST return the array of <a>TelephonyCall</a> objects managed by
           the multiparty call object.
-        </dd>
-        <dt>
-          void disconnect()
-        </dt>
-        <dd>
-          Initiates releasing the multiparty call, and each participating
-          <a>TelephonyCall</a> object.
         </dd>
         <dt>
           void hold()
