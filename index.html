@@ -173,8 +173,8 @@ var respecConfig = {
       <p>
         A <dfn title="telephony service">telephony service</dfn> exposes
         telephony functionality associated to a subscriber identity registered
-        with a telephony service provider. For example, in cellular telephony
-        a telephony service is associated to a SIM card (Subscriber Identity
+        with a telephony service provider. For example, in cellular telephony a
+        telephony service is associated to a SIM card (Subscriber Identity
         Module). When making a call, the identity (e.g. SIM card, associated to
         an Integrated Circuit Card Identifier, ICC-ID) is always provided,
         either explicitly in the function call, or by using a default telephony
@@ -363,9 +363,9 @@ var respecConfig = {
               optional ToneParams params
             </dt>
             <dd>
-              If set, represents the <a>telephony service id</a> to be used, the
-              tone duration (mark) and delay before a tone (space). If not set,
-              implementations MUST use default values for these.
+              If set, represents the <a>telephony service id</a> to be used,
+              the tone duration (mark) and delay before a tone (space). If not
+              set, implementations MUST use default values for these.
             </dd>
           </dl>
         </dd>
@@ -388,10 +388,10 @@ var respecConfig = {
               optional ToneParams params
             </dt>
             <dd>
-              If set, Represents the <a>telephony service id</a> to be used, and
-              the delay before a tone. The <code>duration</code> parameter is
-              ignored. If not set, implementations MUST use default values for
-              telephony service and delay.
+              If set, Represents the <a>telephony service id</a> to be used,
+              and the delay before a tone. The <code>duration</code> parameter
+              is ignored. If not set, implementations MUST use default values
+              for telephony service and delay.
             </dd>
           </dl>
         </dd>
@@ -463,8 +463,7 @@ var respecConfig = {
           specification.
         </p>
         <p>
-          The <dfn>steps to update the default service</dfn> are as
-          follows:
+          The <dfn>steps to update the default service</dfn> are as follows:
         </p>
         <ol>
           <li>Let <var>potential service</var> be the first argument passed to
@@ -617,15 +616,18 @@ var respecConfig = {
           steps:
         </p>
         <ol id="steps-sendtones">
-          <li>If the <a>ToneParams</a> parameter specifies the <code>
-          service</code> to be used, then validate and use that value, otherwise
-          use the default telephony service for sending the tones</li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone <code>
-          duration</code>, then validate and use that value, otherwise use a
-          default value</li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone <code>
-          gap</code>, then validate and use that value, otherwise use a
-          default value</li>
+          <li>If the <a>ToneParams</a> parameter specifies the
+          <code>service</code> to be used, then validate and use that value,
+          otherwise use the default telephony service for sending the tones
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>duration</code>, then validate and use that value, otherwise
+          use a default value
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>gap</code>, then validate and use that value, otherwise use a
+          default value
+          </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
         </ol>
@@ -751,7 +753,7 @@ var respecConfig = {
           </dt>
           <dd>
             Represents the duration (mark) in milliseconds of the [[!DTMF]]
-            tones to be sent. 
+            tones to be sent.
           </dd>
           <dt>
             unsigned long gap
@@ -843,8 +845,8 @@ var respecConfig = {
         The <code>CallHandler</code> interface provides common properties and
         event handling infrastructure that is <a href=
         "http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a>
-        by other interfaces in this specification, e.g. <a>TelephonyCall</a> and
-        <a>ConferenceCall</a>. It serves as an editorial aid in this
+        by other interfaces in this specification, e.g. <a>TelephonyCall</a>
+        and <a>ConferenceCall</a>. It serves as an editorial aid in this
         specification, and has no functional utility on its own.
       </p>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
@@ -985,9 +987,9 @@ var respecConfig = {
           ConferenceCall join()
         </dt>
         <dd>
-          Initiates merging the active and held calls into a multiparty call. 
-          Using this method MUST be the only way to create a <code>
-          ConferenceCall</code> object.
+          Initiates merging the active and held calls into a multiparty call.
+          Using this method MUST be the only way to create a
+          <code>ConferenceCall</code> object.
         </dd>
         <dt>
           attribute EventHandler ondialing
@@ -1556,8 +1558,8 @@ var respecConfig = {
               TelephonyCall participantCall
             </dt>
             <dd>
-              Represents the <a>TelephonyCall</a> object of the call participant
-              to be split from the multiparty call.
+              Represents the <a>TelephonyCall</a> object of the call
+              participant to be split from the multiparty call.
             </dd>
           </dl>
         </dd>
@@ -1914,10 +1916,10 @@ var respecConfig = {
           multiparty
         </dt>
         <dd>
-          The call is locked in a <a><code>ConferenceCall</code></a> object
-          and MUST NOT be managed any more using this object. While in this
-          state, the implementation MUST throw an <code>ILLEGAL_STATE</code>
-          exception when any method call is attempted.
+          The call is locked in a <a><code>ConferenceCall</code></a> object and
+          MUST NOT be managed any more using this object. While in this state,
+          the implementation MUST throw an <code>ILLEGAL_STATE</code> exception
+          when any method call is attempted.
         </dd>
         <dt>
           splitting
