@@ -173,7 +173,7 @@ var respecConfig = {
       <p>
         A <dfn title="telephony service">telephony service</dfn> exposes
         telephony functionality associated to a subscriber identity registered
-        a with a telephony service provider. For example, in cellular telephony
+        with a telephony service provider. For example, in cellular telephony
         a telephony service is associated to a SIM card (Subscriber Identity
         Module). When making a call, the identity (e.g. SIM card, associated to
         an Integrated Circuit Card Identifier, ICC-ID) is always provided,
@@ -539,7 +539,7 @@ var respecConfig = {
               </li>
               <li>If <a href="http://web-alarms.sysapps.org/#future">Future</a>
               was passed, invoke <em>resolver</em>'s accept(value) method with
-              the id of the new default service as as value argument.
+              the id of the new default service as value argument.
               </li>
               <li>Fire a simple event named <code>servicechange</code> at the
               <a>telephony</a> attribute of the navigator object.
@@ -795,7 +795,7 @@ var respecConfig = {
         <a>TelephonyEvent</a> Interface
       </h2>
       <p>
-        Defines a telephony events for <a>TelephonyCall</a> state changes,
+        Defines telephony events for <a>TelephonyCall</a> state changes,
         including handling incoming and waiting calls.
       </p>
       <dl title="interface TelephonyEvent : Event" class="idl">
@@ -836,7 +836,7 @@ var respecConfig = {
         The <code>CallHandler</code> interface provides common properties and
         event handling infrastructure that is <a href=
         "http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a>
-        by other interfaces in this specifcation (i.e., it serves as an
+        by other interfaces in this specification (i.e., it serves as an
         editorial aid in this specification, and has no functional utility on
         its own).
       </p>
@@ -880,7 +880,7 @@ var respecConfig = {
           readonly attribute CallState state
         </dt>
         <dd>
-          Whe getting, the user agent MUST return the <a>CallState</a> value
+          When getting, the user agent MUST return the <a>CallState</a> value
           that represents the state of for the <a>Call</a>.
         </dd>
         <dt>
@@ -1115,7 +1115,7 @@ var respecConfig = {
           supported telephony backend(s) and networks, and MUST keep the
           <code>state</code> property updated. Since call state transitions
           depend on protocol, network equipment, modem, etc., the
-          implementation MUST NOT fire error events on assumed erronous state
+          implementation MUST NOT fire error events on assumed erroneous state
           transitions. Applications MUST always re-synchronize any eventual
           internal states to the current call state reported by the telephony
           system. The implementation MUST NOT set the call state to any other
@@ -1908,7 +1908,7 @@ var respecConfig = {
           multiparty
         </dt>
         <dd>
-          The call is is locked in a <a><code>ConferenceCall</code></a> object
+          The call is locked in a <a><code>ConferenceCall</code></a> object
           and MUST NOT be managed any more using this object. While in this
           state, the implementation MUST throw an <code>ILLEGAL_STATE</code>
           exception when any method call is attempted.
