@@ -1,4 +1,6 @@
-# Contributing Everyone is welcome to contribute to this specification.
+# Contributing 
+
+Everyone is welcome to contribute to this specification.
 
 Any simple editorial contribution can simply be done with a GitHub Pull Request.
 You can even do an inline edit of the file on GitHub.
