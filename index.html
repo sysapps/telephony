@@ -332,13 +332,13 @@ var respecConfig = {
               DOMString remoteParty
             </dt>
             <dd>
-              Indicates the destination number of the call
+              Represents the destination number of the call.
             </dd>
             <dt>
               optional DialParams params
             </dt>
             <dd>
-              If set, indicates the optional parameters of the call, including
+              If set, Represents the optional parameters of the call, including
               the telephony service to be used, and whether caller ID is hidden
             </dd>
           </dl>
@@ -355,7 +355,7 @@ var respecConfig = {
               DOMString tones
             </dt>
             <dd>
-              Indicates the sequence of [[!DTMF]] tones to be emitted. Its
+              Represents the sequence of [[!DTMF]] tones to be emitted. Its
               value can be any sequence of the following characters (0-9; A-D;
               *; #).
             </dd>
@@ -363,8 +363,8 @@ var respecConfig = {
               optional ToneParams params
             </dt>
             <dd>
-              If set, indicates the <a>telephony service id</a> to be used, the
-              tone duration and delay before a tone (gap). If not set,
+              If set, represents the <a>telephony service id</a> to be used, the
+              tone duration (mark) and delay before a tone (space). If not set,
               implementations MUST use default values for these.
             </dd>
           </dl>
@@ -381,14 +381,14 @@ var respecConfig = {
               DOMString tone
             </dt>
             <dd>
-              Indicates the [[!DTMF]] tone. Its value can be any sequence of
+              Represents the [[!DTMF]] tone. Its value can be any sequence of
               the following characters (0-9; A-D; *; #).
             </dd>
             <dt>
               optional ToneParams params
             </dt>
             <dd>
-              If set, indicates the <a>telephony service id</a> to be used, and
+              If set, Represents the <a>telephony service id</a> to be used, and
               the delay before a tone. The <code>duration</code> parameter is
               ignored. If not set, implementations MUST use default values for
               telephony service and delay.
@@ -726,14 +726,16 @@ var respecConfig = {
             boolean hideCallerId
           </dt>
           <dd>
-            Indicates whether the own number is to be hidden or displayed to
-            the remote party being called.
+            Represents whether the own number is to be hidden or displayed to
+            the remote party being called. If missing, the user agent uses the
+            default configuration for the <a>telephony service</a> that
+            initiated the call.
           </dd>
           <dt>
             DOMString serviceId
           </dt>
           <dd>
-            Indicates the <a>telephony service id</a> of the <a>telephony
+            Represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </dd>
         </dl>
@@ -748,21 +750,21 @@ var respecConfig = {
             unsigned long duration
           </dt>
           <dd>
-            Indicates the duration (mark) in milliseconds of the [[!DTMF]]
-            tones to be sent.
+            Represents the duration (mark) in milliseconds of the [[!DTMF]]
+            tones to be sent. 
           </dd>
           <dt>
             unsigned long gap
           </dt>
           <dd>
-            Indicates the duration in milliseconds of the time gap (space)
+            Represents the duration in milliseconds of the time gap (space)
             before a [[!DTMF]] tone.
           </dd>
           <dt>
             DOMString serviceId
           </dt>
           <dd>
-            Indicates the <a>telephony service id</a> of the <a>telephony
+            Represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </dd>
         </dl>
@@ -959,7 +961,7 @@ var respecConfig = {
               DOMString remoteParty
             </dt>
             <dd>
-              Indicates the remote party to which the call is redirected.
+              Represents the remote party to which the call is redirected.
             </dd>
           </dl>
         </dd>
@@ -975,7 +977,7 @@ var respecConfig = {
               DOMString thirdParty
             </dt>
             <dd>
-              Indicates the remote party to which the call is transferred.
+              Represents the remote party to which the call is transferred.
             </dd>
           </dl>
         </dd>
@@ -1554,7 +1556,7 @@ var respecConfig = {
               TelephonyCall participantCall
             </dt>
             <dd>
-              Indicates the <a>TelephonyCall</a> object of the call participant
+              Represents the <a>TelephonyCall</a> object of the call participant
               to be split from the multiparty call.
             </dd>
           </dl>
