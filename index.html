@@ -364,7 +364,7 @@ var respecConfig = {
             </dt>
             <dd>
               If set, indicates the <a>telephony service id</a> to be used, the
-              tone duration (mark) and delay before a tone (space). If not set,
+              tone duration and delay before a tone (gap). If not set,
               implementations MUST use default values for these.
             </dd>
           </dl>
@@ -583,7 +583,7 @@ var respecConfig = {
             (e.g. it is a purely IP based implementation and there is no
             cellular modem), the implementation MAY use empty string for
             default <a>telephony service id</a>, but it is encouraged that a
-            default service is created, with the methods raising an
+            default service is created, with the methods throwing a
             <code>NotSupported</code> error.
           </li>
           <li>If the request is successful, then
@@ -616,7 +616,16 @@ var respecConfig = {
           The <code>sendTones</code> method when invoked MUST run the following
           steps:
         </p>
-        <ol id="steps-sendtone">
+        <ol id="steps-sendtones">
+          <li>If the <a>ToneParams</a> parameter specifies the <code>
+          service</code> to be used, then validate and use that value, otherwise
+          use the default telephony service for sending the tones</li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone <code>
+          duration</code>, then validate and use that value, otherwise use a
+          default value</li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone <code>
+          gap</code>, then validate and use that value, otherwise use a
+          default value</li>
           <li>Request from the telephony system to send the specified tones.
           </li>
         </ol>
@@ -718,9 +727,7 @@ var respecConfig = {
           </dt>
           <dd>
             Indicates whether the own number is to be hidden or displayed to
-            the remote party being called. If missing, the user agent uses the
-            default configuration for the <a>telephony service</a> that
-            initiated the call.
+            the remote party being called.
           </dd>
           <dt>
             DOMString serviceId
@@ -742,16 +749,14 @@ var respecConfig = {
           </dt>
           <dd>
             Indicates the duration (mark) in milliseconds of the [[!DTMF]]
-            tones to be sent. If not specified, the implementation MUST provide
-            a default value.
+            tones to be sent.
           </dd>
           <dt>
             unsigned long gap
           </dt>
           <dd>
             Indicates the duration in milliseconds of the time gap (space)
-            before a [[!DTMF]] tone. If not specified, the implementation MUST
-            provide a default value.
+            before a [[!DTMF]] tone.
           </dd>
           <dt>
             DOMString serviceId
@@ -975,14 +980,11 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          ConferenceCall join(<!--optional DOMString remoteParty-->)
+          ConferenceCall join()
         </dt>
         <dd>
           Initiates merging the active and held calls into a multiparty call. 
-          <!--When called with the <a>remote party id</a> of the new
-    call participant, puts the current call on hold, dials a new call to the
-    participant, then creates a conference call by merging the current call and
-    the new call.--> Using this method MUST be the only way to create a <code>
+          Using this method MUST be the only way to create a <code>
           ConferenceCall</code> object.
         </dd>
         <dt>
