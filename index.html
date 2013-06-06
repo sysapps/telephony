@@ -836,9 +836,9 @@ var respecConfig = {
         The <code>CallHandler</code> interface provides common properties and
         event handling infrastructure that is <a href=
         "http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a>
-        by other interfaces in this specifcation (i.e., it serves as an
-        editorial aid in this specification, and has no functional utility on
-        its own).
+        by other interfaces in this specification, e.g. <a>TelephonyCall</a> and
+        <a>ConferenceCall</a>. It serves as an editorial aid in this
+        specification, and has no functional utility on its own.
       </p>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
         <dt>
@@ -908,8 +908,9 @@ var respecConfig = {
       </p>
       <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
       <dl title="interface TelephonyCall : EventHandler" class="idl">
+        <!-- removed inConference, as conferenceId can provide the same info
         <dt>
-          readonly attribute boolean inCconference
+          readonly attribute boolean inConference
         </dt>
         <dd>
           When getting, the user agent MUST return <code>true</code> if the
@@ -917,6 +918,7 @@ var respecConfig = {
           present in the <a>calls</a> attribute of a <a>ConferenceCall</a>
           object), <code>false</code> otherwise.
         </dd>
+        -->
         <dt>
           readonly attribute DOMString? remoteParty
         </dt>
