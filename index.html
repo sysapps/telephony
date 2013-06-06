@@ -248,8 +248,8 @@ var respecConfig = {
           readonly attribute TelephonyManager telephony
         </dt>
         <dd>
-          The object that exposes the telephony functionality, e.g. making and
-          receiving calls.
+          When getting, the user agent MUST return the object that exposes the
+          telephony functionality, e.g. making and receiving calls.
         </dd>
       </dl>
     </section>
@@ -1533,15 +1533,16 @@ var respecConfig = {
           readonly attribute DOMString conferenceId
         </dt>
         <dd>
-          It MUST return the conference identifier unique in the system and
-          call history.
+          When getting, the user agent MUST return the conference identifier
+          unique in the system and in call history. It MUST NOT be the empty
+          string.
         </dd>
         <dt>
           readonly attribute TelephonyCall[] calls
         </dt>
         <dd>
-          It MUST return the array of <a>TelephonyCall</a> objects managed by
-          the multiparty call object.
+          When getting, the user agent MUST return the array of
+          <a>TelephonyCall</a> objects managed by the multiparty call object.
         </dd>
         <dt>
           void split(TelephonyCall participantCall)
@@ -2123,15 +2124,16 @@ var respecConfig = {
           readonly attribute DOMString remoteParty
         </dt>
         <dd>
-          It MUST return the remote party identifier (e.g. telephone number) of
-          the call participant.
+          When getting, the user agent MUST return the remote party identifier
+          (e.g. telephone number) of the call participant.
         </dd>
         <dt>
           readonly attribute DOMString serviceId
         </dt>
         <dd>
-          It MUST return the <a>telephony service id</a> of the <a>telephony
-          service</a> used for the call.
+          When getting, the user agent MUST return the
+          <a>telephony service id</a> of the <a>telephony service</a> used for
+          the call.
         </dd>
         <dt>
           readonly attribute DOMString? conferenceId
@@ -2145,20 +2147,22 @@ var respecConfig = {
           readonly attribute Date startTime
         </dt>
         <dd>
-          The starting time of the call, measured from when the call is in
-          <code>"active"</code> state.
+          When getting, the user agent MUST return the starting time of the
+          call, measured from when the call is in <code>"active"</code> state.
         </dd>
         <dt>
           readonly attribute unsigned long long duration
         </dt>
         <dd>
-          The duration of the call expressed in milliseconds.
+          When getting, the user agent MUST return the duration of the call
+          expressed in milliseconds.
         </dd>
         <dt>
           readonly attribute DOMString direction
         </dt>
         <dd>
-          The direction of the call. The following values MUST be supported:
+          When getting, the user agent MUST return the direction of the call.
+          The following values MUST be supported:
           <ol>
             <li>
               <code>"dialed"</code>: for dialed calls
