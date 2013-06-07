@@ -452,7 +452,9 @@ var respecConfig = {
           <a>TelephonyServiceEvent</a> MUST be fired whenever a new
           <a>telephony service</a> is enabled in the system. The
           <code>serviceId</code> property of the event MUST contain the
-          <a>telephony service id</a> of the new service.
+          <a>telephony service id</a> of the new service. Note that compliant
+          implementations may not be reporting such events when they occur
+          (e.g. OTA SIM update or hot-swappable SIM cards).
         </dd>
         <dt class="no-docs">
           attribute EventHandler onserviceremoved
@@ -1428,6 +1430,16 @@ var respecConfig = {
           expected to set this state in the current version of the
           specification.
         </p>
+        <p class='issue'>
+          CDMA cannot report all these states in the expected sequence. The
+          ‘connected’ state (i.e. when the mobile station send the Service
+          Connect Completion Message or Connect Order, depending on whether the
+          call is mobile originated or terminated) is immediately followed by
+          voice media transmission – there is transition to ‘active’ before the
+          media arrives. Therefore it should be up to the implementation to
+          determine which events to fire and in which order. Dialer applications
+          SHOULD be prepared to handle such cases.
+        </p>
         <p>
           For call setup on dialed calls, the following call states MUST be
           supported in this order:
@@ -1450,6 +1462,12 @@ var respecConfig = {
           too, between the <code>"dialing"</code> and <code>"alerting"</code>
           states. Dialer applications can associate the protocol with the
           <a>telephony service</a> used for the call.
+        </p>
+        <p class='note'>
+          It is under discussion whether a system message should be propagated
+          when a CDMA telephony call is active, since not all CDMA networks
+          support concurrent services. Therefore, many applications will lose
+          their data connection when the end user is in a voice call.
         </p>
         <p>
           When a call monitoring task, previously referred to as
@@ -1491,8 +1509,15 @@ var respecConfig = {
           Depending on the protocol, there may be restrictions on methods. For
           instance, GSM does not permit disconnecting a held call. Also,
           disconnecting a participant in a held multiparty call is not
-          supported. In such cases, the <a href="#error-steps">error steps</a>
+          supported. In such case, the <a href="#error-steps">error steps</a>
           MUST be executed.
+          Also, if the controlling party disconnects in IS-41 3-way
+          call in CDMA, then all parties are disconnected, and it is not
+          possible for the controlling party to disconnect only one participant
+          (that participant must choose to hang up). Therefore if the telephony
+          service is CDMA, when invoking the <code>disconnect()</code> method of
+          a <a>TelephonyCall</a> object participating in a <a>ConferenceCall</a>
+          the <a href="#error-steps">error steps</a> MUST be executed.
         </p>
         <p>
           When <a><i>TCallControl</i></a> is notified of actual call
@@ -2067,6 +2092,12 @@ var respecConfig = {
           <code>null</code>.
           </li>
         </ol>
+        <p class='note'>
+        In CDMA, only 3-way calling is supported.  This is an IS-41 CN
+        limitation (see Network Interworking between GSM-MAP and TIA-41,
+        <a href='http://www.scribd.com/doc/7029977/Network-Inter-Working-Between-GSM-MAP-and-ANSI41-CDMA'>3GPP2 document</a>, p. 1-50 provides a comparison of multiparty
+        call and 3-way call.
+        </p>
       </section><!-- conference-steps -->
     </section><!-- ConferenceCall -->
     <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
