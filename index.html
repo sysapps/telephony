@@ -358,12 +358,14 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          void sendTones()
+          Future sendTones()
         </dt>
         <dd>
           This method asynchronously emits a [[!DTMF]] tone sequence with the
           platform default or specified duration and delay, in the platform
           default or the specified telephony service.
+          A <code>Future</code> object will be returned in order to notify the
+          result of the request.
           <dl class='parameters'>
             <dt>
               DOMString tones
@@ -384,12 +386,14 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          void startTone()
+          Future startTone()
         </dt>
         <dd>
           This method starts emitting a [[!DTMF]] tone with the platform
           default or specified delay, in the platform default or the specified
           telephony service.
+          A <code>Future</code> object will be returned in order to notify the
+          result of the request.
           <dl class='parameters'>
             <dt>
               DOMString tone
@@ -410,11 +414,13 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          void stopTone(optional DOMString serviceId)
+          Future stopTone(optional DOMString serviceId)
         </dt>
         <dd>
           This method stops emitting a [[!DTMF]] tone in the default or the
           specified telephony service.
+          A <code>Future</code> object will be returned in order to notify the
+          result of the request.
         </dd>
         <dt class="no-docs">
           attribute EventHandler onincoming
@@ -695,6 +701,19 @@ var respecConfig = {
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
+          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <var>resolver</var> its associated <code>resolver</code>
+          <li>Return <var>future</var> to the caller and continue the following
+          steps asynchronously
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          no arguments
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments
+          </li>
         </ol>
         <p>
           The <code>startTone</code> method when invoked MUST run the following
@@ -708,6 +727,19 @@ var respecConfig = {
           <li>Otherwise, request from the telephony system to start sending the
           specified tone. The tone SHOULD play until the <code>stopTone</code>
           method is called.
+          </li>
+          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <var>resolver</var> its associated <code>resolver</code>
+          <li>Return <var>future</var> to the caller and continue the following
+          steps asynchronously
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          no arguments
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments
           </li>
         </ol>
         <p>
@@ -723,8 +755,20 @@ var respecConfig = {
           <code>InvalidStateError</code> error
           </li>
           <li>Otherwise, request from the telephony system to stop sending the
-          specified tone. <!--If there is an error, throw an
-    <code>InvalidModificationError</code> error.-->
+          specified tone.
+          </li>
+          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <var>resolver</var> its associated <code>resolver</code>
+          <li>Return <var>future</var> to the caller and continue the following
+          steps asynchronously
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          no arguments
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments
           </li>
         </ol>
         <p>
@@ -2535,8 +2579,8 @@ var respecConfig = {
         <cite><a href="https://wiki.mozilla.org/WebAPI/WebTelephony">B2G
         WebTelephony API</a></cite>. Also, thanks to Denis Kenzior
         (<cite><a href="https://ofono.org/">ofono</a></cite> maintainer) and
-        Oleg Zhurakivskyy of Intel OTC, and many others for their advice and
-        support.
+        Oleg Zhurakivskyy of Intel Open Source Technology Center, and many
+        others for their advice and support.
       </p>
     </section>
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
