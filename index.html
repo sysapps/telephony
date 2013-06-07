@@ -480,7 +480,7 @@ var respecConfig = {
         <p>The following are the <a class="internalDFN"
         href="#dfn-eventhandler">event handlers</a> (and their corresponding <a
         class="internalDFN" href="#dfn-eventtypes">event types</a>) that MUST be
-        supported as attributes by the <a>TelephonyManager</a> object.
+        supported as attributes by the <a>TelephonyManager</a> object.</p>
         <table class="simple">
           <thead>
             <tr>
@@ -694,14 +694,17 @@ var respecConfig = {
           <code>duration</code>, then validate and use that value, otherwise
           use a default value
           </li>
+          
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>gap</code>, then validate and use that value, otherwise use a
           default value
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
+          
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
+          </li>
           <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
@@ -713,6 +716,7 @@ var respecConfig = {
           <li>If the request to the telephony system is unsuccessful, invoke
           <em>resolver</em>'s <code>reject()</code> method, with no arguments
           </li>
+          
         </ol>
         <p>
           The <code>startTone</code> method when invoked MUST run the following
@@ -729,6 +733,7 @@ var respecConfig = {
           </li>
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
+          </li>
           <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
@@ -753,14 +758,18 @@ var respecConfig = {
           playing on the specified telephony service, throw an
           <code>InvalidStateError</code> error
           </li>
+          
           <li>Otherwise, request from the telephony system to stop sending the
           specified tone.
           </li>
+          
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
+          </li>
           <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
+         
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
           request, invoke <em>resolver</em>'s <code>accept()</code> method with
@@ -805,6 +814,7 @@ var respecConfig = {
             progress.
           </li>
         </ol>
+        
         <p class="issue">
           The <code>incoming</code>, <code>serviceadded</code> and
           <code>serviceremoved</code> events have to be defined according to
@@ -1017,7 +1027,7 @@ var respecConfig = {
       <section id="callhandler-eventhandlers">
       <h3>Event handlers</h3>
       <p>The following are the <a>event handlers</a> MUST be supported as
-      attributes:
+      attributes:</p>
       <table class="simple">
         <thead>
           <tr>
@@ -1038,8 +1048,10 @@ var respecConfig = {
             <td><dfn><code>onerror</code></dfn></td>
             <td><code><dfn>error</dfn></code></td>
             <td><a>simple event</a></td>
-            <td>handles error conditions</code></td>
+            <td>handles error conditions</td>
           </tr>
+        </tbody>
+     </table>
     </section><!-- CallHandler Interface -->
     <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - - - -->
     <section>
@@ -1248,7 +1260,7 @@ var respecConfig = {
       <section id="telephony-eventhandlers">
       <h3>Event handlers</h3>
       <p>The following are the <a>event handlers</a> MUST be supported as attributes
-       by the <a><code>TelephonyCall</code></a> object:
+       by the <a><code>TelephonyCall</code></a> object:</p>
       <table class="simple">
         <thead>
           <tr>
@@ -1343,7 +1355,6 @@ var respecConfig = {
             <td>handles call state changes to the <code>"transferring"</code>
             state</td>
           </tr>
-          <tr>
           <tr>
             <td><dfn><code>onjoining</code></dfn></td>
             <td><code><dfn>joining</dfn></code></td>
@@ -1761,6 +1772,7 @@ var respecConfig = {
         </figure>
       </section><!-- telephony-steps -->
     </section><!-- TelephonyCall -->
+    </section>
     <!-- - - - - - - - - - - -  Interface ConferenceCall - - - - - - - - - - - - -->
     <section>
       <h2>
@@ -2555,6 +2567,7 @@ var respecConfig = {
       <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl">
       </dl>
     </section>
+    <!-- - - - - - - - - - - - - - Acknowledgements - - - - - - - - - - - - - - -->
     <section>
       <h2>
         Acknowledgements
