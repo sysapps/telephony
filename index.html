@@ -321,7 +321,7 @@ var respecConfig = {
           represents the id of the <a>default telephony service</a>.
         </dd>
         <dt>
-          Future changeDefaultService(DOMString serviceID)
+          Promise changeDefaultService(DOMString serviceID)
         </dt>
         <dd>
           Provides a means to change the <a>default telephony service</a> used
@@ -360,13 +360,13 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          Future sendTones()
+          Promise sendTones()
         </dt>
         <dd>
           This method asynchronously emits a [[!DTMF]] tone sequence with the
           platform default or specified duration and delay, in the platform
           default or the specified telephony service.
-          A <code>Future</code> object will be returned in order to notify the
+          A <code>Promise</code> object will be returned in order to notify the
           result of the request.
           <dl class='parameters'>
             <dt>
@@ -388,13 +388,13 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          Future startTone()
+          Promise startTone()
         </dt>
         <dd>
           This method starts emitting a [[!DTMF]] tone with the platform
           default or specified delay, in the platform default or the specified
           telephony service.
-          A <code>Future</code> object will be returned in order to notify the
+          A <code>Promise</code> object will be returned in order to notify the
           result of the request.
           <dl class='parameters'>
             <dt>
@@ -416,12 +416,12 @@ var respecConfig = {
           </dl>
         </dd>
         <dt>
-          Future stopTone(optional DOMString serviceId)
+          Promise stopTone(optional DOMString serviceId)
         </dt>
         <dd>
           This method stops emitting a [[!DTMF]] tone in the default or the
           specified telephony service.
-          A <code>Future</code> object will be returned in order to notify the
+          A <code>Promise</code> object will be returned in order to notify the
           result of the request.
         </dd>
         <dt class="no-docs">
@@ -544,11 +544,9 @@ var respecConfig = {
           <li>Let <var>potential service</var> be the first argument passed to
           this operation.
           </li>
-          <li>Let <var>future</var> be a new <a href=
-          "http://web-alarms.sysapps.org/#future">Future</a> object and
-          <var>resolver</var> its associated resolver.
+          <li>Let <var>promise</var> be a new <code>Promise</code> object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Return <em>future</em> and continue the following steps
+          <li>Return <var>promise</var> and continue the following steps
           asynchronously.
           </li>
           <li>If <var>potential service</var> does not exactly match the
@@ -576,15 +574,13 @@ var respecConfig = {
           </li>
           <li>Otherwise, run the <a>steps to change the default service</a>,
           with <var>potential service</var> as the <a>telephony service id</a>,
-          and <var>future</var> as the <a href=
-          "http://web-alarms.sysapps.org/#future">Future</a>.
+          and <var>promise</var> as the <code>Promise</code>.
           </li>
         </ol>
         <p>
           The <dfn>steps to change the default service</dfn> are given by the
           following algorithm. This abstract operation takes as an argument a
-          <a>telephony service id</a> and an optional <a href=
-          "http://web-alarms.sysapps.org/#future">Future</a>.
+          <a>telephony service id</a> and an optional <code>Promise</code>.
         </p>
         <ol>
           <li>Make a platform/system specific request to the underlying system
@@ -595,7 +591,7 @@ var respecConfig = {
           </li>
           <li>If it's not possible (for whatever reason: timeout, security,
           etc.) to change the default telephony service, and if
-          <var>future</var> was passed, run the following sub steps and
+          <var>promise</var> was passed, run the following sub steps and
           terminate this algorithm:
             <ol>
               <li>Let <em>error</em> be a new DOMError object whose name is
@@ -611,7 +607,7 @@ var respecConfig = {
               <li>Change the <a>defaultServiceId</a> attribute to the
               <a>telephony service id</a> of the new default telephony service.
               </li>
-              <li>If <a href="http://web-alarms.sysapps.org/#future">Future</a>
+              <li>If <code>Promise</code>
               was passed, invoke <em>resolver</em>'s accept(value) method with
               the id of the new default service as value argument.
               </li>
@@ -705,9 +701,9 @@ var respecConfig = {
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
-          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
-          <li>Return <var>future</var> to the caller and continue the following
+          <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
           <li>If the request to the telephony system is successful, or if the
@@ -732,9 +728,9 @@ var respecConfig = {
           specified tone. The tone SHOULD play until the <code>stopTone</code>
           method is called.
           </li>
-          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
-          <li>Return <var>future</var> to the caller and continue the following
+          <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
           <li>If the request to the telephony system is successful, or if the
@@ -761,9 +757,9 @@ var respecConfig = {
           <li>Otherwise, request from the telephony system to stop sending the
           specified tone.
           </li>
-          <li>Let <var>future</var> be a new <code>Future</code> object and
+          <li>Let <var>promise</var> be a new <code>Promise</code> object and
           <var>resolver</var> its associated <code>resolver</code>
-          <li>Return <var>future</var> to the caller and continue the following
+          <li>Return <var>promise</var> to the caller and continue the following
           steps asynchronously
           </li>
           <li>If the request to the telephony system is successful, or if the
