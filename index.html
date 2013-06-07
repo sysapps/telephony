@@ -49,18 +49,6 @@ var respecConfig = {
         }]
     };
     </script>
-    <style>
-figure{
-    display: block;
-    width: auto;
-    margin: 2em auto;
-    text-align: center;
-    }
-    figcaption{
-    display: block;
-    margin-top: 1em;
-    }                
-    </style>
   </head>
   <body>
     <!-- - - - - - - - - - - - - - - Abstract - - - - - - - - - - - - - - - - - -->
@@ -1270,7 +1258,8 @@ figure{
           The <code>param</code> property of the <code>disconnected</code>
           event MUST be set to the <a>DisconnectReason</a> as
           <code>DOMString</code>, if available, otherwise it MUST be set to
-          <code>null</code>. At least the following values MUST be supported
+          <code>null</code>.
+          At least the following values MUST be supported
           for the disconnect reason:
         </p>
         <ul>
@@ -2147,8 +2136,9 @@ figure{
           readonly attribute DOMString serviceId
         </dt>
         <dd>
-          When getting, the user agent MUST return the <a>telephony service
-          id</a> of the <a>telephony service</a> used for the call.
+          When getting, the user agent MUST return the
+          <a>telephony service id</a> of the <a>telephony service</a> used for
+          the call.
         </dd>
         <dt>
           readonly attribute DOMString? conferenceId
@@ -2194,126 +2184,82 @@ figure{
         </dd>
       </dl>
     </section><!-- CallHistoryEntry -->
+
     <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - -  -->
     <section>
       <h2>
         <a>DisconnectReason</a> enum
       </h2>
       <dl class="idl" title="enum DisconnectReason">
-        <dt>
-          local
-        </dt>
-        <dd>
-          The call was disconnected by the user, or the device, and no more
-          specific reason is known.
+        <dt>local</dt>
+        <dd>The call was disconnected by the user, or the device, and no more
+        specific reason is known.
         </dd>
-        <dt>
-          remote
-        </dt>
-        <dd>
-          The call was disconnected by the remote party, and no more specific
-          reason is known.
+        <dt>remote</dt>
+        <dd>The call was disconnected by the remote party, and no more specific
+        reason is known.
         </dd>
-        <dt>
-          network
-        </dt>
-        <dd>
-          The call was disconnected by the network, and no more specific reason
-          is known.
+        <dt>network</dt>
+        <dd>The call was disconnected by the network, and no more specific
+        reason is known.
         </dd>
-        <dt>
-          busy
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was busy.
+        <dt>busy</dt>
+        <dd>The call was disconnected by the network, because the remote party
+        was busy.
         </dd>
-        <dt>
-          rejected
-        </dt>
-        <dd>
-          The call was disconnected because the remote party rejected the call.
+        <dt>rejected</dt>
+        <dd>The call was disconnected because the remote party rejected the
+        call.
         </dd>
-        <dt>
-          redirected
-        </dt>
-        <dd>
-          The call has been redirected to another subscriber.
+        <dt>redirected</dt>
+        <dd>The call has been redirected to another subscriber.
         </dd>
-        <dt>
-          unreachable
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was unreachable by the network.
+        <dt>unreachable</dt>
+        <dd>The call was disconnected by the network, because the remote party
+        was unreachable by the network.
         </dd>
-        <dt>
-          no-answer
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          has not answered and the call has timed out.
+        <dt>no-answer</dt>
+        <dd>The call was disconnected by the network, because the remote party
+        has not answered and the call has timed out.
         </dd>
-        <dt>
-          network-unreachable
-        </dt>
-        <dd>
-          The call was disconnected because the network was unreachable.
+        <dt>network-unreachable</dt>
+        <dd>The call was disconnected because the network was unreachable.
         </dd>
-        <dt>
-          barred
-        </dt>
-        <dd>
-          The call was disconnected because it was barred.
+        <dt>barred</dt>
+        <dd>The call was disconnected because it was barred.
         </dd>
-        <dt>
-          no-service
-        </dt>
-        <dd>
-          The call was not made because there is no telephony service set up
-          and enabled (e.g. no SIM card).
+        <dt>no-service</dt>
+        <dd>The call was not made because there is no telephony service set up
+        and enabled (e.g. no SIM card).
         </dd>
-        <dt>
-          invalid-number
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          identifier was invalid.
+        <dt>invalid-number</dt>
+        <dd>The call was disconnected by the network, because the remote party
+        identifier was invalid.
         </dd>
       </dl>
     </section>
+
     <!-- - - - - - - - - - -  CallDirection Enum - - - - - - - - - - -  -->
     <section>
       <h2>
         <a>CallDirection</a> enum
       </h2>
       <dl class="idl" title="enum CallDirection">
-        <dt>
-          dialed
-        </dt>
-        <dd>
-          The call has been dialed.
+        <dt>dialed</dt>
+        <dd>The call has been dialed.
         </dd>
-        <dt>
-          received
-        </dt>
-        <dd>
-          The call has been received.
+        <dt>received</dt>
+        <dd>The call has been received.
         </dd>
-        <dt>
-          missed
-        </dt>
-        <dd>
-          The call has been missed.
+        <dt>missed</dt>
+        <dd>The call has been missed.
         </dd>
-        <dt>
-          missed-new
-        </dt>
-        <dd>
-          The call was a missed call not seen yet by the user.
+        <dt>missed-new</dt>
+        <dd>The call was a missed call not seen yet by the user.
         </dd>
       </dl>
     </section>
+
     <!-- - - - - - - - - - - - - - Call typedef - - - - - - - - - - - - - - -->
     <section>
       <h2>
