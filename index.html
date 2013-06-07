@@ -450,6 +450,57 @@ var respecConfig = {
           another.
         </dd>
       </dl>
+      <section>
+        <h2>Event handlers</h2>
+        <p>The following are the <a class="internalDFN"
+        href="#dfn-eventhandler">event handlers</a> (and their corresponding <a
+        class="internalDFN" href="#dfn-eventtypes">event types</a>) that MUST be
+        supported as attributes by the <a>TelephonyManager</a> object.
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>event handler</th>
+              <th>event name</th>
+              <th>event type</th>
+              <th>short description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong><code>onincoming</code></strong></td>
+              <td><code><dfn>incoming</dfn></code></td>
+              <td><a><code>TelephonyEvent</code></a></td>
+              <td>handles incoming and waiting calls</td>
+            </tr>
+            <tr>
+              <td><strong><code>oncallschanged</code></strong></td>
+              <td><code><dfn>callschanged</dfn></code></td>
+              <td><a>simple event</a></td>
+              <td>handles change in the <code>calls</code> array</td>
+            </tr>
+            <tr>
+              <td><strong><code>onserviceadded</code></strong></td>
+              <td><code><dfn>serviceadded</dfn></code></td>
+              <td><a><code>TelephonyServiceEvent</code></a></td>
+              <td>handles a new enabled telephony service</td>
+            </tr>
+            <tr>
+              <td><strong><code>onserviceremoved</code></strong></td>
+              <td><code><dfn>serviceremoved</dfn></code></td>
+              <td><a><code>TelephonyServiceEvent</code></a></td>
+              <td>handles a disabled telephony service</td>
+              </td>
+            </tr>
+            <tr>
+              <td><strong><code>onservicechanged</code></strong></td>
+              <td><code><dfn>servicechanged</dfn></code></td>
+              <td><a><code>TelephonyServiceEvent</code></a></td>
+              <td>handles the change of default telephony service</td>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
       <section id="telephonymanager-steps">
         <h3>
           Steps
@@ -906,6 +957,32 @@ var respecConfig = {
           Event handler dispatched when the <a>state</a> changes.
         </dd>
       </dl>
+      <section id="callhandler-eventhandlers">
+      <h3>Event handlers</h3>
+      <p>The following are the <a>event handlers</a> MUST be supported as
+      attributes:
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>event handler</th>
+            <th>event name</th>
+            <th>event type</th>
+            <th>short description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><code>onstatechange</code></strong></td>
+            <td><code><dfn>statechange</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles any call state change</td>
+          </tr>
+          <tr>
+            <td><strong><code>onerror</code></strong></td>
+            <td><code><dfn>error</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles error conditions</code></td>
+          </tr>
     </section><!-- CallHandler Interface -->
     <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - - - -->
     <section>
@@ -1111,6 +1188,129 @@ var respecConfig = {
           dispatched.
         </dd>
       </dl>
+      <section id="telephony-eventhandlers">
+      <h3>Event handlers</h3>
+      <p>The following are the <a>event handlers</a> MUST be supported as attributes
+       by the <a><code>TelephonyCall</code></a> object:
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>event handler</th>
+            <th>event name</th>
+            <th>event type</th>
+            <th>short description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong><code>ondialing</code></strong></td>
+            <td><code><dfn>dialing</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"dialing"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onalerting</code></strong></td>
+            <td><code><dfn>alerting</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"alerting"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onaccepted</code></strong></td>
+            <td><code><dfn>accepted</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"accepted"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onconnecting</code></strong></td>
+            <td><code><dfn>connecting</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"connecting"</code>
+            state</td>
+          </tr>
+          <tr>
+            <td><strong><code>onactive</code></strong></td>
+            <td><code><dfn>active</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"active"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>ondisconnecting</code></strong></td>
+            <td><code><dfn>disconnecting</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles the call state changes to the
+            <code>"disconnecting"</code> state</td>
+          </tr>
+          <tr>
+            <td><strong><code>ondisconnected</code></strong></td>
+            <td><code><dfn>disconnected</dfn></code></td>
+            <td><a><code>TelephonyEvent</code></a></td>
+            <td>handles call state changes to the <code>"disconnected"</code>
+            state</td>
+          </tr>
+          <tr>
+            <td><strong><code>onholding</code></strong></td>
+            <td><code><dfn>holding</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"holding"</code>
+            state</td>
+          </tr>
+          <tr>
+            <td><strong><code>onheld</code></strong></td>
+            <td><code><dfn>held</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"held"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onresuming</code></strong></td>
+            <td><code><dfn>resuming</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"resuming"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onredirecting</code></strong></td>
+            <td><code><dfn>redirecting</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"redirecting"</code>
+            state</td>
+          </tr>
+          <tr>
+            <td><strong><code>ontransferring</code></strong></td>
+            <td><code><dfn>transferring</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"transferring"</code>
+            state</td>
+          </tr>
+          <tr>
+          <tr>
+            <td><strong><code>onjoining</code></strong></td>
+            <td><code><dfn>joining</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"joining"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onsplitting</code></strong></td>
+            <td><code><dfn>splitting</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"splitting"</code> state
+            </td>
+          </tr>
+          <tr>
+            <td><strong><code>onmultiparty</code></strong></td>
+            <td><code><dfn>multiparty</dfn></code></td>
+            <td><a>simple event</a></td>
+            <td>handles call state changes to the <code>"multiparty"</code>
+            state</td>
+          </tr>
+        </tbody>
+      </table>
+      </section> <!-- telephony-eventhandlers -->
       <p class="issue">
         The call state events have to be defined according to DOM4.
       </p>
