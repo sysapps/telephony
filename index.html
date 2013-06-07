@@ -1541,10 +1541,9 @@ var respecConfig = {
         </ol>
         <p>
           The <code>param</code> property of the <code>disconnected</code>
-          event MUST be set to the <a>DisconnectReason</a> as
-          <code>DOMString</code>, if available, otherwise it MUST be set to
-          <code>null</code>. At least the following values MUST be supported
-          for the disconnect reason:
+          event MUST be set to the <a>DisconnectReason</a>, if available, or
+          otherwise it MUST be set to <code>null</code>. At least the following
+          values MUST be supported for the disconnect reason:
         </p>
         <ul>
           <li>
@@ -1560,47 +1559,7 @@ var respecConfig = {
             and no more specific reason is known
           </li>
         </ul>
-        <p>
-          In addition, the following disconnect reasons SHOULD be supported:
-        </p>
-        <ul>
-          <li>
-            <code>"busy"</code>: the call was disconnected by the network,
-            because the remote party was busy
-          </li>
-          <li>
-            <code>"rejected"</code>: the call was disconnected because the
-            remote party rejected the call
-          </li>
-          <li>
-            <code>"redirected"</code>: the call has been redirected
-          </li>
-          <li>
-            <code>"unreachable"</code>: the call was disconnected by the
-            network, because the remote party was unreachable by the network
-          </li>
-          <li>
-            <code>"no-answer"</code>: the call was disconnected by the network,
-            because the remote party has not answered and the call has timed
-            out
-          </li>
-          <li>
-            <code>"network-unreachable"</code>: the call was disconnected
-            because the network was unreachable
-          </li>
-          <li>
-            <code>"barred"</code>: the call was disconnected because it was
-            barred
-          </li>
-          <li>
-            <code>"no-service"</code>: the call was not made because there is
-            no telephony service set up and enabled (e.g. no SIM card)
-          </li>
-          <li>
-            <code>"invalid-number"</code>: the call was disconnected by the
-            network, because the remote party identifier was invalid.
-          </li>
-        </ul>
+        The rest of the <a>DisconnectReason</a> values SHOULD be supported.
         <p>
           The <code>hold</code> method when invoked MUST run the following
           steps:
