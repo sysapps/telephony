@@ -12,6 +12,7 @@
 var respecConfig = {
           specStatus:           "ED",
           shortName:            "telephony",
+          noLegacyStyle:        false,
           publishDate:          "",
           previousPublishDate:  "",
           previousMaturity:     "",
@@ -32,9 +33,9 @@ var respecConfig = {
           noIDLIn:      true,
           extraCSS:     ["../ReSpec.js/css/respec.css"],
           wg:           "System Applications Working Group",
-          wgURI:        "http://",
+          wgURI:        "http://www.w3.org/2012/sysapps/",
           wgPublicList: "public-sysapps",
-          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/43696/status",
+          wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/58119/status",
           otherLinks: [{
             key: "Repository",
             data: [{
@@ -157,8 +158,8 @@ var respecConfig = {
         Terminology
       </h2>
       <p>
-        The <code><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#eventhandler">EventHandler</a></code>
+        The <dfn><code><a href=
+        "http://dev.w3.org/html5/spec/webappapis.html#eventhandler">EventHandler</a></code></dfn>
         interface represents a callback used for <a href=
         "http://www.w3.org/html/wg/drafts/html/master/webappapis.html#event-handlers">
         event handlers</a> as defined in [[!HTML5]].
@@ -168,7 +169,12 @@ var respecConfig = {
         "http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">queue a
         task</a></dfn> and <dfn><a href=
         "http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event">fire
-        a simple event</a></dfn> are defined in [[!HTML5]].
+        a simple event</a></dfn> are defined in [[!HTML5]]. The <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
+        source</a> for all <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">tasks
+        queued</a> in this specification is the <dfn>Telephony task
+        source</dfn>.
       </p>
       <p>
         The terms <dfn><a href=
@@ -179,16 +185,16 @@ var respecConfig = {
       </p>
       <p>
         The <dfn><a href=
-        "http://dom.spec.whatwg.org/#promise">Promise</a></dfn> interface is
-        defined in [[DOM4]].
+        "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
+        interface is defined in [[DOM4]].
       </p>
       <p>
-        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a
-        class="internalDFN" href='#call-state-active'>active</a> state
-        representing a connected call which is bound to the media input and
-        output devices (e.g. microphone, speaker, tone generator). Note that a
-        call on <a>hold</a> is also active from a call signaling point of view,
-        but not bound to media input and output devices.
+        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a class=
+        "internalDFN" href='#call-state-active'>active</a> state representing a
+        connected call which is bound to the media input and output devices
+        (e.g. microphone, speaker, tone generator). Note that a call on
+        <a>hold</a> is also active from a call signaling point of view, but not
+        bound to media input and output devices.
       </p>
       <p>
         A <dfn title="telephony service">telephony service</dfn> exposes
@@ -236,14 +242,6 @@ var respecConfig = {
         identifies a participant (a.k.a. remote party) in a telephony call in
         the given <a>telephony service</a>, such as a phone number.
       </p>
-      <p>
-        The <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
-        source</a> for all <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">tasks
-        queued</a> in this specification is the <dfn>Telephony task
-        source</dfn>.
-      </p>
     </section>
     <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
     <section>
@@ -253,6 +251,12 @@ var respecConfig = {
       <p>
         This API must be only exposed to trusted content.
       </p>
+      <div class="issue">
+        <p>
+          To be written. See <a href=
+          "https://github.com/sysapps/telephony/issues/26">bug 26</a>.
+        </p>
+      </div>
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - - - -->
     <section>
@@ -385,8 +389,8 @@ var respecConfig = {
             </dt>
             <dd>
               If set, represents the <a>telephony service id</a> to be used,
-              the tone duration and the delay (gap) before a tone. If not
-              set, implementations MUST use default values for these.
+              the tone duration and the delay (gap) before a tone. If not set,
+              implementations MUST use default values for these.
             </dd>
           </dl>
         </dd>
@@ -403,8 +407,8 @@ var respecConfig = {
               DOMString tone
             </dt>
             <dd>
-              Represents the [[!DTMF]] tone. Its value can be any of
-              the following characters: 0-9; A-D; *; #.
+              Represents the [[!DTMF]] tone. Its value can be any of the
+              following characters: 0-9; A-D; *; #.
             </dd>
             <dt>
               optional ToneParams params
@@ -676,11 +680,11 @@ var respecConfig = {
         </p>
         <ol id="steps-dial">
           <li>Create a new <code>TelephonyCall</code> object, referred as <var>
-            telCall</var> in these steps
+            telCall</var> in these steps.
           </li>
           <li>Set the <code>remoteParty</code> property of <var>telCall</var>
           to the remote party identifier specified in the
-          <code>remoteParty</code> parameter
+          <code>remoteParty</code> parameter.
           </li>
           <li>If <code>calls</code> array already contains a
           <a>TelephonyCall</a> object with identical <code>remoteParty</code>
@@ -712,21 +716,21 @@ var respecConfig = {
           <li>If the request is successful, then
             <ol>
               <li>Set the <code>state</code> of <var>telCall</var> to
-              <code>"dialing"</code> value
+              <code>"dialing"</code> value.
               </li>
-              <li>Add <var>telCall</var> to the <code>calls</code> array
+              <li>Add <var>telCall</var> to the <code>calls</code> array.
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire a simple event</a> named
                 <code><a>statechange</a></code> at the <var>telCall</var>
-                object
+                object.
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire a simple event</a> named
-                <code><a>dialing</a></code> at the <var>telCall</var> object
+                <code><a>dialing</a></code> at the <var>telCall</var> object.
               </li>
               <li>and finally return to the caller and <a>queue a task</a> <a>
-                <i>TCallControl</i></a> to monitor call flow progress
+                <i>TCallControl</i></a> to monitor call flow progress.
               </li>
             </ol>
           </li>
@@ -742,31 +746,31 @@ var respecConfig = {
         <ol id="steps-sendtones">
           <li>If the <a>ToneParams</a> parameter specifies the
           <code>serviceId</code> to be used, then validate and use that value,
-          otherwise use the default telephony service for sending the tones
+          otherwise use the default telephony service for sending the tones.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>duration</code>, then validate and use that value, otherwise
-          use a default value
+          use a default value.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>gap</code>, then validate and use that value, otherwise use a
-          default value
+          default value.
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
-          <var>resolver</var> its associated <code>resolver</code>
+          <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously
+          following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
           request, invoke <em>resolver</em>'s <code>accept()</code> method with
-          no arguments
+          no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
@@ -774,39 +778,39 @@ var respecConfig = {
           steps:
         </p>
         <ol id="steps-starttone">
-          <li>If the platform does not support long press [[!DTMF]] tones, throw
-          a <code>NotSupported</code> error and finish these steps. In this case
-          applications may then use the <code>sendTones</code> method for
-          sending [[!DTMF]].
+          <li>If the platform does not support long press [[!DTMF]] tones,
+          throw a <code>NotSupported</code> error and finish these steps. In
+          this case applications may then use the <code>sendTones</code> method
+          for sending [[!DTMF]].
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the
           <code>serviceId</code> to be used, then validate and use that value,
-          otherwise use the default telephony service for sending the tones
+          otherwise use the default telephony service for sending the tones.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>duration</code>, then ignore that value
+          <code>duration</code>, then ignore that value.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>gap</code>, meaning the delay before sending the tone, then
-          validate and use that value, otherwise use a default value
+          validate and use that value, otherwise use a default value.
           </li>
           <li>Request from the telephony system to start sending the
           specified tone. The tone SHOULD play until the <code>stopTone</code>
           method is called.
           </li>
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
-          <var>resolver</var> its associated <code>resolver</code>
+          <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously
+          following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
           request, invoke <em>resolver</em>'s <code>accept()</code> method with
-          no arguments
+          no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
@@ -815,28 +819,28 @@ var respecConfig = {
         </p>
         <ol id="steps-stoptone">
           <li>If the platform does not support long press [[!DTMF]] tones,
-          throw a <code>NotSupported</code> error
+          throw a <code>NotSupported</code> error.
           </li>
           <li>If the provided parameters are invalid, or there is no tone
           playing on the specified telephony service, throw an
-          <code>InvalidStateError</code> error
+          <code>InvalidStateError</code> error.
           </li>
           <li>Otherwise, request from the telephony system to stop sending the
           specified tone.
           </li>
           <li>Let <var>promise</var> be a new <code>Promise</code> object and
-          <var>resolver</var> its associated <code>resolver</code>
+          <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously
+          following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
           request, invoke <em>resolver</em>'s <code>accept()</code> method with
-          no arguments
+          no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments
+          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
@@ -850,24 +854,24 @@ var respecConfig = {
           <li>Set the <code>state</code> of <var>incomingCall</var> to
           <code>"incoming"</code> in case there is no other call in <a href=
           "#call-state-active"><code>active</code></a> state, or otherwise set
-          it to <code>"waiting"</code>
+          it to <code>"waiting"</code>.
           </li>
-          <li>Add <var>incomingCall</var> to the <code>calls</code> array
+          <li>Add <var>incomingCall</var> to the <code>calls</code> array.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
             <code><a>statechange</a></code> at the <var>incomingCall</var>
-            object
+            object.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
             <code><a>incoming</a></code> at the <a>TelephonyManager</a> object
-            managing the call
+            managing the call.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
             <code><a>callschanged</a></code> at the <a>TelephonyManager</a>
-            object managing the call
+            object managing the call.
           </li>
           <li>
             <a>Queue a task</a> <a><i>TCallControl</i></a> to monitor call flow
@@ -879,10 +883,11 @@ var respecConfig = {
           <code>serviceremoved</code> events have to be defined according to
           DOM4.
         </p>
-        <p>The task <a><i>TCallControl</i></a> MUST listen to any event that
-        results in a call disconnection, and upon such events, follow the steps
-        described for <a href='#steps-disconnect-system'>handling disconnected
-        calls</a>.
+        <p>
+          The task <a><i>TCallControl</i></a> MUST listen to any event that
+          results in a call disconnection, and upon such events, follow the
+          steps described for <a href='#steps-disconnect-system'>handling
+          disconnected calls</a>.
         </p>
       </section><!-- telephonymanager-steps -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
@@ -1612,7 +1617,7 @@ var respecConfig = {
           </p>
           <ol>
             <li>Queue a task to fire a simple event named
-            <code><a>statechange</a></code>
+            <code><a>statechange</a></code>.
             </li>
             <li>Queue a task to fire a simple event named with the new value of
             the state attribute.
@@ -1624,13 +1629,13 @@ var respecConfig = {
           </p>
           <ol>
             <li>
-              <code>"incoming"</code>/<code>"waiting"</code>
+              <code>"incoming"</code>/<code>"waiting"</code>.
             </li>
             <li>
-              <code>"accepted"</code>
+              <code>"accepted"</code>.
             </li>
             <li>
-              <code>"active".</code>
+              <code>"active"</code>.
             </li>
           </ol>
           <p class="note">
@@ -1660,13 +1665,13 @@ var respecConfig = {
           </p>
           <ol>
             <li>
-              <code>"dialing"</code>
+              <code>"dialing"</code>.
             </li>
             <li>
-              <code>"alerting"</code>
+              <code>"alerting"</code>.
             </li>
             <li>
-              <code>"active".</code>
+              <code>"active"</code>.
             </li>
           </ol>
           <p class="note">
@@ -1706,16 +1711,16 @@ var respecConfig = {
           </p>
           <ol id="steps-disconnect-client">
             <li>Set the <code>state</code> of <var>telCall</var> to
-            <code>"disconnecting"</code>
+            <code>"disconnecting"</code>.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>statechange</a></code> at the <var>telCall</var> object
+              <code><a>statechange</a></code> at the <var>telCall</var> object.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
               <code><a>disconnecting</a></code> at the <var>telCall</var>
-              object
+              object.
             </li>
             <li>Request from the telephony system the disconnection of the
             call, then return and continue these steps asynchronously. If there
@@ -1743,15 +1748,16 @@ var respecConfig = {
           </p>
           <ol id="steps-disconnect-system">
             <li>Set the <code>state</code> of <var>telCall</var> to
-            <code>"disconnected"</code>
+            <code>"disconnected"</code>.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>statechange</a></code> at the <var>telCall</var> object
+              <code><a>statechange</a></code> at the <var>telCall</var> object.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>disconnected</a></code> at the <var>telCall</var> object
+              <code><a>disconnected</a></code> at the <var>telCall</var>
+              object.
             </li>
             <li>Remove the <var>telCall</var> object from the
             <code>calls</code> array.
@@ -1775,7 +1781,7 @@ var respecConfig = {
             an <code>InvalidStateError</code> MUST be thrown.
             </li>
             <li>Otherwise make a request to the telephony system to hold the
-            call
+            call.
             </li>
             <li>Return, and continue these steps asynchronously.
             </li>
@@ -1888,7 +1894,7 @@ var respecConfig = {
             </li>
             <li>Otherwise, in cellular telephony services:
               <ol>
-                <li>put this call on hold
+                <li>put this call on hold.
                 </li>
                 <li>
                   <a href="#steps-dial">dial</a> a new call to the specified
@@ -1916,7 +1922,7 @@ var respecConfig = {
               <ol>
                 <li>in cellular telephony services, make a request to the
                 telephony system to join the active and held calls into a
-                multiparty call
+                multiparty call.
                 </li>
                 <li>In other telephony services (e.g. VoIP protocols), make a
                 request to the telephony system to add the specified remote
@@ -1926,7 +1932,7 @@ var respecConfig = {
             </li>
             <li>Create a <a><code>ConferenceCall</code></a> object with a
             unique conference id, and set its <code>state</code> to
-            <code>"joining"</code>
+            <code>"joining"</code>.
             </li>
             <li>Return the <code>ConferenceCall</code> object, and continue
             these steps asynchronously.
@@ -2248,7 +2254,7 @@ var respecConfig = {
           <code>ConferenceCall</code> object to <code>"splitting"</code>.
           </li>
           <li>Make a request to the telephony system to split the call
-          participant from the multiparty call
+          participant from the multiparty call.
           </li>
           <li>Return, and continue these steps asynchronously.
           </li>
@@ -2313,7 +2319,7 @@ var respecConfig = {
         </dt>
         <dd>
           An incoming call that has been received whilst there was another call
-          progressing, and the call waiting service is active..
+          progressing, and the call waiting service is active.
         </dd>
         <dt>
           accepted
@@ -2771,6 +2777,98 @@ var respecConfig = {
       </h2>
       <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl">
       </dl>
+    </section>
+    <section id="error-steps">
+      <h2>
+        Error Steps
+      </h2>
+      <p>
+        If there is any error during the method calls which is not handled by
+        exceptions, the following steps MUST be run:
+      </p>
+      <ol>
+        <li>Set the <code>error</code> property of the
+        <a><code>CallHandler</code></a> object appropriately
+        </li>
+        <li>queue a task to fire a simple event named <a><code>error</code></a>
+        at the <a><code>CallHandler</code></a> object.
+        </li>
+      </ol>
+      <p>
+        The error name, together with the call state determine the error
+        condition. All <code>DOMError</code> error names are supported, out of
+        which the following names MUST be used with the semantics described
+        here:
+      </p>
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>
+              Name
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              InvalidStateError
+            </td>
+            <td>
+              The call state is invalid, or the an attempted operation
+              conflicts with the call state in the implementation of the
+              telephony modem and middleware
+            </td>
+          </tr>
+          <tr>
+            <td>
+              InvalidModificationError
+            </td>
+            <td>
+              The attempted operation conflicts with the call state or other
+              constraints in the implementation, for instance attempting to
+              disconnect a held call in a GSM network.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              NetworkError
+            </td>
+            <td>
+              There was a telephony network error during the operation
+            </td>
+          </tr>
+          <tr>
+            <td>
+              TimeoutError
+            </td>
+            <td>
+              The attempted operation timed out
+            </td>
+          </tr>
+          <tr>
+            <td>
+              NotSupportedError
+            </td>
+            <td>
+              The attempted operation is not supported by the implementation,
+              or the telephony network. This includes cases when a needed
+              network feature (such as a supplementary service like Call
+              Transfer) is not enabled.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              SecurityError
+            </td>
+            <td>
+              The attempted operation is not permitted.
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
     <!-- - - - - - - - - - - - - - Acknowledgements - - - - - - - - - - - - - - -->
     <section>
