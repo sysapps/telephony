@@ -735,7 +735,9 @@ table.exceptions table {
         <span class="formerLink"><code>CallDirection</code></span> enum
       </a></li><li class="tocline"><a class="tocxref" href="#call-typedef"><span class="secno">16. </span>
         <code>Call</code> typedef
-      </a></li><li class="tocline"><a class="tocxref" href="#acknowledgements"><span class="secno">17. </span>
+      </a></li><li class="tocline"><a class="tocxref" href="#error-steps"><span class="secno">17. </span>
+        Error Steps
+      </a></li><li class="tocline"><a class="tocxref" href="#acknowledgements"><span class="secno">18. </span>
         Acknowledgements
       </a></li><li class="tocline"><a class="tocxref" href="#references"><span class="secno">A. </span>References</a><ul class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><span class="secno">A.1 </span>Normative references</a></li><li class="tocline"><a class="tocxref" href="#informative-references"><span class="secno">A.2 </span>Informative references</a></li></ul></li></ul></section>
     <!-- - - - - - - - - - -  Status of this document - - - - - - - - - - - - - -->
@@ -3022,9 +3024,101 @@ interface <span class="idlInterfaceID">CallHistoryEntry</span> {
       <pre class="idl"><span class="idlTypedef" id="idl-def-Call">typedef <span class="idlTypedefType">(<a class="idlType" href="#idl-def-TelephonyCall"><code>TelephonyCall</code></a> or <a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a>)</span> <span class="idlTypedefID">Call</span>;</span></pre><div class="idlTypedefDesc">
       </div>
     </section>
+    <section id="error-steps">
+      <!--OddPage--><h2><span class="secno">17. </span>
+        Error Steps
+      </h2>
+      <p>
+        If there is any error during the method calls which is not handled by
+        exceptions, the following steps <em title="MUST" class="rfc2119">MUST</em> be run:
+      </p>
+      <ol>
+        <li>Set the <code>error</code> property of the
+        <a class="idlType" href="#idl-def-CallHandler"><code>CallHandler</code></a> object appropriately
+        </li>
+        <li>queue a task to fire a simple event named <a class="internalDFN" href="#dfn-error"><code>error</code></a>
+        at the <a class="idlType" href="#idl-def-CallHandler"><code>CallHandler</code></a> object.
+        </li>
+      </ol>
+      <p>
+        The error name, together with the call state determine the error
+        condition. All <code>DOMError</code> error names are supported, out of
+        which the following names <em title="MUST" class="rfc2119">MUST</em> be used with the semantics described
+        here:
+      </p>
+      <table class="simple">
+        <thead>
+          <tr>
+            <th>
+              Name
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              InvalidStateError
+            </td>
+            <td>
+              The call state is invalid, or the an attempted operation
+              conflicts with the call state in the implementation of the
+              telephony modem and middleware
+            </td>
+          </tr>
+          <tr>
+            <td>
+              InvalidModificationError
+            </td>
+            <td>
+              The attempted operation conflicts with the call state or other
+              constraints in the implementation, for instance attempting to
+              disconnect a held call in a <abbr title="Global System for Mobile Communications">GSM</abbr> network.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              NetworkError
+            </td>
+            <td>
+              There was a telephony network error during the operation
+            </td>
+          </tr>
+          <tr>
+            <td>
+              TimeoutError
+            </td>
+            <td>
+              The attempted operation timed out
+            </td>
+          </tr>
+          <tr>
+            <td>
+              NotSupportedError
+            </td>
+            <td>
+              The attempted operation is not supported by the implementation,
+              or the telephony network. This includes cases when a needed
+              network feature (such as a supplementary service like Call
+              Transfer) is not enabled.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              SecurityError
+            </td>
+            <td>
+              The attempted operation is not permitted.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
     <!-- - - - - - - - - - - - - - Acknowledgements - - - - - - - - - - - - - - -->
     <section id="acknowledgements">
-      <!--OddPage--><h2><span class="secno">17. </span>
+      <!--OddPage--><h2><span class="secno">18. </span>
         Acknowledgements
       </h2>
       <p>
