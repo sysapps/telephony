@@ -774,11 +774,16 @@ var respecConfig = {
           steps:
         </p>
         <ol id="steps-starttone">
-          <li>If the platform does not support long press [[!DTMF]] tones,
-          throw a <code>NotSupported</code> error. In this case applications
-          may then use the <code>sendTones</code> method for sending [[!DTMF]].
+          <li>If the platform does not support long press [[!DTMF]] tones, throw
+          a <code>NotSupported</code> error and finish these steps. In this case
+          applications may then use the <code>sendTones</code> method for
+          sending [[!DTMF]].
           </li>
-          <li>Otherwise, request from the telephony system to start sending the
+          <li>If the <a>ToneParams</a> parameter specifies the
+          <code>serviceId</code> to be used, then validate and use that value,
+          otherwise use the default telephony service for sending the tones
+          </li>
+          <li>Request from the telephony system to start sending the
           specified tone. The tone SHOULD play until the <code>stopTone</code>
           method is called.
           </li>
