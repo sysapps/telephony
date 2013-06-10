@@ -1755,22 +1755,9 @@ var respecConfig = {
             event MUST be set to the <a>DisconnectReason</a>, if available, or
             otherwise it MUST be set to <code>null</code>. At least the
             following values MUST be supported for the disconnect reason:
-          </p>
-          <ul>
-            <li>
-              <code>"local"</code>: the call was disconnected by the user, or
-              the device, and no more specific reason is known
-            </li>
-            <li>
-              <code>"remote"</code>: the call was disconnected by the remote
-              party, and no more specific reason is known
-            </li>
-            <li>
-              <code>"network"</code>: the call was disconnected by the network,
-              and no more specific reason is known
-            </li>
-          </ul>The rest of the <a>DisconnectReason</a> values SHOULD be
-          supported.
+            <code>"local"</code>, <code>"remote"</code> and
+            <code>"network"</code>. The rest of the <a>DisconnectReason</a>
+            values SHOULD be supported.
           <p>
             The <code>hold</code> method when invoked MUST run the following
             steps:
