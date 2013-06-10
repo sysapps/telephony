@@ -1349,6 +1349,13 @@ telCall</span><span class="pun">.</span><span class="pln">onerror </span><span c
           <code>serviceId</code> to be used, then validate and use that value,
           otherwise use the default telephony service for sending the tones.
           </li>
+          <li>If the <a class="idlType" href="#idl-def-ToneParams"><code>ToneParams</code></a> parameter specifies the tone
+          <code>duration</code>, then ignore that value.
+          </li>
+          <li>If the <a class="idlType" href="#idl-def-ToneParams"><code>ToneParams</code></a> parameter specifies the tone
+          <code>gap</code>, meaning the delay before sending the tone, then
+          validate and use that value, otherwise use a default value.
+          </li>
           <li>Request from the telephony system to start sending the specified
           tone. The tone <em title="SHOULD" class="rfc2119">SHOULD</em> play until the <code>stopTone</code> method is
           called.
