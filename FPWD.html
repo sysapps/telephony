@@ -725,6 +725,8 @@ table.exceptions table {
         <span class="formerLink"><code>ConferenceCall</code></span> Interface
       </a><ul class="toc"><li class="tocline"><a class="tocxref" href="#attributes-7"><span class="secno">11.1 </span>Attributes</a></li><li class="tocline"><a class="tocxref" href="#methods-3"><span class="secno">11.2 </span>Methods</a></li><li class="tocline"><a class="tocxref" href="#multiparty-steps"><span class="secno">11.3 </span>
           Steps
+        </a></li><li class="tocline"><a class="tocxref" href="#conference-eventhandlers"><span class="secno">11.4 </span>
+          Event handlers
         </a></li></ul></li><li class="tocline"><a class="tocxref" href="#callstate-enum"><span class="secno">12. </span>
         <span class="formerLink"><code>CallState</code></span> enum
       </a></li><li class="tocline"><a class="tocxref" href="#callhistoryentry-interface"><span class="secno">13. </span>
@@ -748,7 +750,7 @@ table.exceptions table {
         Introduction
       </h2><p><em>This section is non-normative.</em></p>
       <p>
-        The <cite>Telephony API</cite> allows applications to manage
+        The <cite>Web Telephony API</cite> allows applications to manage
         interaction with telephony call signaling, but does not handle audio
         channels management.
       </p>
@@ -863,7 +865,7 @@ telCall</span><span class="pun">.</span><span class="pln">onerror </span><span c
       </p>
       <p>
         A <dfn id="dfn-default-telephony-service" title="default telephony service">default telephony
-        service</dfn> is the <a class="internalDFN" href="#dfn-telephony-service">telephony service</a> which is set as default
+        service</dfn> is the <a class="internalDFN" href="#dfn-telephony-service">telephony service</a> that is set as default
         for telephony operations by the implementation.
       </p>
       <p>
@@ -1284,12 +1286,11 @@ telCall</span><span class="pun">.</span><span class="pln">onerror </span><span c
               </li>
               <li>
                 <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-                <code><a class="internalDFN" href="#dfn-statechange">statechange</a></code> at the <var>telCall</var>
-                object.
+                <code>statechange</code> at the <var>telCall</var> object.
               </li>
               <li>
                 <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-                <code><a class="internalDFN" href="#dfn-dialing">dialing</a></code> at the <var>telCall</var> object.
+                <code>dialing</code> at the <var>telCall</var> object.
               </li>
               <li>and finally return to the caller and <a class="internalDFN" href="#dfn-queue-a-task">queue a task</a> <a class="internalDFN" href="#dfn-tcallcontrol">
                 <i>TCallControl</i></a> to monitor call flow progress.
@@ -1348,6 +1349,13 @@ telCall</span><span class="pun">.</span><span class="pln">onerror </span><span c
           <li>If the <a class="idlType" href="#idl-def-ToneParams"><code>ToneParams</code></a> parameter specifies the
           <code>serviceId</code> to be used, then validate and use that value,
           otherwise use the default telephony service for sending the tones.
+          </li>
+          <li>If the <a class="idlType" href="#idl-def-ToneParams"><code>ToneParams</code></a> parameter specifies the tone
+          <code>duration</code>, then ignore that value.
+          </li>
+          <li>If the <a class="idlType" href="#idl-def-ToneParams"><code>ToneParams</code></a> parameter specifies the tone
+          <code>gap</code>, meaning the delay before sending the tone, then
+          validate and use that value, otherwise use a default value.
           </li>
           <li>Request from the telephony system to start sending the specified
           tone. The tone <em title="SHOULD" class="rfc2119">SHOULD</em> play until the <code>stopTone</code> method is
@@ -1414,18 +1422,17 @@ telCall</span><span class="pun">.</span><span class="pln">onerror </span><span c
           </li>
           <li>
             <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-            <code><a class="internalDFN" href="#dfn-statechange">statechange</a></code> at the <var>incomingCall</var>
-            object.
+            <code>statechange</code> at the <var>incomingCall</var> object.
           </li>
           <li>
             <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-            <code><a class="internalDFN" href="#dfn-incoming">incoming</a></code> at the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object
+            <code>incoming</code> at the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object
             managing the call.
           </li>
           <li>
             <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-            <code><a class="internalDFN" href="#dfn-callschanged">callschanged</a></code> at the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a>
-            object managing the call.
+            <code>callschanged</code> at the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object
+            managing the call.
           </li>
           <li>
             <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> <a class="internalDFN" href="#dfn-tcallcontrol"><i>TCallControl</i></a> to monitor call flow
@@ -1586,7 +1593,7 @@ interface <span class="idlInterfaceID">CallHandler</span> {
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> <em title="MUST" class="rfc2119">MUST</em> be supported as
+          The following are the <a>event handlers</a> that <em title="MUST" class="rfc2119">MUST</em> be supported as
           attributes:
         </p>
         <table class="simple">
@@ -1653,7 +1660,7 @@ interface <span class="idlInterfaceID">CallHandler</span> {
 <span class="idlMethod">    <span class="idlMethType"><a>void</a></span>           <span class="idlMethName"><a href="#widl-TelephonyCall-accept-void">accept</a></span> ();</span>
 <span class="idlMethod">    <span class="idlMethType"><a>void</a></span>           <span class="idlMethName"><a href="#widl-TelephonyCall-redirect-void-DOMString-remoteParty">redirect</a></span> (<span class="idlParam"><span class="idlParamType"><a>DOMString</a></span> <span class="idlParamName">remoteParty</span></span>);</span>
 <span class="idlMethod">    <span class="idlMethType"><a>void</a></span>           <span class="idlMethName"><a href="#widl-TelephonyCall-transfer-void-DOMString-thirdParty">transfer</a></span> (<span class="idlParam"><span class="idlParamType"><a>DOMString</a></span> <span class="idlParamName">thirdParty</span></span>);</span>
-<span class="idlMethod">    <span class="idlMethType"><a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a></span> <span class="idlMethName"><a href="#widl-TelephonyCall-join-ConferenceCall">join</a></span> ();</span>
+<span class="idlMethod">    <span class="idlMethType"><a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a></span> <span class="idlMethName"><a href="#widl-TelephonyCall-createConference-ConferenceCall">createConference</a></span> ();</span>
 <span class="idlAttribute">                attribute <span class="idlAttrType"><a class="internalDFN" href="#dfn-eventhandler">EventHandler</a></span> <span class="idlAttrName"><a href="#widl-TelephonyCall-ondialing">ondialing</a></span>;</span>
 <span class="idlAttribute">                attribute <span class="idlAttrType"><a class="internalDFN" href="#dfn-eventhandler">EventHandler</a></span> <span class="idlAttrName"><a href="#widl-TelephonyCall-onalerting">onalerting</a></span>;</span>
 <span class="idlAttribute">                attribute <span class="idlAttrType"><a class="internalDFN" href="#dfn-eventhandler">EventHandler</a></span> <span class="idlAttrName"><a href="#widl-TelephonyCall-onaccepted">onaccepted</a></span>;</span>
@@ -1741,10 +1748,11 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             <code>null</code>.
           </dd></dl></section><section id="methods-2"><h4><span class="secno">10.4.2 </span>Methods</h4><dl class="methods"><dt id="widl-TelephonyCall-accept-void"><code>accept</code></dt><dd>
             Accepts the incoming or waiting telephony call.
-          <div><em>No parameters.</em></div><div><em>Return type: </em><code><a>void</a></code></div></dd><dt id="widl-TelephonyCall-join-ConferenceCall"><code>join</code></dt><dd>
-            Initiates merging the active and held calls into a multiparty call.
-            Using this method <em title="MUST" class="rfc2119">MUST</em> be the only way to create a
-            <code>ConferenceCall</code> object.
+          <div><em>No parameters.</em></div><div><em>Return type: </em><code><a>void</a></code></div></dd><dt id="widl-TelephonyCall-createConference-ConferenceCall"><code>createConference</code></dt><dd>
+            Creates a multiparty call from the current call. On cellular
+            telephony services, this happens by initiating merging the active
+            and held calls into a multiparty call. Using this method <em title="MUST" class="rfc2119">MUST</em> be
+            the only way to create a <code>ConferenceCall</code> object.
           <div><em>No parameters.</em></div><div><em>Return type: </em><code><a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a></code></div></dd><dt id="widl-TelephonyCall-redirect-void-DOMString-remoteParty"><code>redirect</code></dt><dd>
             Initiates deflecting an incoming or waiting telephone call to
             another remote party.
@@ -2036,7 +2044,7 @@ interface <span class="idlInterfaceID">CallHandler</span> {
           </p>
           <ol>
             <li>Queue a task to fire a simple event named
-            <code><a class="internalDFN" href="#dfn-statechange">statechange</a></code>.
+            <code>statechange</code>.
             </li>
             <li>Queue a task to fire a simple event named with the new value of
             the state attribute.
@@ -2124,7 +2132,8 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             If there is any error during method calls, then the <a href="#error-steps">error steps</a> <em title="MUST" class="rfc2119">MUST</em> be executed.
           </p>
           <p>
-            The <code>disconnect</code> method when invoked <em title="MUST" class="rfc2119">MUST</em> run the
+            The <code>disconnect</code> method when invoked on the
+            <a class="idlType" href="#idl-def-Call"><code>Call</code></a> object <var>telCall</var>, it <em title="MUST" class="rfc2119">MUST</em> run the
             following steps:
           </p>
           <ol id="steps-disconnect-client">
@@ -2133,12 +2142,11 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             </li>
             <li>
               <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-              <code><a class="internalDFN" href="#dfn-statechange">statechange</a></code> at the <var>telCall</var> object.
+              <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
               <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-              <code><a class="internalDFN" href="#call-state-disconnecting">disconnecting</a></code> at the <var>telCall</var>
-              object.
+              <code>disconnecting</code> at the <var>telCall</var> object.
             </li>
             <li>Request from the telephony system the disconnection of the
             call, then return and continue these steps asynchronously. If there
@@ -2161,7 +2169,8 @@ interface <span class="idlInterfaceID">CallHandler</span> {
           </p>
           <p>
             When <a class="internalDFN" href="#dfn-tcallcontrol"><i>TCallControl</i></a> is notified of actual call
-            disconnection it <em title="MUST" class="rfc2119">MUST</em> follow the next steps:
+            disconnection of the <a class="idlType" href="#idl-def-Call"><code>Call</code></a> object
+            <var>telCall</var>, it <em title="MUST" class="rfc2119">MUST</em> follow the next steps:
           </p>
           <ol id="steps-disconnect-system">
             <li>Set the <code>state</code> of <var>telCall</var> to
@@ -2169,12 +2178,11 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             </li>
             <li>
               <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-              <code><a class="internalDFN" href="#dfn-statechange">statechange</a></code> at the <var>telCall</var> object.
+              <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
               <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
-              <code><a class="internalDFN" href="#call-state-disconnected">disconnected</a></code> at the <var>telCall</var>
-              object.
+              <code>disconnected</code> at the <var>telCall</var> object.
             </li>
             <li>Remove the <var>telCall</var> object from the
             <code>calls</code> array.
@@ -2299,15 +2307,13 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             <abbr title="Global System for Mobile Communications">GSM</abbr>, the Call Transfer supplementary service must be active.
           </p></div>
           <p>
-            The <code>join</code> method when invoked <em title="MUST" class="rfc2119">MUST</em> run the following
-            steps:
+            The <code>createConference</code> method <em title="MUST" class="rfc2119">MUST</em> run the following
+            steps when invoked on a <code>TelephonyCall</code> object, referred
+            as <var>telCall</var> in these steps:
           </p>
-          <ol>
-            <li>If the <code>remoteParty</code> property is equal to the <var>
-              remoteParty</var> parameter of the method call, or if
-              <code>state</code> is not equal to <code>"active"</code> or
-              <code>held</code>, an <code>InvalidModificationError</code> <em title="MUST" class="rfc2119">MUST</em>
-              be thrown.
+          <ol id="steps-createConference">
+            <li>Set the <code>state</code> of <var>telCall</var> to
+            <code>"joining"</code>.
             </li>
             <li>Otherwise, in cellular telephony services:
               <ol>
@@ -2332,8 +2338,9 @@ interface <span class="idlInterfaceID">CallHandler</span> {
                 </li>
               </ol>
             </li>
-            <li>Set the <code>state</code> of <var>telCall</var> and this call
-            to <code>"joining"</code>.
+            <li>If one of the calls is already a
+            <a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a> object, use it as
+            <var>confCall</var> in these steps.
             </li>
             <li>Then,
               <ol>
@@ -2351,27 +2358,36 @@ interface <span class="idlInterfaceID">CallHandler</span> {
             unique conference id, and set its <code>state</code> to
             <code>"joining"</code>.
             </li>
-            <li>Return the <code>ConferenceCall</code> object, and continue
-            these steps asynchronously.
+            <li>Return the <var>confCall</var> object, and continue these steps
+            asynchronously.
             </li>
             <li>If the request to the telephony system is successful,
               <ol>
                 <li>set the <code>conferenceId</code> property of the
                 participating calls to the unique identifier generated for the
-                multiparty call.
-                </li>
-                <li>Set the <code>state</code> of <var>telCall</var> to <code>
-                  "multiparty"</code>.
-                </li>
-                <li>Activate the multiparty call.
+                multiparty call <var>confCall</var>.
                 </li>
                 <li>Add the two calls participating in the multiparty call to
-                the <code>calls</code> property of the multiparty call object
-                and remove them from the <code>calls</code> array of the
+                the <code>calls</code> property of the <var>confCall</var>
+                object and remove them from the <code>calls</code> array of the
                 <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object.
                 </li>
-                <li>Add the multiparty call to the <code>calls</code> array of
-                the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object.
+                <li>Add the <var>confCall</var> object to the
+                <code>calls</code> array of the <a class="idlType" href="#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object.
+                </li>
+                <li>Set the <code>state</code> of <var>confCall</var> to <code>
+                  "active"</code>.
+                </li>
+                <li>
+                  <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
+                  <code>active</code> at <var>confCall</var>.
+                </li>
+                <li>
+                  <a class="internalDFN" href="#dfn-queue-a-task">Queue a task</a> to <a class="internalDFN" href="#dfn-fire-a-simple-event">fire a simple event</a> named
+                  <code>participantadded</code> at <var>confCall</var>. object
+                </li>
+                <li>Follow the state changes of <var>confCall</var> through the
+                state change events.
                 </li>
                 <li>If there is any error during the method call, then the
                 <a href="#error-steps">error steps</a> <em title="MUST" class="rfc2119">MUST</em> be executed on the
@@ -2453,8 +2469,8 @@ interface <span class="idlInterfaceID">CallHandler</span> {
           dispatched.
         </dd><dt id="widl-ConferenceCall-onparticipantadded"><code>onparticipantadded</code> of type <span class="idlAttrType"><a class="internalDFN" href="#dfn-eventhandler">EventHandler</a></span>,            </dt><dd>
           Event handler called when a new participant has been added to the
-          conference call as a result of the <code>join</code> method, and the
-          <code>participantadded</code> event is dispatched.
+          conference call as a result of the <code>createConference</code>
+          method, and the <code>participantadded</code> event is dispatched.
         </dd><dt id="widl-ConferenceCall-onparticipantremoved"><code>onparticipantremoved</code> of type <span class="idlAttrType"><a class="internalDFN" href="#dfn-eventhandler">EventHandler</a></span>,            </dt><dd>
           Event handler called when a participant has been removed from the
           conference call as the result of the <code>split</code> method, or
@@ -2644,6 +2660,151 @@ interface <span class="idlInterfaceID">CallHandler</span> {
           and 3-way call.
         </p></div>
       </section><!-- conference-steps -->
+      <section id="conference-eventhandlers">
+        <!-- conference-eventhandlers -->
+        <h3><span class="secno">11.4 </span>
+          Event handlers
+        </h3>
+        <p>
+          The following are the <a>event handlers</a> <em title="MUST" class="rfc2119">MUST</em> be supported as
+          attributes by the <a class="idlType" href="#idl-def-ConferenceCall"><code>ConferenceCall</code></a> object:
+        </p>
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>
+                event handler
+              </th>
+              <th>
+                event name
+              </th>
+              <th>
+                event type
+              </th>
+              <th>
+                short description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <dfn id="dfn-onactive-1"><code>onactive</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-active-1">active</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"active"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-ondisconnecting-1"><code>ondisconnecting</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-disconnecting-1">disconnecting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles the call state changes to the
+                <code>"disconnecting"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-ondisconnected-1"><code>ondisconnected</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-disconnected-1">disconnected</dfn></code>
+              </td>
+              <td>
+                <a class="idlType" href="#idl-def-TelephonyEvent"><code>TelephonyEvent</code></a>
+              </td>
+              <td>
+                handles call state changes to the <code>"disconnected"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-onholding-1"><code>onholding</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-holding-1">holding</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"holding"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-onheld-1"><code>onheld</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-held-1">held</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"held"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-onresuming-1"><code>onresuming</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-resuming-1">resuming</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"resuming"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-onjoining-1"><code>onjoining</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-joining-1">joining</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"joining"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="dfn-onsplitting-1"><code>onsplitting</code></dfn>
+              </td>
+              <td>
+                <code><dfn id="dfn-splitting-1">splitting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"splitting"</code>
+                state
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section><!-- conference-eventhandlers -->
     </section><!-- ConferenceCall -->
     <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
     <section id="callstate-enum">
