@@ -786,6 +786,16 @@ var respecConfig = {
           <li>If the <a>ToneParams</a> parameter specifies the
           <code>serviceId</code> to be used, then validate and use that value,
           otherwise use the default telephony service for sending the tones.
+<<<<<<< HEAD
+=======
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>duration</code>, then ignore that value.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>gap</code>, meaning the delay before sending the tone, then
+          validate and use that value, otherwise use a default value.
+>>>>>>> fixed merge conflict, added full stops.
           </li>
           <li>Request from the telephony system to start sending the specified
           tone. The tone SHOULD play until the <code>stopTone</code> method is
