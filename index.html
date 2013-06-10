@@ -53,17 +53,93 @@ var respecConfig = {
     };
     </script>
     <style>
-#HTML5 Tidy screws up if this line is missing.            
-    figure{
+#HTML5 Tidy screws up if this line is missing. 
+                figure {
         display: block;
         width: auto;
         margin: 2em auto;
         text-align: center;
     }
-    figcaption{
+    figcaption {
         display: block;
         margin-top: 1em;
-    }                
+    }
+    #wipcontainer {
+        position: fixed;
+        bottom: 0px;
+        margin: 0 0 0 -37.5%;
+        width: 75%;
+        left: 50%;
+        z-index: 1000;
+    }
+    #wip {
+        display: block;
+        color: white;
+        width: auto;
+        border: thin solid rgb(41, 117, 171);
+        border-bottom: none;
+        border-radius: 0.5em 0.5em 0 0;
+        box-shadow: 0 0 1em rgba(127, 127, 127, .5);
+        padding: 1em 8em 1.5em 8em;
+        margin: auto;
+        background: rgb(26, 110, 171);
+        background: linear-gradient(to bottom, rgba(26, 110, 171, .8) 0%, rgba(2, 92, 155, 1) 52%, rgba(11, 99, 161, 1) 67%, rgba(40, 122, 181, .8) 100%);
+        text-align: center;
+        font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 0.9em;
+        font-weight: 300;
+    }
+    @media (max-width: 50em) {
+        #wipcontainer {
+            margin: 0 0 0 0;
+            left:0;
+            width: auto;
+        }
+        #wip {
+            padding: 1em 4em 1.5em 4em;
+            width: auto;
+        }
+    }
+    #wip strong {
+        font-weight: normal;
+        display: block;
+        text-transform: uppercase;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+        margin: 0.25em auto 0.5em auto;
+    }
+    #wip a {
+        color: #fff;
+    }
+    #wip a:hover {
+        background: transparent;
+    }
+    #wip strong:before, #wip strong:after {
+        position: relative;
+        content:'\26A0';
+        padding: 0 0.5em 0 0.5em;
+        text-shadow: none;
+        font-size: 1.25em;
+    }
+    #wip > input {
+        appearance: none;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        background: none;
+        border: none;
+        color: rgb(243, 245, 246);
+        font-weight: bold;
+        font-size: 1.2em;
+        cursor: pointer;
+        border: thin solid rgba(127, 127, 127, .0);
+        border-radius: .3em;
+    }
+    #wip > input:hover {
+        border: thin outset rgba(127, 127, 127, .5);
+    }
+    #wip > input:active {
+        border: thin inset rgba(127, 127, 127, .5);
+    }
     </style>
   </head>
   <body>
@@ -88,6 +164,18 @@ var respecConfig = {
         stage should join the aforementioned mailing lists and take part in the
         discussions.
       </p>
+      <div id="wipcontainer">
+        <p class="stability" id="wip">
+          <strong>This is a work in progress!</strong> This specification is
+          for review purposes only and not for implementation! For the latest
+          updates, possibly including important bug fixes, please look at the
+          <a href="http://www.w3.org/2012/sysapps/telephony">editor's draft</a>
+          instead. If you find any bugs, typos, or issues please <a href=
+          "https://github.com/sysapps/telephony/issues">file a bug</a>!
+          <input onclick="this.parentNode.style.display = 'none'" type="button"
+          value="×">
+        </p>
+      </div>
     </section>
     <!-- - - - - - - - - - - - - -  Introduction - - - - - - - - - - - - - - -  -->
     <section class="informative">
