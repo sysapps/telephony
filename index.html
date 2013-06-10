@@ -183,12 +183,12 @@ var respecConfig = {
         defined in [[DOM4]].
       </p>
       <p>
-        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a href=
-        '#call-state-active'>active</a> state representing a connected call
-        which is and bound to the media input and output devices (e.g.
-        microphone, speaker, tone generator). Note that a call on <a>hold</a>
-        is also active from call signaling point of view, but not bound to
-        media input and output devices.
+        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a
+        class="internalDFN" href='#call-state-active'>active</a> state
+        representing a connected call which is and bound to the media input and
+        output devices (e.g. microphone, speaker, tone generator). Note that a
+        call on <a>hold</a> is also active from call signaling point of view,
+        but not bound to media input and output devices.
       </p>
       <p>
         A <dfn title="telephony service">telephony service</dfn> exposes
@@ -411,7 +411,7 @@ var respecConfig = {
               optional ToneParams params
             </dt>
             <dd>
-              If set, Represents the <a>telephony service id</a> to be used,
+              If set, represents the <a>telephony service id</a> to be used,
               and the delay before a tone. The <code>duration</code> parameter
               is ignored. If not set, implementations MUST use default values
               for telephony service and delay.
@@ -656,7 +656,7 @@ var respecConfig = {
               </li>
             </ol>
           </li>
-          <li>Otherwise, if queue a task to:
+          <li>Otherwise, queue a task to:
             <ol>
               <li>Change the <a>defaultServiceId</a> attribute to the
               <a>telephony service id</a> of the new default telephony service.
@@ -937,7 +937,7 @@ var respecConfig = {
         Represents an error that occured during the lifecycle of a telephony
         call.
       </p>
-      <dl title="interface TelephonyEvent : Event" class="idl">
+      <dl title="interface TelephonyErrorEvent : Event" class="idl">
         <dt>
           readonly attribute TelephonyCall call
         </dt>
