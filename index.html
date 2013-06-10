@@ -867,21 +867,11 @@ var respecConfig = {
           The <code>incoming</code>, <code>serviceadded</code> and
           <code>serviceremoved</code> events have to be defined according to
           DOM4.
-        </p>The task <a><i>TCallControl</i></a> MUST listen to any event that
+        </p>
+        <p>The task <a><i>TCallControl</i></a> MUST listen to any event that
         results in a call disconnection, and upon such events, follow the steps
         described for <a href='#steps-disconnect-system'>handling disconnected
         calls</a>.
-        <p>
-          The <code>sendTones()</code> method when invoked MUST make a request
-          to the telephony system to start sending the tones passed in the
-          <code>tones</code> parameter to the telephony service used by the
-          active TelephonyCall object, using the default tone duration and
-          delay, unless a different <a>telephony service</a>, tone duration,
-          and/or delay is specified via the parameter. If the request is
-          acknowledged, then return to the caller. If there is an error,
-          <a>queue a task</a> to <a>fire a simple event</a> named
-          <a><code>error</code></a> at the <a>TelephonyManager</a> object
-          managing the call.
         </p>
       </section><!-- telephonymanager-steps -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
