@@ -722,12 +722,11 @@ var respecConfig = {
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire a simple event</a> named
-                <code><a>statechange</a></code> at the <var>telCall</var>
-                object.
+                <code>statechange</code> at the <var>telCall</var> object.
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire a simple event</a> named
-                <code><a>dialing</a></code> at the <var>telCall</var> object.
+                <code>dialing</code> at the <var>telCall</var> object.
               </li>
               <li>and finally return to the caller and <a>queue a task</a> <a>
                 <i>TCallControl</i></a> to monitor call flow progress.
@@ -860,18 +859,17 @@ var respecConfig = {
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
-            <code><a>statechange</a></code> at the <var>incomingCall</var>
-            object.
+            <code>statechange</code> at the <var>incomingCall</var> object.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
-            <code><a>incoming</a></code> at the <a>TelephonyManager</a> object
+            <code>incoming</code> at the <a>TelephonyManager</a> object
             managing the call.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
-            <code><a>callschanged</a></code> at the <a>TelephonyManager</a>
-            object managing the call.
+            <code>callschanged</code> at the <a>TelephonyManager</a> object
+            managing the call.
           </li>
           <li>
             <a>Queue a task</a> <a><i>TCallControl</i></a> to monitor call flow
@@ -1083,7 +1081,7 @@ var respecConfig = {
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> MUST be supported as
+          The following are the <a>event handlers</a> that MUST be supported as
           attributes:
         </p>
         <table class="simple">
@@ -1217,10 +1215,9 @@ var respecConfig = {
           </dt>
           <dd>
             Creates a multiparty call from the current call. On cellular
-            telephony services, this happens by initiating
-            merging the active and held calls into a multiparty call.
-            Using this method MUST be the only way to create a
-            <code>ConferenceCall</code> object.
+            telephony services, this happens by initiating merging the active
+            and held calls into a multiparty call. Using this method MUST be
+            the only way to create a <code>ConferenceCall</code> object.
           </dd>
           <dt>
             attribute EventHandler ondialing
@@ -1619,7 +1616,7 @@ var respecConfig = {
           </p>
           <ol>
             <li>Queue a task to fire a simple event named
-            <code><a>statechange</a></code>.
+            <code>statechange</code>.
             </li>
             <li>Queue a task to fire a simple event named with the new value of
             the state attribute.
@@ -1718,12 +1715,11 @@ var respecConfig = {
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>statechange</a></code> at the <var>telCall</var> object.
+              <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>disconnecting</a></code> at the <var>telCall</var>
-              object.
+              <code>disconnecting</code> at the <var>telCall</var> object.
             </li>
             <li>Request from the telephony system the disconnection of the
             call, then return and continue these steps asynchronously. If there
@@ -1756,12 +1752,11 @@ var respecConfig = {
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>statechange</a></code> at the <var>telCall</var> object.
+              <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
               <a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>disconnected</a></code> at the <var>telCall</var>
-              object.
+              <code>disconnected</code> at the <var>telCall</var> object.
             </li>
             <li>Remove the <var>telCall</var> object from the
             <code>calls</code> array.
@@ -1889,9 +1884,10 @@ var respecConfig = {
             The <code>createConference</code> method MUST run the following
             steps when invoked on a <code>TelephonyCall</code> object, referred
             as <var>telCall</var> in these steps:
-            <ol id="steps-createConference">
-            <li>Set the <code>state</code> of <var>telCall</var>
-            to <code>"joining"</code>.
+          </p>
+          <ol id="steps-createConference">
+            <li>Set the <code>state</code> of <var>telCall</var> to
+            <code>"joining"</code>.
             </li>
             <li>Otherwise, in cellular telephony services:
               <ol>
@@ -1916,8 +1912,9 @@ var respecConfig = {
                 </li>
               </ol>
             </li>
-            <li>If one of the calls is already a <a><code>ConferenceCall</code>
-            </a> object, use it as <var>confCall</var> in these steps.
+            <li>If one of the calls is already a
+            <a><code>ConferenceCall</code></a> object, use it as
+            <var>confCall</var> in these steps.
             </li>
             <li>Then,
               <ol>
@@ -1935,8 +1932,8 @@ var respecConfig = {
             unique conference id, and set its <code>state</code> to
             <code>"joining"</code>.
             </li>
-            <li>Return the <var>confCall</var> object, and continue
-            these steps asynchronously.
+            <li>Return the <var>confCall</var> object, and continue these steps
+            asynchronously.
             </li>
             <li>If the request to the telephony system is successful,
               <ol>
@@ -1949,17 +1946,19 @@ var respecConfig = {
                 object and remove them from the <code>calls</code> array of the
                 <a>TelephonyManager</a> object.
                 </li>
-                <li>Add the <var>confCall</var> object to the <code>calls</code>
-                array of the <a>TelephonyManager</a> object.
+                <li>Add the <var>confCall</var> object to the
+                <code>calls</code> array of the <a>TelephonyManager</a> object.
                 </li>
-                <li>Set the <code>state</code> of <var>confCall</var> to
-                <code>"active"</code>.
-                <li><a>Queue a task</a> to <a>fire a simple event</a> named
-                <code><a>active</a></code> at <var>confCall</var>.
+                <li>Set the <code>state</code> of <var>confCall</var> to <code>
+                  "active"</code>.
                 </li>
-                <li><a>Queue a task</a> to <a>fire a simple event</a> named
-                <code><a>participantadded</a></code> at <var>confCall</var>.
-                object
+                <li>
+                  <a>Queue a task</a> to <a>fire a simple event</a> named
+                  <code>active</code> at <var>confCall</var>.
+                </li>
+                <li>
+                  <a>Queue a task</a> to <a>fire a simple event</a> named
+                  <code>participantadded</code> at <var>confCall</var>. object
                 </li>
                 <li>Follow the state changes of <var>confCall</var> through the
                 state change events.
@@ -2284,7 +2283,8 @@ var respecConfig = {
           and 3-way call.
         </p>
       </section><!-- conference-steps -->
-      <section id="conference-eventhandlers"> <!-- conference-eventhandlers -->
+      <section id="conference-eventhandlers">
+        <!-- conference-eventhandlers -->
         <h3>
           Event handlers
         </h3>
@@ -2365,8 +2365,7 @@ var respecConfig = {
                 <a>simple event</a>
               </td>
               <td>
-                handles call state changes to the <code>"holding"</code>
-                state
+                handles call state changes to the <code>"holding"</code> state
               </td>
             </tr>
             <tr>
@@ -2394,8 +2393,7 @@ var respecConfig = {
                 <a>simple event</a>
               </td>
               <td>
-                handles call state changes to the <code>"resuming"</code>
-                state
+                handles call state changes to the <code>"resuming"</code> state
               </td>
             </tr>
             <tr>
@@ -2409,8 +2407,7 @@ var respecConfig = {
                 <a>simple event</a>
               </td>
               <td>
-                handles call state changes to the <code>"joining"</code>
-                state
+                handles call state changes to the <code>"joining"</code> state
               </td>
             </tr>
             <tr>
