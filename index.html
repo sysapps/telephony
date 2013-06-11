@@ -2270,6 +2270,153 @@ var respecConfig = {
           and 3-way call.
         </p>
       </section><!-- conference-steps -->
+      <section id="conference-eventhandlers"> <!-- conference-eventhandlers -->
+        <h3>
+          Event handlers
+        </h3>
+        <p>
+          The following are the <a>event handlers</a> MUST be supported as
+          attributes by the <a><code>ConferenceCall</code></a> object:
+        </p>
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>
+                event handler
+              </th>
+              <th>
+                event name
+              </th>
+              <th>
+                event type
+              </th>
+              <th>
+                short description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <dfn><code>onactive</code></dfn>
+              </td>
+              <td>
+                <code><dfn>active</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"active"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>ondisconnecting</code></dfn>
+              </td>
+              <td>
+                <code><dfn>disconnecting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles the call state changes to the
+                <code>"disconnecting"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>ondisconnected</code></dfn>
+              </td>
+              <td>
+                <code><dfn>disconnected</dfn></code>
+              </td>
+              <td>
+                <a><code>TelephonyEvent</code></a>
+              </td>
+              <td>
+                handles call state changes to the <code>"disconnected"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onholding</code></dfn>
+              </td>
+              <td>
+                <code><dfn>holding</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"holding"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onheld</code></dfn>
+              </td>
+              <td>
+                <code><dfn>held</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"held"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onresuming</code></dfn>
+              </td>
+              <td>
+                <code><dfn>resuming</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"resuming"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onjoining</code></dfn>
+              </td>
+              <td>
+                <code><dfn>joining</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"joining"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onsplitting</code></dfn>
+              </td>
+              <td>
+                <code><dfn>splitting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"splitting"</code>
+                state
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section><!-- conference-eventhandlers -->
     </section><!-- ConferenceCall -->
     <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
     <section>
