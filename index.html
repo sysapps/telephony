@@ -1208,10 +1208,12 @@ var respecConfig = {
             </dl>
           </dd>
           <dt>
-            ConferenceCall join()
+            ConferenceCall createConference()
           </dt>
           <dd>
-            Initiates merging the active and held calls into a multiparty call.
+            Creates a multiparty call from the current call. On cellular
+            telephony services, this happens by initiating
+            merging the active and held calls into a multiparty call.
             Using this method MUST be the only way to create a
             <code>ConferenceCall</code> object.
           </dd>
@@ -1878,10 +1880,10 @@ var respecConfig = {
             GSM, the Call Transfer supplementary service must be active.
           </p>
           <p>
-            The <code>join</code> method MUST run the following steps when
-            invoked on a <code>TelephonyCall</code> object, referred as
-            <var>telCall</var> in these steps:
-            <ol id="steps-join">
+            The <code>createConference</code> method MUST run the following
+            steps when invoked on a <code>TelephonyCall</code> object, referred
+            as <var>telCall</var> in these steps:
+            <ol id="steps-createConference">
             <li>Set the <code>state</code> of <var>telCall</var>
             to <code>"joining"</code>.
             </li>
@@ -2000,8 +2002,8 @@ var respecConfig = {
         </dt>
         <dd>
           Event handler called when a new participant has been added to the
-          conference call as a result of the <code>join</code> method, and the
-          <code>participantadded</code> event is dispatched.
+          conference call as a result of the <code>createConference</code>
+          method, and the <code>participantadded</code> event is dispatched.
         </dd>
         <dt>
           attribute EventHandler onparticipantremoved
