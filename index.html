@@ -1208,10 +1208,12 @@ var respecConfig = {
             </dl>
           </dd>
           <dt>
-            ConferenceCall join()
+            ConferenceCall createConference()
           </dt>
           <dd>
-            Initiates merging the active and held calls into a multiparty call.
+            Creates a multiparty call from the current call. On cellular
+            telephony services, this happens by initiating
+            merging the active and held calls into a multiparty call.
             Using this method MUST be the only way to create a
             <code>ConferenceCall</code> object.
           </dd>
@@ -1701,7 +1703,8 @@ var respecConfig = {
             "#error-steps">error steps</a> MUST be executed.
           </p>
           <p>
-            The <code>disconnect</code> method when invoked MUST run the
+            The <code>disconnect</code> method when invoked on the
+            <a><code>Call</code></a> object <var>telCall</var>, it MUST run the
             following steps:
           </p>
           <ol id="steps-disconnect-client">
@@ -1739,7 +1742,8 @@ var respecConfig = {
           </p>
           <p>
             When <a><i>TCallControl</i></a> is notified of actual call
-            disconnection it MUST follow the next steps:
+            disconnection of the <a><code>Call</code></a> object
+            <var>telCall</var>, it MUST follow the next steps:
           </p>
           <ol id="steps-disconnect-system">
             <li>Set the <code>state</code> of <var>telCall</var> to
@@ -1876,79 +1880,54 @@ var respecConfig = {
             GSM, the Call Transfer supplementary service must be active.
           </p>
           <p>
-            The <code>join</code> method when invoked MUST run the following
-            steps:
-          </p>
-          <ol>
-            <li>If the <code>remoteParty</code> property is equal to the <var>
-              remoteParty</var> parameter of the method call, or if
-              <code>state</code> is not equal to <code>"active"</code> or
-              <code>held</code>, an <code>InvalidModificationError</code> MUST
-              be thrown.
-            </li>
-            <li>Otherwise, in cellular telephony services:
-              <ol>
-                <li>put this call on hold
-                </li>
-                <li>
-                  <a href="#steps-dial">dial</a> a new call to the specified
-                  remote party; let the resulting <code>TelephonyCall</code>
-                  object be referred as <var>telCall</var> in these steps.
-                </li>
-              </ol>
-              <p>
-                Alternatively, in other telephony services (e.g. VoIP
-                protocols):
-              </p>
-              <ol>
-                <li>Create a new <a>TelephonyCall</a> object, referred as <var>
-                  telCall</var> .
-                </li>
-                <li>Set the <code>remoteParty</code> property to the
-                <var>remoteParty</var> parameter of the method call.
-                </li>
-              </ol>
-            </li>
-            <li>Set the <code>state</code> of <var>telCall</var> and this call
+            The <code>createConference</code> method MUST run the following
+            steps when invoked on a <code>TelephonyCall</code> object, referred
+            as <var>telCall</var> in these steps:
+            <ol id="steps-createConference">
+            <li>Set the <code>state</code> of <var>telCall</var>
             to <code>"joining"</code>.
             </li>
-            <li>Then,
-              <ol>
-                <li>in cellular telephony services, make a request to the
-                telephony system to join the active and held calls into a
-                multiparty call
-                </li>
-                <li>In other telephony services (e.g. VoIP protocols), make a
-                request to the telephony system to add the specified remote
-                party to this call.
-                </li>
-              </ol>
+            <li>Then, in cellular telephony services, make a request to the
+            telephony system to join the active and held calls into a
+            multiparty call.
             </li>
-            <li>Create a <a><code>ConferenceCall</code></a> object with a
-            unique conference id, and set its <code>state</code> to
-            <code>"joining"</code>
+            <li>If one of the calls is already a <a><code>ConferenceCall</code>
+            </a> object, use it as <var>confCall</var> in these steps.
             </li>
-            <li>Return the <code>ConferenceCall</code> object, and continue
+            <li>Otherwise create a new <a><code>ConferenceCall</code></a> object
+            with a unique conference id, named <var>confCall</var>.
+            </li>
+            <li>Set the <code>state</code> of <var>confCall</var> to
+            <code>"joining"</code>.
+            </li>
+            <li>Return the <var>confCall</var> object, and continue
             these steps asynchronously.
             </li>
             <li>If the request to the telephony system is successful,
               <ol>
                 <li>set the <code>conferenceId</code> property of the
                 participating calls to the unique identifier generated for the
-                multiparty call.
-                </li>
-                <li>Set the <code>state</code> of <var>telCall</var> to <code>
-                  "multiparty"</code>.
-                </li>
-                <li>Activate the multiparty call.
+                multiparty call <var>confCall</var>.
                 </li>
                 <li>Add the two calls participating in the multiparty call to
-                the <code>calls</code> property of the multiparty call object
-                and remove them from the <code>calls</code> array of the
+                the <code>calls</code> property of the <var>confCall</var>
+                object and remove them from the <code>calls</code> array of the
                 <a>TelephonyManager</a> object.
                 </li>
-                <li>Add the multiparty call to the <code>calls</code> array of
-                the <a>TelephonyManager</a> object.
+                <li>Add the <var>confCall</var> object to the <code>calls</code>
+                array of the <a>TelephonyManager</a> object.
+                </li>
+                <li>Set the <code>state</code> of <var>confCall</var> to
+                <code>"active"</code>.
+                <li><a>Queue a task</a> to <a>fire a simple event</a> named
+                <code><a>active</a></code> at <var>confCall</var>.
+                </li>
+                <li><a>Queue a task</a> to <a>fire a simple event</a> named
+                <code><a>participantadded</a></code> at <var>confCall</var>.
+                object
+                </li>
+                <li>Follow the state changes of <var>confCall</var> through the
+                state change events.
                 </li>
                 <li>If there is any error during the method call, then the
                 <a href="#error-steps">error steps</a> MUST be executed on the
@@ -2023,8 +2002,8 @@ var respecConfig = {
         </dt>
         <dd>
           Event handler called when a new participant has been added to the
-          conference call as a result of the <code>join</code> method, and the
-          <code>participantadded</code> event is dispatched.
+          conference call as a result of the <code>createConference</code>
+          method, and the <code>participantadded</code> event is dispatched.
         </dd>
         <dt>
           attribute EventHandler onparticipantremoved
@@ -2270,6 +2249,153 @@ var respecConfig = {
           and 3-way call.
         </p>
       </section><!-- conference-steps -->
+      <section id="conference-eventhandlers"> <!-- conference-eventhandlers -->
+        <h3>
+          Event handlers
+        </h3>
+        <p>
+          The following are the <a>event handlers</a> MUST be supported as
+          attributes by the <a><code>ConferenceCall</code></a> object:
+        </p>
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>
+                event handler
+              </th>
+              <th>
+                event name
+              </th>
+              <th>
+                event type
+              </th>
+              <th>
+                short description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <dfn><code>onactive</code></dfn>
+              </td>
+              <td>
+                <code><dfn>active</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"active"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>ondisconnecting</code></dfn>
+              </td>
+              <td>
+                <code><dfn>disconnecting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles the call state changes to the
+                <code>"disconnecting"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>ondisconnected</code></dfn>
+              </td>
+              <td>
+                <code><dfn>disconnected</dfn></code>
+              </td>
+              <td>
+                <a><code>TelephonyEvent</code></a>
+              </td>
+              <td>
+                handles call state changes to the <code>"disconnected"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onholding</code></dfn>
+              </td>
+              <td>
+                <code><dfn>holding</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"holding"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onheld</code></dfn>
+              </td>
+              <td>
+                <code><dfn>held</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"held"</code> state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onresuming</code></dfn>
+              </td>
+              <td>
+                <code><dfn>resuming</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"resuming"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onjoining</code></dfn>
+              </td>
+              <td>
+                <code><dfn>joining</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"joining"</code>
+                state
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn><code>onsplitting</code></dfn>
+              </td>
+              <td>
+                <code><dfn>splitting</dfn></code>
+              </td>
+              <td>
+                <a>simple event</a>
+              </td>
+              <td>
+                handles call state changes to the <code>"splitting"</code>
+                state
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section><!-- conference-eventhandlers -->
     </section><!-- ConferenceCall -->
     <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
     <section>
