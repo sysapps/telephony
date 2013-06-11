@@ -433,9 +433,8 @@ var respecConfig = {
           attribute EventHandler onincoming
         </dt>
         <dd>
-          Whenever there is a new call in <a href=
-          '#call-state-incoming'><code>incoming</code></a> or <a href=
-          '#call-state-waiting'><code>waiting</code></a> state, the <a>user
+          Whenever there is a new call in <code>incoming</code> or 
+          <code>waiting</code> state, the <a>user
           agent</a> MUST <a>queue a task</a> to fire an event named
           <code>incoming</code> of type <a>TelephonyEvent</a>. The
           <code>call</code> property of the event MUST be set to the
@@ -486,7 +485,7 @@ var respecConfig = {
         <p>
           The following are the <a class="internalDFN" href=
           "#dfn-eventhandler">event handlers</a> (and their corresponding
-          <a class="internalDFN" href="#dfn-eventtypes">event types</a>) that
+          <a>event types</a>) that
           MUST be supported as attributes by the <a>TelephonyManager</a>
           object.
         </p>
