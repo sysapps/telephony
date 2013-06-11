@@ -51,10 +51,15 @@ var respecConfig = {
             ]
         }]
     };
+    function hideWIP(elem){
+      elem.parentNode.parentNode.id = '';
+      elem.parentNode.id = '';
+      elem.style.display = 'none';
+    }
     </script>
     <style>
 #HTML5 Tidy screws up if this line is missing. 
-                figure {
+    figure {
         display: block;
         width: auto;
         margin: 2em auto;
@@ -172,7 +177,7 @@ var respecConfig = {
           <a href="http://www.w3.org/2012/sysapps/telephony">editor's draft</a>
           instead. If you find any bugs, typos, or issues please <a href=
           "https://github.com/sysapps/telephony/issues">file a bug</a>!
-          <input onclick="this.parentNode.style.display = 'none'" type="button"
+          <input onclick="hideWIP(this)" type="button"
           value="×">
         </p>
       </div>
