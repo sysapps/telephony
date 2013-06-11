@@ -1379,13 +1379,12 @@ href="#dfn-promise">Promise</a></span>       <span class="idlMethName"><a href=
             "internalDFN" href="#dfn-eventhandler">EventHandler</a></span>,
           </dt>
           <dd>
-            Whenever there is a new call in <a href=
-            "#call-state-incoming"><code>incoming</code></a> or <a href=
-            "#call-state-waiting"><code>waiting</code></a> state, the <a class=
-            "internalDFN" href="#ua">user agent</a> <em title="MUST" class=
-            "rfc2119">MUST</em> <a class="internalDFN" href=
-            "#dfn-queue-a-task">queue a task</a> to fire an event named
-            <code>incoming</code> of type <a class="idlType" href=
+            Whenever there is a new call in <code>incoming</code> or
+            <code>waiting</code> state, the <a class="internalDFN" href=
+            "#ua">user agent</a> <em title="MUST" class="rfc2119">MUST</em>
+            <a class="internalDFN" href="#dfn-queue-a-task">queue a task</a> to
+            fire an event named <code>incoming</code> of type <a class=
+            "idlType" href=
             "#idl-def-TelephonyEvent"><code>TelephonyEvent</code></a>. The
             <code>call</code> property of the event <em title="MUST" class=
             "rfc2119">MUST</em> be set to the <a class="idlType" href=
@@ -1783,9 +1782,8 @@ href="#dfn-promise">Promise</a></span>       <span class="idlMethName"><a href=
         <p>
           The following are the <a class="internalDFN" href=
           "#dfn-eventhandler">event handlers</a> (and their corresponding
-          <a class="internalDFN" href="#dfn-eventtypes">event types</a>) that
-          <em title="MUST" class="rfc2119">MUST</em> be supported as attributes
-          by the <a class="idlType" href=
+          <a>event types</a>) that <em title="MUST" class="rfc2119">MUST</em>
+          be supported as attributes by the <a class="idlType" href=
           "#idl-def-TelephonyManager"><code>TelephonyManager</code></a> object.
         </p>
         <table class="simple">
