@@ -1131,6 +1131,166 @@ var respecConfig = {
           </tbody>
         </table>
       </section><!-- CallHandler Interface -->
+      <!-- a short summary on call state management
+      =========================================================================
+      CDMA states for dialed calls       | Mapping to the API or [modem] state
+      _________________________________________________________________________
+          [ DIAL button pressed ]        | dialing
+          -> channel request             |
+          <- immediate assignment        |
+          -> service request             |
+          <- authentication request      |
+          -> authentication response     |
+          <- cyphering command           |
+          -> cyphering complete          |
+          -> setup                       |
+          <- call confirmed              |
+          <- assignment command          |
+          -> assignment completed        |
+          <- alerting                    | alerting
+          <- connect                     |
+          -> connect ack                 | active (connected)
+          <-> dataspeech                 |
+      _________________________________________________________________________
+      CDMA states for received calls     | Mapping to the API or [modem] state
+      _________________________________________________________________________
+          <- paging request              |
+          -> channel request             |
+          <- immediate assignment        |
+          -> paging response             |
+          <- authentication request      |
+          -> authentication response,    |
+          <- cyphering command           |
+          -> cyphering complete          |
+          <- call setup                  |
+          -> call confirmed              | incoming
+          <- assignment command          |
+          -> assignment complete         |
+          -> call alerting               | [ringing]
+          [ OK button pressed ]          | accepted
+          -> connect                     |
+          <- connect ack                 | active (connected)
+          <-> dataspeech                 |
+      =========================================================================
+      GSM states for dialed calls        | Mapping to the API or [modem] state
+      _________________________________________________________________________
+          [ DIAL button pressed ]        | dialing
+          -> channel request             |
+          <- immediate assignment        |
+          -> service request             |
+          -> connection request          |
+          <- cyphering command           |
+          -> cyphering complete          |
+          -> call setup                  |
+          <- connecting                  | connecting
+          [call mode: signaling -> voice]|
+          [routing, voicemail, errors]   |
+          <- call confirmed              |
+          <- alerting                    | alerting
+          <- connect                     |
+          -> connect ack                 | active (connected)
+          <-> dataspeech                 |
+      _________________________________________________________________________
+      GSM states for received calls      | Mapping to the API or [modem] state
+      _________________________________________________________________________
+          <- interrogation procedure     |
+          <- paging request              |
+          -> channel request             |
+          <- immediate assignment        |
+          -> paging response             |
+          - cyphering                    |
+          <- call setup                  | incoming
+          -> call confirmed              |
+          -> call alerting               | [ringing]
+          [ OK button pressed ]          | accepted
+          -> connect                     |
+          <- connect ack                 | active (connected)
+          <-> dataspeech                 |
+      =========================================================================
+      SIP/IMS states for dialed calls | Mapping to the API or [SIP stack] state
+      _________________________________________________________________________
+          [ DIAL button pressed ]        | dialing
+          -> SIP Invite                  | [initializing]
+          <- SIP 183 Session Progress    |
+          [ SDP ]                        |
+          -> PRACK                       | [initialized]
+          [Caller PDP Context activation]|
+          <- SIP 200 OK                  |
+          -> UPDATE [ context ]          |
+          <- SIP 200 OK                  |
+          [ remote starts ringing ]      |
+          <- SIP 180 RINGING             | alerting
+          -> PRACK                       |
+          [ remote accepts]              |
+          <- SIP 200 OK                  |
+          -> ACK                         | active (connected)
+          <-> dataspeech                 |
+      _________________________________________________________________________
+      SIP states for received calls  | Mapping to the API or [SIP stack] state
+      _________________________________________________________________________
+          <- SIP Invite                  | incoming
+          -> SIP 183 Session Progress    | [initializing]
+          [ SDP ]                        |
+          <- PRACK                       |
+          -> SIP 200 OK                  | [initialized]
+          [ PDP Context activation]      |
+          <- UPDATE [ context ]          |
+          -> SIP 200 OK                  |
+          [ locally ringing ]            |
+          -> SIP 180 RINGING             | [ringing]
+          <- PRACK                       |
+          [ accepts ]                    | accepted
+          -> SIP 200 OK                  |
+          <- ACK                         | active (connected)
+          <-> dataspeech                 |
+      =========================================================================
+      XMPP states for dialed calls   | Mapping to the API or [XMPP stack] state
+      [ XMPP XEP-0166 Jingle ]       | (may depend on XMPP implementation)
+      _________________________________________________________________________
+          DIAL button pressed            | dialing
+          -> session-initiate            |
+          <- ack                         |
+          <- session-accept              | alerting
+          -> ack                         | active (connected)
+          <-> media session              |
+          <- session-terminate           |
+          -> ack                         | disconnected
+      _________________________________________________________________________
+      XMPP states for received calls | Mapping to the API or [XMPP stack] state
+      [ XMPP XEP-0166 Jingle ]       | (may depend on XMPP implementation)
+      _________________________________________________________________________
+          <- session-initiate            | incoming
+          -> ack                         |
+          [ locally ringing ]            | [ringing]
+          [ user accepts ]               | accepted
+          -> session-accept              |
+          <- ack                         | active (connected)
+          <-> media session              |
+          -> session-terminate           | disconnecting
+          <- ack                         | disconnected
+      _________________________________________________________________________
+
+      Multiparty call sequences and states
+      ====================================
+          GSM TS 24.084.
+          "There are four auxiliary states associated with the MPTY service:
+          - Idle;
+          - MPTY request; A request has been made to add this call to the MPTY.
+          - Call in MPTY; This call is in the MPTY.
+          - Split request; A request has been made to remove this call from the MPTY.
+          These Auxiliary states apply in addition to the GSM 04.08 call control
+          states and the GSM 04.83 call hold states. Thus for example, an active
+          call in a held MPTY has the state (Active, Call held, Call in MPTY).
+          Not all states are allowed, for example an MPTY cannot be split while
+          it is held, so (Active, Call held, Split request) is forbidden."
+
+          Instead of this, we offer a model when states describe valid multiparty
+          states. Valid state transitions for a multiparty call are:
+          * joining -> active
+          * active -> holding -> held
+          * held -> resuming -> active (connected)
+          * any state -> [disconnecting]-> disconnected
+      -->
       <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - - - -->
       <section>
         <h2>
@@ -2511,167 +2671,7 @@ var respecConfig = {
         <dd>
           The call is being split from a multiparty call.
         </dd>
-      </dl><!--
-    =========================================================================
-    CDMA states for dialed calls   | Mapping to the API or [modem] state
-    _________________________________________________________________________
-    [ DIAL button pressed ]        | dialing
-    -> channel request             |
-    <- immediate assignment        |
-    -> service request             |
-    <- authentication request      |
-    -> authentication response     |
-    <- cyphering command           |
-    -> cyphering complete          |
-    -> setup                       |
-    <- call confirmed              |
-    <- assignment command          |
-    -> assignment completed        |
-    <- alerting                    | alerting
-    <- connect                     |
-    -> connect ack                 | active (connected)
-    <-> dataspeech                 |
-    _________________________________________________________________________
-    CDMA states for received calls | Mapping to the API or [modem] state
-    _________________________________________________________________________
-    <- paging request              |
-    -> channel request             |
-    <- immediate assignment        |
-    -> paging response             |
-    <- authentication request      |
-    -> authentication response,    |
-    <- cyphering command           |
-    -> cyphering complete          |
-    <- call setup                  |
-    -> call confirmed              | incoming
-    <- assignment command          |
-    -> assignment complete         |
-    -> call alerting               | [ringing]
-    [ OK button pressed ]          | accepted
-    -> connect                     |
-    <- connect ack                 | active (connected)
-    <-> dataspeech                 |
-    =========================================================================
-    GSM states for dialed calls    | Mapping to the API or [modem] state
-    _________________________________________________________________________
-    [ DIAL button pressed ]        | dialing
-    -> channel request             |
-    <- immediate assignment        |
-    -> service request             |
-    -> connection request          |
-    <- cyphering command           |
-    -> cyphering complete          |
-    -> call setup                  |
-    <- connecting                  | connecting
-    [call mode: signaling -> voice]|
-    [routing, voicemail, errors]   |
-    <- call confirmed              |
-    <- alerting                    | alerting
-    <- connect                     |
-    -> connect ack                 | active (connected)
-    <-> dataspeech                 |
-    _________________________________________________________________________
-    GSM states for received calls  | Mapping to the API or [modem] state
-    _________________________________________________________________________
-    <- interrogation procedure     |
-    <- paging request              |
-    -> channel request             |
-    <- immediate assignment        |
-    -> paging response             |
-    - cyphering                    |
-    <- call setup                  | incoming
-    -> call confirmed              |
-    -> call alerting               | [ringing]
-    [ OK button pressed ]          | accepted
-    -> connect                     |
-    <- connect ack                 | active (connected)
-    <-> dataspeech                 |
-    =========================================================================
-    SIP/IMS states for dialed calls| Mapping to the API or [SIP stack] state
-    _________________________________________________________________________
-    [ DIAL button pressed ]        | dialing
-    -> SIP Invite                  | [initializing]
-    <- SIP 183 Session Progress    |
-    [ SDP ]                        |
-    -> PRACK                       | [initialized]
-    [Caller PDP Context activation]|
-    <- SIP 200 OK                  |
-    -> UPDATE [ context ]          |
-    <- SIP 200 OK                  |
-    [ remote starts ringing ]      |
-    <- SIP 180 RINGING             | alerting
-    -> PRACK                       |
-    [ remote accepts]              |
-    <- SIP 200 OK                  |
-    -> ACK                         | active (connected)
-    <-> dataspeech                 |
-    _________________________________________________________________________
-    SIP states for received calls  | Mapping to the API or [SIP stack] state
-    _________________________________________________________________________
-    <- SIP Invite                  | incoming
-    -> SIP 183 Session Progress    | [initializing]
-    [ SDP ]                        |
-    <- PRACK                       |
-    -> SIP 200 OK                  | [initialized]
-    [ PDP Context activation]      |
-    <- UPDATE [ context ]          |
-    -> SIP 200 OK                  |
-    [ locally ringing ]            | 
-    -> SIP 180 RINGING             | [ringing]
-    <- PRACK                       |
-    [ accepts ]                    | accepted
-    -> SIP 200 OK                  |
-    <- ACK                         | active (connected)
-    <-> dataspeech                 |
-    =========================================================================
-    XMPP states for dialed calls   | Mapping to the API or [XMPP stack] state
-    [ XMPP XEP-0166 Jingle ]       | (may depend on XMPP implementation)
-    _________________________________________________________________________
-    DIAL button pressed            | dialing
-    -> session-initiate            |
-    <- ack                         |
-    <- session-accept              | alerting
-    -> ack                         | active (connected)
-    <-> media session              |
-    <- session-terminate           |
-    -> ack                         | disconnected
-    _________________________________________________________________________
-    XMPP states for received calls | Mapping to the API or [XMPP stack] state
-    [ XMPP XEP-0166 Jingle ]       | (may depend on XMPP implementation)
-    _________________________________________________________________________
-    <- session-initiate            | incoming
-    -> ack                         |
-    [ locally ringing ]            | [ringing]
-    [ user accepts ]               | accepted
-    -> session-accept              |
-    <- ack                         | active (connected)
-    <-> media session              |
-    -> session-terminate           | disconnecting
-    <- ack                         | disconnected
-    _________________________________________________________________________
-    
-    Multiparty call sequences and states
-    ====================================
-    GSM TS 24.084.
-    "There are four auxiliary states associated with the MPTY service:
-    - Idle;
-    - MPTY request; A request has been made to add this call to the MPTY.
-    - Call in MPTY; This call is in the MPTY.
-    - Split request; A request has been made to remove this call from the MPTY.
-    These Auxiliary states apply in addition to the GSM 04.08 call control
-    states and the GSM 04.83 call hold states. Thus for example, an active
-    call in a held MPTY has the state (Active, Call held, Call in MPTY).
-    Not all states are allowed, for example an MPTY cannot be split while
-    it is held, so (Active, Call held, Split request) is forbidden."
-    
-    Instead of this, we offer a model when states describe valid multiparty
-    states. Valid state transitions for a multiparty call are:
-    * joining -> active
-    * active -> holding -> held
-    * held -> resuming -> active (connected)
-    * any state -> [disconnecting]-> disconnected
-    
-    -->
+      </dl>
       <p>
         Some of these states are <dfn>soft states</dfn>, that is, transitory
         states in which the application is placed after making a request to the
@@ -2701,10 +2701,15 @@ var respecConfig = {
         <a>CallHistoryEntry</a> Interface
       </h2>
       <p>
-        This interface describes the properties which MUST be supported for
-        call history entries. For multiparty call there MUST be a separate
-        object for each call participant, sharing the same value for the
-        <code>conferenceId</code> property.
+        This interface describes the minimum set of properties which SHOULD be
+        supported for call history entries. For multiparty call there MUST be a
+        separate <a>CallHistoryEntry</a> object for each call participant,
+        sharing the same value for the <code>conferenceId</code> property.
+      </p>
+      <p class='note'>
+      It is up the the implementations and applications how to store and access
+      call history. This document only specifies the minimum content of the data
+      to be saved.
       </p>
       <dl title="[NoInterfaceObject] interface CallHistoryEntry" class="idl">
         <dt>
