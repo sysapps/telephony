@@ -9,7 +9,8 @@
     'remove'>
 </script>
     <script class="remove">
-var respecConfig = {
+/*Respec configuration*/
+    var respecConfig = {
           specStatus:           "ED",
           shortName:            "telephony",
           noLegacyStyle:        false,
@@ -53,7 +54,7 @@ var respecConfig = {
     };
     </script>
     <style>
-#HTML5 Tidy screws up if this line is missing.            
+/*HTML5 Tidy screws up if this line is missing.*/
     figure{
         display: block;
         width: auto;
@@ -117,7 +118,6 @@ var respecConfig = {
     telCall.onerror = function(e) {
         window.console.error(e);
     }
-  
 </pre>
       <p>
         The use cases for this specification are collected in the <a href=
@@ -128,13 +128,13 @@ var respecConfig = {
         The following specifications have been used for designing the <cite>Web
         Telephony API</cite>: for <abbr title=
         "Global System for Mobile Communications">GSM</abbr> the [[!GSM-CALL]]
-        suite, for IMS/SIP the [[!IMS]] suite, for XMPP the [[!JINGLE]]
-        specification. The same API would work also for SIP and XMPP calls,
+        suite, for IMS/SIP the [[!IMS]] suite, for <abbr title="Extensible Messaging and Presence Protocol ">XMPP</abbr> the [[!JINGLE]]
+        specification. The same API would work also for <abbr title="Session Initiation Protocol">SIP</abbr> and <abbr title="Extensible Messaging and Presence Protocol ">XMPP</abbr> calls,
         except multiparty call handling, which is modeled after the cellular
         multiparty calls.
       </p>
       <p>
-        Future versions of this specification may add SIP and XMPP conference
+        Future versions of this specification may add <abbr title="Session Initiation Protocol">SIP</abbr> and <abbr title="Extensible Messaging and Presence Protocol ">XMPP</abbr> conference
         support.
       </p>
     </section>
@@ -142,7 +142,7 @@ var respecConfig = {
     <section id="conformance">
       <p>
         This specification defines conformance criteria that apply to a single
-        product: the <dfn id="ua">user agent</dfn> that implements the
+        product: the <dfn>user agent</dfn> that implements the
         interfaces that it contains.
       </p>
       <p>
@@ -203,8 +203,8 @@ var respecConfig = {
         telephony service is associated to a SIM card (Subscriber Identity
         Module). When making a call, the identity (e.g. SIM card, associated to
         an Integrated Circuit Card Identifier, ICC-ID) is always provided,
-        either explicitly in the function call, or by using a default telephony
-        service in the implementation. The device can receive phone calls from
+        either explicitly in the function call, or by using a <a>default telephony
+        service</a> in the implementation. The device can receive phone calls from
         any active telephony service, even simultaneously, in which case the
         user agent arbitrates the calls either by a policy, or by the user by
         choosing which call to accept. A telephony service can use different
@@ -214,19 +214,18 @@ var respecConfig = {
         identifies the service and the protocol used for making the call.
       </p>
       <p>
-        A <dfn title="default telephony service">default telephony
-        service</dfn> is the <a>telephony service</a> that is set as default
+        A <dfn>default telephony service</dfn> is the <a>telephony service</a> that is set as default
         for telephony operations by the implementation.
       </p>
       <p>
-        A <dfn title="telephony service id">telephony service id</dfn> uniquely
+        A <dfn>telephony service id</dfn> uniquely
         identifies a <a>telephony service</a> together with a user identity in
         the system. For SIM cards, this can include the ICC-ID as service
         identifier. However, the MSISDN MUST NOT be used as telephony service
         id.
       </p>
       <p>
-        A <dfn title="multiparty call">multiparty call</dfn> (also referred to
+        A <dfn>multiparty call</dfn> (also referred to
         as <i>conference call</i>) is a telephony call with multiple remote
         party participants, which is controlled as a single call, i.e. can be
         put on hold, activated, disconnected with all participants. Other calls
@@ -234,11 +233,11 @@ var respecConfig = {
         multiparty calls and CDMA 3-way calls.
       </p>
       <p>
-        A <dfn title="conference id">conference id</dfn> uniquely identifies a
+        A <dfn>conference id</dfn> uniquely identifies a
         <a>multiparty call</a> in the system and in call history.
       </p>
       <p>
-        A <dfn title="remote party id">remote party id</dfn> uniquely
+        A <dfn>remote party id</dfn> uniquely
         identifies a participant (a.k.a. remote party) in a telephony call in
         the given <a>telephony service</a>, such as a phone number.
       </p>
@@ -265,7 +264,8 @@ var respecConfig = {
       </h2>
       <p>
         The <a>TelephonyManager</a> interface is exposed on [[!HTML]]'s
-        <code>Navigator</code> object.
+        <a href="http://www.whatwg.org/specs/web-apps/current-work/#dom-navigator">
+          <code>Navigator</code></a> object.
       </p>
       <dl title="partial interface Navigator" class="idl">
         <dt>
@@ -273,7 +273,7 @@ var respecConfig = {
         </dt>
         <dd>
           When getting, the user agent MUST return the
-          <a><code>TelephonyManager</code></a> object, which provides the
+          <a>TelephonyManager</a> object, which provides the
           ability to interface with the <a>telephony service</a> of the device.
         </dd>
       </dl>
@@ -302,8 +302,8 @@ var respecConfig = {
         <dd>
           When getting, the user agent MUST return an array, which can be
           empty, of <a>Call</a> objects managed by this objects. Note that
-          <code>TelephonyCall</code> objects belonging to a multiparty call are
-          managed by the corresponding <a><code>ConferenceCall</code></a>
+          <a>TelephonyCall</a> objects belonging to a multiparty call are
+          managed by the corresponding <a>ConferenceCall</a>
           object and MUST NOT be also present in this array.
         </dd>
         <dt>
@@ -373,7 +373,7 @@ var respecConfig = {
         <dd>
           This method asynchronously emits a [[!DTMF]] tone sequence with the
           platform default or specified duration and delay, in the platform
-          default or the specified telephony service. A <code>Promise</code>
+          default or the specified telephony service. A <a>Promise</a>
           object will be returned in order to notify the result of the request.
           <dl class='parameters'>
             <dt>
@@ -400,7 +400,7 @@ var respecConfig = {
         <dd>
           This method starts emitting a [[!DTMF]] tone with the platform
           default or specified delay, in the platform default or the specified
-          telephony service. A <code>Promise</code> object will be returned in
+          telephony service. A <a>Promise</a> object will be returned in
           order to notify the result of the request.
           <dl class='parameters'>
             <dt>
@@ -415,7 +415,7 @@ var respecConfig = {
             </dt>
             <dd>
               If set, represents the <a>telephony service id</a> to be used,
-              and the delay before a tone. The <code>duration</code> parameter
+              and the delay before a tone. The <a>duration</a> member
               is ignored. If not set, implementations MUST use default values
               for telephony service and delay.
             </dd>
@@ -426,17 +426,17 @@ var respecConfig = {
         </dt>
         <dd>
           This method stops emitting a [[!DTMF]] tone in the default or the
-          specified telephony service. A <code>Promise</code> object will be
+          specified telephony service. A <a>Promise</a> object will be
           returned in order to notify the result of the request.
         </dd>
         <dt class="no-docs">
           attribute EventHandler onincoming
         </dt>
         <dd>
-          Whenever there is a new call in <code>incoming</code> or
-          <code>waiting</code> state, the <a>user agent</a> MUST <a>queue a
-          task</a> to fire an event named <code>incoming</code> of type
-          <a>TelephonyEvent</a>. The <code>call</code> property of the event
+          Whenever there is a new call in <a>incoming</a> or
+          <a>waiting</a> state, the <a>user agent</a> MUST <a>queue a
+          task</a> to fire an event named <a>incoming</a> of type
+          <a>TelephonyEvent</a>. The <a>call</a> attribute of the event
           MUST be set to the <a>TelephonyCall</a> object controlling the
           incoming call.
         </dd>
@@ -444,7 +444,7 @@ var respecConfig = {
           attribute EventHandler oncallschanged
         </dt>
         <dd>
-          Whenever a call is added to or removed from the <code>calls</code>
+          Whenever a call is added to or removed from the <a>calls</a>
           array, the <a>user agent</a> MUST <a>queue a task</a> to <a>fire a
           simple event</a> named <code>callschanged</code>.
         </dd>
@@ -531,7 +531,7 @@ var respecConfig = {
                 <a>simple event</a>
               </td>
               <td>
-                handles change in the <code>calls</code> array
+                handles change in the <a>calls</a> array
               </td>
             </tr>
             <tr>
@@ -598,7 +598,7 @@ var respecConfig = {
           <li>Let <var>potential service</var> be the first argument passed to
           this operation.
           </li>
-          <li>Let <var>promise</var> be a new <code>Promise</code> object and
+          <li>Let <var>promise</var> be a new <a>Promise</a> object and
           <var>resolver</var> its associated resolver.
           </li>
           <li>Return <var>promise</var> and continue the following steps
@@ -629,13 +629,13 @@ var respecConfig = {
           </li>
           <li>Otherwise, run the <a>steps to change the default service</a>,
           with <var>potential service</var> as the <a>telephony service id</a>,
-          and <var>promise</var> as the <code>Promise</code>.
+          and <var>promise</var> as the <a>Promise</a>.
           </li>
         </ol>
         <p>
           The <dfn>steps to change the default service</dfn> are given by the
           following algorithm. This abstract operation takes as an argument a
-          <a>telephony service id</a> and an optional <code>Promise</code>.
+          <a>telephony service id</a> and an optional <a>Promise</a>.
         </p>
         <ol>
           <li>Make a platform/system specific request to the underlying system
@@ -662,7 +662,7 @@ var respecConfig = {
               <li>Change the <a>defaultServiceId</a> attribute to the
               <a>telephony service id</a> of the new default telephony service.
               </li>
-              <li>If <code>Promise</code> was passed, invoke
+              <li>If <a>Promise</a> was passed, invoke
               <em>resolver</em>'s accept(value) method with the id of the new
               default service as value argument.
               </li>
@@ -677,20 +677,20 @@ var respecConfig = {
           steps:
         </p>
         <ol id="steps-dial">
-          <li>Create a new <code>TelephonyCall</code> object, referred as <var>
+          <li>Create a new <a>TelephonyCall</a> object, referred as <var>
             telCall</var> in these steps.
           </li>
           <li>Set the <code>remoteParty</code> property of <var>telCall</var>
-          to the remote party identifier specified in the
+          to the <a>remote party id</a> specified in the
           <code>remoteParty</code> parameter.
           </li>
-          <li>If <code>calls</code> array already contains a
+          <li>If <a>calls</a> array already contains a
           <a>TelephonyCall</a> object with identical <code>remoteParty</code>
           property, then an <code>InvalidModificationError</code> MUST be
           thrown.
           </li>
           <li>Otherwise, make a request to the telephony system to dial in the
-          remote party identifier passed in the <var>remoteParty</var>
+          <a>remote party id</a> passed in the <var>remoteParty</var>
           parameter. Note that the value can be also an emergency number.
           According to the value of the <code>hideCallerId</code> in the <code>
             params</code> parameter, the own number is requested to be either
@@ -716,7 +716,7 @@ var respecConfig = {
               <li>Set the <code>state</code> of <var>telCall</var> to
               <code>"dialing"</code> value.
               </li>
-              <li>Add <var>telCall</var> to the <code>calls</code> array.
+              <li>Add <var>telCall</var> to the <a>calls</a> array.
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire a simple event</a> named
@@ -755,7 +755,7 @@ var respecConfig = {
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
-          <li>Let <var>promise</var> be a new <code>Promise</code> object and
+          <li>Let <var>promise</var> be a new <a>Promise</a> object and
           <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
@@ -795,7 +795,7 @@ var respecConfig = {
           tone. The tone SHOULD play until the <code>stopTone</code> method is
           called.
           </li>
-          <li>Let <var>promise</var> be a new <code>Promise</code> object and
+          <li>Let <var>promise</var> be a new <a>Promise</a> object and
           <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
@@ -825,7 +825,7 @@ var respecConfig = {
           <li>Otherwise, request from the telephony system to stop sending the
           specified tone.
           </li>
-          <li>Let <var>promise</var> be a new <code>Promise</code> object and
+          <li>Let <var>promise</var> be a new <a>Promise</a> object and
           <var>resolver</var> its associated <code>resolver</code>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
@@ -846,14 +846,14 @@ var respecConfig = {
         </p>
         <ol id="steps-incoming">
           <li>Let <var>incomingCall</var> be a new instance of
-          <code>TelephonyCall</code>.
+          <a>TelephonyCall</a>.
           </li>
           <li>Set the <code>state</code> of <var>incomingCall</var> to
           <code>"incoming"</code> in case there is no other call in <a href=
           "#call-state-active"><code>active</code></a> state, or otherwise set
           it to <code>"waiting"</code>.
           </li>
-          <li>Add <var>incomingCall</var> to the <code>calls</code> array.
+          <li>Add <var>incomingCall</var> to the <a>calls</a> array.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire a simple event</a> named
@@ -1503,7 +1503,7 @@ var respecConfig = {
           </h3>
           <p>
             The following are the <a>event handlers</a> MUST be supported as
-            attributes by the <a><code>TelephonyCall</code></a> object:
+            attributes by the <a>TelephonyCall</a> object:
           </p>
           <table class="simple">
             <thead>
@@ -1917,7 +1917,7 @@ var respecConfig = {
               <code>disconnected</code> at the <var>telCall</var> object.
             </li>
             <li>Remove the <var>telCall</var> object from the
-            <code>calls</code> array.
+            <a>calls</a> array.
             </li>
           </ol>
           <p>
@@ -2040,7 +2040,7 @@ var respecConfig = {
           </p>
           <p>
           The <code>createConference</code> method MUST run the following
-          steps when invoked on a <code>TelephonyCall</code> object, referred
+          steps when invoked on a <a>TelephonyCall</a> object, referred
           as <var>telCall</var> in these steps:
           <ol id="steps-createConference">
           <li>Set the <code>state</code> of <var>telCall</var>
@@ -2069,12 +2069,12 @@ var respecConfig = {
               multiparty call <var>confCall</var>.
               </li>
               <li>Add the calls participating in the multiparty call to
-              the <code>calls</code> property of the <var>confCall</var>
-              object, remove them from the <code>calls</code> array of the
+              the <a>calls</a> property of the <var>confCall</var>
+              object, remove them from the <a>calls</a> array of the
               <a>TelephonyManager</a> object, and set their <code>state</code>
               to <code>'multiparty'</code>.
               </li>
-              <li>Add the <var>confCall</var> object to the <code>calls</code>
+              <li>Add the <var>confCall</var> object to the <a>calls</a>
               array of the <a>TelephonyManager</a> object.
               </li>
               <li>Set the <code>state</code> of <var>confCall</var> to
@@ -2268,7 +2268,7 @@ var respecConfig = {
               </td>
               <td>
                 The multiparty call is being created, or joined with another
-                call
+                call.
               </td>
             </tr>
             <tr>
@@ -2279,7 +2279,7 @@ var respecConfig = {
                 <code>"active"</code>
               </td>
               <td>
-                The multiparty call is ongoing
+                The multiparty call is ongoing.
               </td>
             </tr>
             <tr>
@@ -2301,7 +2301,7 @@ var respecConfig = {
                 <code>'holding'</code>
               </td>
               <td>
-                The call is being put on hold
+                The call is being put on hold.
               </td>
             </tr>
             <tr>
@@ -2312,7 +2312,7 @@ var respecConfig = {
                 <code>'held'</code>
               </td>
               <td>
-                The call has been put on hold
+                The call has been put on hold.
               </td>
             </tr>
             <tr>
@@ -2323,7 +2323,7 @@ var respecConfig = {
                 <code>'resuming'</code>
               </td>
               <td>
-                The call, which was on hold, is being resumed
+                The call, which was on hold, is being resumed.
               </td>
             </tr>
             <tr>
@@ -2336,7 +2336,7 @@ var respecConfig = {
               </td>
               <td>
                 A request to disconnect the call has been made and it is
-                progressing
+                progressing.
               </td>
             </tr>
             <tr>
@@ -2716,7 +2716,7 @@ var respecConfig = {
           readonly attribute DOMString remoteParty
         </dt>
         <dd>
-          When getting, the user agent MUST return the remote party identifier
+          When getting, the user agent MUST return the <a>remote party id</a>
           (e.g. telephone number) of the call participant.
         </dd>
         <dt>
