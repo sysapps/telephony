@@ -190,6 +190,8 @@
       </p>
       <p>
         The <dfn><a href=
+        "http://dom.spec.whatwg.org/#event"><code>Event</code></a></dfn>
+        interface and the the <dfn><a href=
         "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
         interface as well as the concept of a <a href=
         "http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a>
@@ -532,7 +534,7 @@
                 <dfn><code>callschanged</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles change in the <a>calls</a> array
@@ -1114,7 +1116,7 @@
                 <dfn><code>statechange</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles any call state change
@@ -1128,7 +1130,7 @@
                 <dfn><code>error</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles error conditions
@@ -1537,7 +1539,7 @@
                   <dfn><code>dialing</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"dialing"</code>
@@ -1552,7 +1554,7 @@
                   <dfn><code>alerting</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"alerting"</code>
@@ -1567,7 +1569,7 @@
                   <dfn><code>accepted</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"accepted"</code>
@@ -1582,7 +1584,7 @@
                   <dfn><code>connecting</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"connecting"</code>
@@ -1597,7 +1599,7 @@
                   <dfn><code>active</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"active"</code> state
@@ -1611,7 +1613,7 @@
                   <dfn><code>disconnecting</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles the call state changes to the
@@ -1641,7 +1643,7 @@
                   <dfn><code>holding</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"holding"</code>
@@ -1656,7 +1658,7 @@
                   <dfn><code>held</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"held"</code> state
@@ -1670,7 +1672,7 @@
                   <dfn><code>resuming</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"resuming"</code>
@@ -1685,7 +1687,7 @@
                   <dfn><code>redirecting</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"redirecting"</code>
@@ -1700,7 +1702,7 @@
                   <dfn><code>transferring</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"transferring"</code>
@@ -1715,7 +1717,7 @@
                   <dfn><code>joining</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"joining"</code>
@@ -1730,7 +1732,7 @@
                   <dfn><code>splitting</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"splitting"</code>
@@ -1745,7 +1747,7 @@
                   <dfn><code>multiparty</code></dfn>
                 </td>
                 <td>
-                  <a>simple event</a>
+                  <a><code>Event</code></a>
                 </td>
                 <td>
                   handles call state changes to the <code>"multiparty"</code>
@@ -2448,7 +2450,7 @@
                 <dfn><code>active</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"active"</code> state
@@ -2462,7 +2464,7 @@
                 <dfn><code>disconnecting</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles the call state changes to the
@@ -2492,7 +2494,7 @@
                 <dfn><code>holding</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"holding"</code> state
@@ -2506,7 +2508,7 @@
                 <dfn><code>held</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"held"</code> state
@@ -2520,7 +2522,7 @@
                 <dfn><code>resuming</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"resuming"</code> state
@@ -2534,7 +2536,7 @@
                 <dfn><code>joining</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"joining"</code> state
@@ -2548,7 +2550,7 @@
                 <dfn><code>splitting</code></dfn>
               </td>
               <td>
-                <a>simple event</a>
+                <a><code>Event</code></a>
               </td>
               <td>
                 handles call state changes to the <code>"splitting"</code>
