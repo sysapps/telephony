@@ -191,7 +191,9 @@
       <p>
         The <dfn><a href=
         "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
-        interface as well as the concept of a <a href="http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a> are defined in [[DOM4]]. 
+        interface as well as the concept of a <a href=
+        "http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a>
+        are defined in [[DOM4]].
       </p>
       <p>
         An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a class=
@@ -378,8 +380,9 @@
         <dd>
           This method asynchronously emits a [[!DTMF]] tone sequence with the
           platform default or specified duration and delay, in the platform
-          default or the specified telephony service. A <a><code>Promise</code></a> object
-          will be returned in order to notify the result of the request.
+          default or the specified telephony service. A
+          <a><code>Promise</code></a> object will be returned in order to
+          notify the result of the request.
           <dl class='parameters'>
             <dt>
               DOMString tones
@@ -405,8 +408,8 @@
         <dd>
           This method starts emitting a [[!DTMF]] tone with the platform
           default or specified delay, in the platform default or the specified
-          telephony service. A <a><code>Promise</code></a> object will be returned in order
-          to notify the result of the request.
+          telephony service. A <a><code>Promise</code></a> object will be
+          returned in order to notify the result of the request.
           <dl class='parameters'>
             <dt>
               DOMString tone
@@ -431,8 +434,8 @@
         </dt>
         <dd>
           This method stops emitting a [[!DTMF]] tone in the default or the
-          specified telephony service. A <a><code>Promise</code></a> object will be returned
-          in order to notify the result of the request.
+          specified telephony service. A <a><code>Promise</code></a> object
+          will be returned in order to notify the result of the request.
         </dd>
         <dt class="no-docs">
           attribute EventHandler onincoming
@@ -456,23 +459,21 @@
           attribute EventHandler onserviceadded
         </dt>
         <dd>
-          The <a>serviceadded</a> event of type
-          <a>TelephonyServiceEvent</a> MUST be fired whenever a new
-          <a>telephony service</a> is enabled in the system. The
-          <a>serviceId</a> attribute of the event MUST contain the <a>telephony
-          service id</a> of the new service. Note that compliant
-          implementations may not be reporting such events when they occur
-          (e.g. OTA SIM update or hot-swappable SIM cards).
+          The <a>serviceadded</a> event of type <a>TelephonyServiceEvent</a>
+          MUST be fired whenever a new <a>telephony service</a> is enabled in
+          the system. The <a>serviceId</a> attribute of the event MUST contain
+          the <a>telephony service id</a> of the new service. Note that
+          compliant implementations may not be reporting such events when they
+          occur (e.g. OTA SIM update or hot-swappable SIM cards).
         </dd>
         <dt class="no-docs">
           attribute EventHandler onserviceremoved
         </dt>
         <dd>
-          The <a>serviceremoved</a> event of type
-          <a>TelephonyServiceEvent</a> MUST be fired when an existing
-          <a>telephony service</a> is disabled in the system. The
-          <a>serviceId</a> attribute of the event MUST contain the <a>telephony
-          service id</a> of the disabled service.
+          The <a>serviceremoved</a> event of type <a>TelephonyServiceEvent</a>
+          MUST be fired when an existing <a>telephony service</a> is disabled
+          in the system. The <a>serviceId</a> attribute of the event MUST
+          contain the <a>telephony service id</a> of the disabled service.
         </dd>
         <dt>
           attribute EventHandler onservicechanged
@@ -601,8 +602,8 @@
           <li>Let <var>potential service</var> be the first argument passed to
           this operation.
           </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a> object and
-          <var>resolver</var> its associated resolver.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated resolver.
           </li>
           <li>Return <var>promise</var> and continue the following steps
           asynchronously.
@@ -625,8 +626,8 @@
           the current default telephony service, run the following sub-steps
           and terminate this algorithm:
             <ol>
-              <li>Invoke <var>resolver</var>'s accept(value) method with
-              <var>potential service</var> as the value argument.
+              <li>Invoke <var>resolver</var>'s accept(value) method with <var>
+                potential service</var> as the value argument.
               </li>
             </ol>
           </li>
@@ -638,7 +639,8 @@
         <p>
           The <dfn>steps to change the default service</dfn> are given by the
           following algorithm. This abstract operation takes as an argument a
-          <a>telephony service id</a> and an optional <a><code>Promise</code></a>.
+          <a>telephony service id</a> and an optional
+          <a><code>Promise</code></a>.
         </p>
         <ol>
           <li>Make a platform/system specific request to the underlying system
@@ -665,9 +667,9 @@
               <li>Change the <a>defaultServiceId</a> attribute to the
               <a>telephony service id</a> of the new default telephony service.
               </li>
-              <li>If <a><code>Promise</code></a> was passed, invoke <var>resolver</var>'s
-              accept(value) method with the id of the new default service as
-              value argument.
+              <li>If <a><code>Promise</code></a> was passed, invoke
+              <var>resolver</var>'s accept(value) method with the id of the new
+              default service as value argument.
               </li>
               <li>Fire a simple event named <code>servicechange</code> at the
               <a>telephony</a> attribute of the navigator object.
@@ -682,9 +684,8 @@
           <li>Create a new <a>TelephonyCall</a> object, referred as
           <var>telCall</var> in these steps.
           </li>
-          <li>Set the <a>remoteParty</a> property of <var>telCall</var>
-          to the <a>remote party id</a> specified in the
-          <a>remoteParty</a> parameter.
+          <li>Set the <a>remoteParty</a> property of <var>telCall</var> to the
+          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
           </li>
           <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
           object with identical <a>remoteParty</a> property, then an
@@ -756,19 +757,21 @@
           </li>
           <li>Request from the telephony system to send the specified tones.
           </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a> object and
-          <var>resolver</var> its associated <a><code>Resolver</code></a>.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>Resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method with
-          no arguments.
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
           </li>
         </ol>
         <p>
@@ -796,19 +799,21 @@
           tone. The tone SHOULD play until the <code>stopTone</code> method is
           called.
           </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a> object and
-          <var>resolver</var> its associated <a><code>Resolver</code></a>.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>Resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method with
-          no arguments.
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
           </li>
         </ol>
         <p>
@@ -826,19 +831,21 @@
           <li>Otherwise, request from the telephony system to stop sending the
           specified tone.
           </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a> object and
-          <var>resolver</var> its associated <a><code>Resolver</code></a>.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>Resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method with
-          no arguments.
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
           </li>
         </ol>
         <p>
@@ -1864,9 +1871,8 @@
             "#error-steps">error steps</a> MUST be executed.
           </p>
           <p>
-            The <code>disconnect</code> method when invoked on the
-            <a>Call</a> object <var>telCall</var>, it MUST run the
-            following steps:
+            The <code>disconnect</code> method when invoked on the <a>Call</a>
+            object <var>telCall</var>, it MUST run the following steps:
           </p>
           <ol id="steps-disconnect-client">
             <li>Set the <code>state</code> of <var>telCall</var> to
@@ -1902,8 +1908,8 @@
           </p>
           <p>
             When <a><var>TCallControl</var></a> is notified of actual call
-            disconnection of the <a>Call</a> object
-            <var>telCall</var>, it MUST follow the next steps:
+            disconnection of the <a>Call</a> object <var>telCall</var>, it MUST
+            follow the next steps:
           </p>
           <ol id="steps-disconnect-system">
             <li>Set the <code>state</code> of <var>telCall</var> to
