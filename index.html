@@ -684,11 +684,11 @@
           <li>Create a new <a>TelephonyCall</a> object, referred as
           <var>telCall</var> in these steps.
           </li>
-          <li>Set the <a>remoteParty</a> property of <var>telCall</var> to the
+          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
           <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
           </li>
           <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> property, then an
+          object with identical <a>remoteParty</a> attribute, then an
           <code>InvalidModificationError</code> MUST be thrown.
           </li>
           <li>Otherwise, make a request to the telephony system to dial in the
@@ -699,7 +699,7 @@
             displayed, hidden or otherwise the default system configuration to
             this regard is requested to be followed. The call MUST be made
             using the <a>telephony service</a> specified in the
-            <code>service</code> property of the <code>params</code> parameter.
+            <code>service</code> member of the <code>params</code> arguement.
             If not specified, then the implementation MUST use the <a>default
             telephony service</a>. Even if there is no SIM card and no other
             telephony services are available, but emergency calls are known to
@@ -759,7 +759,7 @@
           </li>
           <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
           object and <var>resolver</var> its associated
-          <a><code>Resolver</code></a>.
+          <a><code>resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
@@ -801,7 +801,7 @@
           </li>
           <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
           object and <var>resolver</var> its associated
-          <a><code>Resolver</code></a>.
+          <a><code>resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
@@ -817,7 +817,7 @@
           </li>
         </ol>
         <p>
-          The <code>stopTone</code> method when invoked MUST run the following
+          The <a>stopTone</a> method when invoked MUST run the following
           steps:
         </p>
         <ol id="steps-stoptone">
@@ -833,7 +833,7 @@
           </li>
           <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
           object and <var>resolver</var> its associated
-          <a><code>Resolver</code></a>.
+          <a><code>resolver</code></a>.
           </li>
           <li>Return <var>promise</var> to the caller and continue the
           following steps asynchronously.
@@ -1335,9 +1335,9 @@
           <dd>
             When getting, if this call is managed as a part of a multiparty
             call then the user agent MUST return the value of the
-            <code>conferenceId</code> property of the <a>ConferenceCall</a>
+            <code>conferenceId</code> attribute of the <a>ConferenceCall</a>
             multiparty call to which this call is part of. Otherwise, return
-            null.
+            <code>null</code>.
           </dd>
           <dt>
             void accept()
@@ -1767,7 +1767,7 @@
           <p>
             The implementation MUST follow the call state changes in the
             supported telephony backend(s) and networks, and MUST keep the
-            <code>state</code> property updated. Since call state transitions
+            <code>state</code> attribute updated. Since call state transitions
             depend on protocol, network equipment, modem, etc., the
             implementation MUST NOT fire error events on assumed erroneous
             state transitions. Applications MUST always re-synchronize any
@@ -1928,7 +1928,7 @@
             </li>
           </ol>
           <p>
-            The <code>param</code> property of the <code>disconnected</code>
+            The <code>param</code> attribute of the <code>disconnected</code>
             event MUST be set to the <a>DisconnectReason</a>, if available, or
             otherwise it MUST be set to <code>null</code>. At least the
             following values MUST be supported for the disconnect reason:
@@ -2074,12 +2074,12 @@
             </li>
             <li>If the request to the telephony system is successful,
               <ol>
-                <li>set the <code>conferenceId</code> property of the
+                <li>set the <code>conferenceId</code> attribute of the
                 participating calls to the unique identifier generated for the
                 multiparty call <var>confCall</var>.
                 </li>
                 <li>Add the calls participating in the multiparty call to the
-                <a>calls</a> property of the <var>confCall</var> object, remove
+                <a>calls</a> attribute of the <var>confCall</var> object, remove
                 them from the <a>calls</a> array of the <a>TelephonyManager</a>
                 object, and set their <code>state</code> to
                 <code>'multiparty'</code>.
@@ -2370,7 +2370,7 @@
         </table>
         <p>
           For multiparty calls, the implementation MUST generate a unique
-          identifier stored in the <code>callId</code> property. In GSM, the
+          identifier stored in the <code>callId</code> attribute. In GSM, the
           <code>callId</code> of any participating call could be used in a
           multiparty operation, and the telephony network will reply with using
           the same value. But for forward compatibility reasons, the
@@ -2716,7 +2716,7 @@
         This interface describes the minimum set of properties which SHOULD be
         supported for call history entries. For multiparty call there MUST be a
         separate <a>CallHistoryEntry</a> object for each call participant,
-        sharing the same value for the <code>conferenceId</code> property.
+        sharing the same value for the <code>conferenceId</code> attribute.
       </p>
       <p class='note'>
         It is up the the implementations and applications how to store and
@@ -2919,7 +2919,7 @@
         exceptions, the following steps MUST be run:
       </p>
       <ol>
-        <li>Set the <code>error</code> property of the
+        <li>Set the <code>error</code> attribute of the
         <a><code>CallHandler</code></a> object appropriately
         </li>
         <li>queue a task to fire a simple event named <a><code>error</code></a>
