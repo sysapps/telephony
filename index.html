@@ -198,29 +198,29 @@
         are defined in [[!DOM4]].
       </p>
       <p>
-        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a>active</a> state representing a
-        connected call which is bound to the media input and output devices
-        (e.g. microphone, speaker, tone generator). Note that a call on
-        <a>hold</a> is also active from a call signaling point of view, but not
-        bound to media input and output devices.
+        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
+        <a>active</a> state representing a connected call which is bound to the
+        media input and output devices (e.g. microphone, speaker, tone
+        generator). Note that a call on <a>hold</a> is also active from a call
+        signaling point of view, but not bound to media input and output
+        devices.
       </p>
       <p>
-        A <dfn>telephony service</dfn> exposes
-        telephony functionality associated to a subscriber identity registered
-        with a telephony service provider. For example, in cellular telephony a
-        telephony service is associated to a SIM card (Subscriber Identity
-        Module). When making a call, the identity (e.g. SIM card, associated to
-        an Integrated Circuit Card Identifier, ICC-ID) is always provided,
-        either explicitly in the function call, or by using a <a>default
-        telephony service</a> in the implementation. The device can receive
-        phone calls from any active telephony service, even simultaneously, in
-        which case the user agent arbitrates the calls either by a policy, or
-        by the user by choosing which call to accept. A telephony service can
-        use different protocols for telephony signaling and media (e.g. GSM,
-        CDMA, VoLTE, etc.) with the same identity. Since call states can differ
-        depending on the protocol, the telephony call objects contain
-        information which identifies the service and the protocol used for
-        making the call.
+        A <dfn>telephony service</dfn> exposes telephony functionality
+        associated to a subscriber identity registered with a telephony service
+        provider. For example, in cellular telephony a telephony service is
+        associated to a SIM card (Subscriber Identity Module). When making a
+        call, the identity (e.g. SIM card, associated to an Integrated Circuit
+        Card Identifier, ICC-ID) is always provided, either explicitly in the
+        function call, or by using a <a>default telephony service</a> in the
+        implementation. The device can receive phone calls from any active
+        telephony service, even simultaneously, in which case the user agent
+        arbitrates the calls either by a policy, or by the user by choosing
+        which call to accept. A telephony service can use different protocols
+        for telephony signaling and media (e.g. GSM, CDMA, VoLTE, etc.) with
+        the same identity. Since call states can differ depending on the
+        protocol, the telephony call objects contain information which
+        identifies the service and the protocol used for making the call.
       </p>
       <p>
         A <dfn>default telephony service</dfn> is the <a>telephony service</a>
@@ -590,10 +590,10 @@
         </h3>
         <p>
           The <a>TelephonyManager</a> object MUST <a>queue a task</a>
-          <dfn><var>TCallControl</var></dfn> for each
-          <a>TelephonyCall</a> or <a>ConferenceCall</a> object it manages,
-          which MUST listen to any event that results in changing the call, and
-          upon such events, follow the steps described in this specification.
+          <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
+          <a>ConferenceCall</a> object it manages, which MUST listen to any
+          event that results in changing the call, and upon such events, follow
+          the steps described in this specification.
         </p>
         <p>
           The <dfn>steps to update the default service</dfn> are as follows:
@@ -2249,9 +2249,8 @@
           Steps
         </h3>
         <p>
-          The <a>state</a> attribute
-          MUST return the current status of the multiparty call. It MUST be one
-          of the following values:
+          The <a>state</a> attribute MUST return the current status of the
+          multiparty call. It MUST be one of the following values:
         </p>
         <table class="simple">
           <thead>
