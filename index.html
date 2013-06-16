@@ -1988,8 +1988,7 @@
           </p>
           <ol>
             <li>If <code>state</code> is not equal to <code>"incoming"</code>
-            or <code>"waiting"</code>, then an <code>InvalidStateError</code>
-            MUST be thrown.
+            or <code>"waiting"</code>, then an<code>InvalidStateError</code>            MUST be thrown.
             </li>
             <li>Otherwise make a request to the telephony system to redirect
             the call to the number indicated in the <var>remoteParty</var>
@@ -2014,7 +2013,7 @@
           </p>
           <ol>
             <li>If <code>state</code> is not equal to <code>"active"</code> or
-            <code>"held"</code>, then an <code>InvalidStateError</code> MUST be
+            <code>"held"</code>, then an<code>InvalidStateError</code>MUST be
             thrown.
             </li>
             <li>Otherwise make a request to the telephony system to transfer
@@ -2350,7 +2349,7 @@
               <td>
                 The multiparty call has been disconnected and this object is
                 invalid for call control. In this final state, the
-                implementation MUST throw an <code>ILLEGAL_STATE</code>
+                implementation MUST throw an <code>InvalidStateError</code>
                 exception when any method call is attempted.
               </td>
             </tr>
@@ -2646,7 +2645,7 @@
         <dd>
           The call has been disconnected and this object is invalid for call
           control. In this final state, the implementation MUST throw an
-          <code>ILLEGAL_STATE</code> exception when any method call is
+          <code>InvalidStateError</code> exception when any method call is
           attempted.
         </dd>
         <dt>
@@ -2662,7 +2661,7 @@
         <dd>
           The call is locked in a <a><code>ConferenceCall</code></a> object and
           MUST NOT be managed any more using this object. While in this state,
-          the implementation MUST throw an <code>ILLEGAL_STATE</code> exception
+          the implementation MUST throw an <code>InvalidStateError</code> exception
           when any method call is attempted.
         </dd>
         <dt>
