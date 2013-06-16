@@ -198,15 +198,14 @@
         are defined in [[!DOM4]].
       </p>
       <p>
-        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a class=
-        "internalDFN" href='#call-state-active'>active</a> state representing a
+        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the <a>active</a> state representing a
         connected call which is bound to the media input and output devices
         (e.g. microphone, speaker, tone generator). Note that a call on
         <a>hold</a> is also active from a call signaling point of view, but not
         bound to media input and output devices.
       </p>
       <p>
-        A <dfn title="telephony service">telephony service</dfn> exposes
+        A <dfn>telephony service</dfn> exposes
         telephony functionality associated to a subscriber identity registered
         with a telephony service provider. For example, in cellular telephony a
         telephony service is associated to a SIM card (Subscriber Identity
@@ -591,7 +590,7 @@
         </h3>
         <p>
           The <a>TelephonyManager</a> object MUST <a>queue a task</a>
-          <dfn title="TCallControl"><var>TCallControl</var></dfn> for each
+          <dfn><var>TCallControl</var></dfn> for each
           <a>TelephonyCall</a> or <a>ConferenceCall</a> object it manages,
           which MUST listen to any event that results in changing the call, and
           upon such events, follow the steps described in this specification.
@@ -2250,7 +2249,7 @@
           Steps
         </h3>
         <p>
-          The IDL attribute <dfn title="call-state"><code>state</code></dfn>
+          The <a>state</a> attribute
           MUST return the current status of the multiparty call. It MUST be one
           of the following values:
         </p>
