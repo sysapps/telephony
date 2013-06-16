@@ -88,6 +88,10 @@ var respecConfig = {
         stage should join the aforementioned mailing lists and take part in the
         discussions.
       </p>
+      <p>
+        Significant changes to this document since last publication are
+        documented in the <a href="#Changes">Changes section</a>.
+      </p>
     </section>
     <!-- - - - - - - - - - - - - -  Introduction - - - - - - - - - - - - - - -  -->
     <section class="informative">
@@ -2039,60 +2043,64 @@ var respecConfig = {
             GSM, the Call Transfer supplementary service must be active.
           </p>
           <p>
-          The <code>createConference</code> method MUST run the following
-          steps when invoked on a <code>TelephonyCall</code> object, referred
-          as <var>telCall</var> in these steps:
+            The <code>createConference</code> method MUST run the following
+            steps when invoked on a <code>TelephonyCall</code> object, referred
+            as <var>telCall</var> in these steps:
+          </p>
           <ol id="steps-createConference">
-          <li>Set the <code>state</code> of <var>telCall</var>
-          to <code>"joining"</code>.
-          </li>
-          <li>Then, in cellular telephony services, make a request to the
-          telephony system to join the active and held calls into a
-          multiparty call.
-          </li>
-          <li>If one of the calls is already a <a><code>ConferenceCall</code>
-          </a> object, use it as <var>confCall</var> in these steps.
-          </li>
-          <li>Otherwise create a new <a><code>ConferenceCall</code></a> object
-          with a unique conference id, named <var>confCall</var>.
-          </li>
-          <li>Set the <code>state</code> of <var>confCall</var> to
-          <code>"joining"</code>.
-          </li>
-          <li>Return the <var>confCall</var> object, and continue
-          these steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful,
-            <ol>
-              <li>set the <code>conferenceId</code> property of the
-              participating calls to the unique identifier generated for the
-              multiparty call <var>confCall</var>.
-              </li>
-              <li>Add the calls participating in the multiparty call to
-              the <code>calls</code> property of the <var>confCall</var>
-              object, remove them from the <code>calls</code> array of the
-              <a>TelephonyManager</a> object, and set their <code>state</code>
-              to <code>'multiparty'</code>.
-              </li>
-              <li>Add the <var>confCall</var> object to the <code>calls</code>
-              array of the <a>TelephonyManager</a> object.
-              </li>
-              <li>Set the <code>state</code> of <var>confCall</var> to
-              <code>"active"</code>.
-              <li><a>Queue a task</a> to <a>fire a simple event</a> named
-              <code><a>participantadded</a></code> at <var>confCall</var>.
-              object
-              </li>
-              <li>Follow the state changes of <var>confCall</var> through the
-              state change events.
-              </li>
-              <li>If there is any error during the method call, then the
-              <a href="#error-steps">error steps</a> MUST be executed on the
-              <var>telCall</var> object.
-              </li>
-            </ol>
-          </li>
-        </ol>
+            <li>Set the <code>state</code> of <var>telCall</var> to
+            <code>"joining"</code>.
+            </li>
+            <li>Then, in cellular telephony services, make a request to the
+            telephony system to join the active and held calls into a
+            multiparty call.
+            </li>
+            <li>If one of the calls is already a
+            <a><code>ConferenceCall</code></a> object, use it as
+            <var>confCall</var> in these steps.
+            </li>
+            <li>Otherwise create a new <a><code>ConferenceCall</code></a>
+            object with a unique conference id, named <var>confCall</var>.
+            </li>
+            <li>Set the <code>state</code> of <var>confCall</var> to
+            <code>"joining"</code>.
+            </li>
+            <li>Return the <var>confCall</var> object, and continue these steps
+            asynchronously.
+            </li>
+            <li>If the request to the telephony system is successful,
+              <ol>
+                <li>set the <code>conferenceId</code> property of the
+                participating calls to the unique identifier generated for the
+                multiparty call <var>confCall</var>.
+                </li>
+                <li>Add the calls participating in the multiparty call to the
+                <code>calls</code> property of the <var>confCall</var> object,
+                remove them from the <code>calls</code> array of the
+                <a>TelephonyManager</a> object, and set their
+                <code>state</code> to <code>'multiparty'</code>.
+                </li>
+                <li>Add the <var>confCall</var> object to the
+                <code>calls</code> array of the <a>TelephonyManager</a> object.
+                </li>
+                <li>Set the <code>state</code> of <var>confCall</var> to <code>
+                  "active"</code>.
+                </li>
+                <li>
+                  <a>Queue a task</a> to <a>fire a simple event</a> named
+                  <code><a>participantadded</a></code> at <var>confCall</var>.
+                  object
+                </li>
+                <li>Follow the state changes of <var>confCall</var> through the
+                state change events.
+                </li>
+                <li>If there is any error during the method call, then the
+                <a href="#error-steps">error steps</a> MUST be executed on the
+                <var>telCall</var> object.
+                </li>
+              </ol>
+            </li>
+          </ol>
           <figure>
             <img src="images/inbound_call_state_diagram.gif" alt=
             "Inbound Call State Diagram" title="Inbound Call State Diagram">
@@ -2707,9 +2715,9 @@ var respecConfig = {
         sharing the same value for the <code>conferenceId</code> property.
       </p>
       <p class='note'>
-      It is up the the implementations and applications how to store and access
-      call history. This document only specifies the minimum content of the data
-      to be saved.
+        It is up the the implementations and applications how to store and
+        access call history. This document only specifies the minimum content
+        of the data to be saved.
       </p>
       <dl title="[NoInterfaceObject] interface CallHistoryEntry" class="idl">
         <dt>
@@ -2989,6 +2997,26 @@ var respecConfig = {
           </tr>
         </tbody>
       </table>
+    </section>
+    <!-- - - - - - - - - - - - - -  Changes - - - - - - - - - - - - - - - - -->
+    <section class="appendix" id="Changes">
+      <h2>
+        Changes
+      </h2>
+      <p>
+        The following is a list of substantial changes to the document. For a
+        complete list of changes, see the <a href=
+        "https://github.com/sysapps/telephony/commits/gh-pages">change log on
+        Github</a>. You can also view the <a href=
+        "https://github.com/sysapps/telephony/issues?page=1&amp;state=closed">recently
+        closed bugs</a>.
+      </p>
+      <ul>
+        <li>No changes yet.
+        </li><!-- 
+        <li><a href="">Link to bug that documents the change</a></li>
+        -->
+      </ul>
     </section>
     <!-- - - - - - - - - - - - - - Acknowledgements - - - - - - - - - - - - - - -->
     <section>
