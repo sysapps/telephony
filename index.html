@@ -230,8 +230,8 @@
         MUST NOT be used as telephony service id.
       </p>
       <p>
-        A <dfn>multiparty call</dfn> (also referred to as <i>conference
-        call</i>) is a telephony call with multiple remote party participants,
+        A <dfn>multiparty call</dfn> (also referred to as <dfn>conference
+        call</dfn>) is a telephony call with multiple remote party participants,
         which is controlled as a single call, i.e. can be put on hold,
         activated, disconnected with all participants. Other calls can be
         joined with a multiparty call. This version supports GSM multiparty
@@ -475,7 +475,7 @@
           service id</a> of the disabled service.
         </dd>
         <dt>
-          attribute <span class="no-docs">EventHandler</span> onservicechanged
+          attribute EventHandler onservicechanged
         </dt>
         <dd>
           Handles a change of <a>default telephony service</a> from one to
@@ -515,7 +515,7 @@
                 <dfn><code>onincoming</code></dfn>
               </td>
               <td>
-                <code><dfn>incoming</dfn></code>
+                <dfn><code>incoming</code></dfn>
               </td>
               <td>
                 <a>TelephonyEvent</a>
@@ -529,7 +529,7 @@
                 <dfn><code>oncallschanged</code></dfn>
               </td>
               <td>
-                <code><dfn>callschanged</dfn></code>
+                <dfn><code>callschanged</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -543,7 +543,7 @@
                 <dfn><code>onserviceadded</code></dfn>
               </td>
               <td>
-                <code><dfn>serviceadded</dfn></code>
+                <dfn><code>serviceadded</code></dfn>
               </td>
               <td>
                 <a>TelephonyServiceEvent</a>
@@ -557,7 +557,7 @@
                 <dfn><code>onserviceremoved</code></dfn>
               </td>
               <td>
-                <code><dfn>serviceremoved</dfn></code>
+                <dfn><code>serviceremoved</code></dfn>
               </td>
               <td>
                 <a>TelephonyServiceEvent</a>
@@ -571,7 +571,7 @@
                 <dfn><code>onservicechanged</code></dfn>
               </td>
               <td>
-                <code><dfn>servicechanged</dfn></code>
+                <dfn><code>servicechanged</code></dfn>
               </td>
               <td>
                 <a>TelephonyServiceEvent</a>
@@ -676,7 +676,7 @@
           </li>
         </ol>
         <p>
-          The <code>dial</code> method when invoked MUST run the following
+          The <a>dial</a> method when invoked MUST run the following
           steps:
         </p>
         <ol id="steps-dial">
@@ -1107,7 +1107,7 @@
                 <dfn><code>onstatechange</code></dfn>
               </td>
               <td>
-                <code><dfn>statechange</dfn></code>
+                <dfn><code>statechange</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -1121,7 +1121,7 @@
                 <dfn><code>onerror</code></dfn>
               </td>
               <td>
-                <code><dfn>error</dfn></code>
+                <dfn><code>error</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -1530,7 +1530,7 @@
                   <dfn><code>ondialing</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>dialing</dfn></code>
+                  <dfn><code>dialing</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1545,7 +1545,7 @@
                   <dfn><code>onalerting</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>alerting</dfn></code>
+                  <dfn><code>alerting</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1560,7 +1560,7 @@
                   <dfn><code>onaccepted</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>accepted</dfn></code>
+                  <dfn><code>accepted</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1575,7 +1575,7 @@
                   <dfn><code>onconnecting</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>connecting</dfn></code>
+                  <dfn><code>connecting</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1590,7 +1590,7 @@
                   <dfn><code>onactive</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>active</dfn></code>
+                  <dfn><code>active</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1604,7 +1604,7 @@
                   <dfn><code>ondisconnecting</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>disconnecting</dfn></code>
+                  <dfn><code>disconnecting</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1619,10 +1619,10 @@
                   <dfn><code>ondisconnected</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>disconnected</dfn></code>
+                  <dfn><code>disconnected</code></dfn>
                 </td>
                 <td>
-                  <a><code>TelephonyEvent</code></a>
+                  <a>TelephonyEvent</a>
                 </td>
                 <td>
                   handles call state changes to the <code>"disconnected"</code>
@@ -1634,7 +1634,7 @@
                   <dfn><code>onholding</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>holding</dfn></code>
+                  <dfn><code>holding</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1649,7 +1649,7 @@
                   <dfn><code>onheld</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>held</dfn></code>
+                  <dfn><code>held</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1663,7 +1663,7 @@
                   <dfn><code>onresuming</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>resuming</dfn></code>
+                  <dfn><code>resuming</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1678,7 +1678,7 @@
                   <dfn><code>onredirecting</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>redirecting</dfn></code>
+                  <dfn><code>redirecting</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1693,7 +1693,7 @@
                   <dfn><code>ontransferring</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>transferring</dfn></code>
+                  <dfn><code>transferring</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1708,7 +1708,7 @@
                   <dfn><code>onjoining</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>joining</dfn></code>
+                  <dfn><code>joining</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1723,7 +1723,7 @@
                   <dfn><code>onsplitting</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>splitting</dfn></code>
+                  <dfn><code>splitting</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -1738,7 +1738,7 @@
                   <dfn><code>onmultiparty</code></dfn>
                 </td>
                 <td>
-                  <code><dfn>multiparty</dfn></code>
+                  <dfn><code>multiparty</code></dfn>
                 </td>
                 <td>
                   <a>simple event</a>
@@ -2445,7 +2445,7 @@
                 <dfn><code>onactive</code></dfn>
               </td>
               <td>
-                <code><dfn>active</dfn></code>
+                <dfn><code>active</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2459,7 +2459,7 @@
                 <dfn><code>ondisconnecting</code></dfn>
               </td>
               <td>
-                <code><dfn>disconnecting</dfn></code>
+                <dfn><code>disconnecting</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2474,10 +2474,10 @@
                 <dfn><code>ondisconnected</code></dfn>
               </td>
               <td>
-                <code><dfn>disconnected</dfn></code>
+                <dfn><code>disconnected</code></dfn>
               </td>
               <td>
-                <a><code>TelephonyEvent</code></a>
+                <a>TelephonyEvent</a>
               </td>
               <td>
                 handles call state changes to the <code>"disconnected"</code>
@@ -2489,7 +2489,7 @@
                 <dfn><code>onholding</code></dfn>
               </td>
               <td>
-                <code><dfn>holding</dfn></code>
+                <dfn><code>holding</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2503,7 +2503,7 @@
                 <dfn><code>onheld</code></dfn>
               </td>
               <td>
-                <code><dfn>held</dfn></code>
+                <dfn><code>held</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2517,7 +2517,7 @@
                 <dfn><code>onresuming</code></dfn>
               </td>
               <td>
-                <code><dfn>resuming</dfn></code>
+                <dfn><code>resuming</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2531,7 +2531,7 @@
                 <dfn><code>onjoining</code></dfn>
               </td>
               <td>
-                <code><dfn>joining</dfn></code>
+                <dfn><code>joining</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
@@ -2545,7 +2545,7 @@
                 <dfn><code>onsplitting</code></dfn>
               </td>
               <td>
-                <code><dfn>splitting</dfn></code>
+                <dfn><code>splitting</code></dfn>
               </td>
               <td>
                 <a>simple event</a>
