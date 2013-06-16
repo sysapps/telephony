@@ -734,8 +734,7 @@
             </ol>
           </li>
           <li>If during further steps for call connection there is an error,
-          execute the <a href="#error-steps">error steps</a> for
-          <var>telCall</var>.
+          execute the <a>error steps</a> for <var>telCall</var>.
           </li>
         </ol>
         <p>
@@ -1766,25 +1765,24 @@
           <p>
             The implementation MUST follow the call state changes in the
             supported telephony backend(s) and networks, and MUST keep the
-            <code>state</code> attribute updated. Since call state transitions
-            depend on protocol, network equipment, modem, etc., the
-            implementation MUST NOT fire error events on assumed erroneous
-            state transitions. Applications MUST always re-synchronize any
-            eventual internal states to the current call state reported by the
-            telephony system. The implementation MUST NOT set the call state to
-            any other value than specified in the descriptions of the methods
-            of this interface.
+            <a>state</a> attribute updated. Since call state transitions depend
+            on protocol, network equipment, modem, etc., the implementation
+            MUST NOT fire error events on assumed erroneous state transitions.
+            Applications MUST always re-synchronize any eventual internal
+            states to the current call state reported by the telephony system.
+            The implementation MUST NOT set the call state to any other value
+            than specified in the descriptions of the methods of this
+            interface.
           </p>
           <p>
-            Whenever there is a change in the <code>state</code> attribute the
+            Whenever there is a change in the <a>state</a> attribute the
             <a>user agent</a> MUST:
           </p>
           <ol>
-            <li>Queue a task to fire a simple event named
-            <code>statechange</code>.
-            </li>
-            <li>Queue a task to fire a simple event named with the new value of
-            the state attribute.
+            <li>
+              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <code>statechange</code> with the new value of the state
+              attribute.
             </li>
           </ol>
           <p>
@@ -1866,8 +1864,8 @@
             <code>state</code> to <code>"active"</code>.
           </p>
           <p>
-            If there is any error during method calls, then the <a href=
-            "#error-steps">error steps</a> MUST be executed.
+            If there is any error during method calls, then the <a>error
+            steps</a> MUST be executed.
           </p>
           <p>
             The <code>disconnect</code> method when invoked on the <a>Call</a>
@@ -1887,23 +1885,22 @@
             </li>
             <li>Request from the telephony system the disconnection of the
             call, then return and continue these steps asynchronously. If there
-            is any error, the <a href="#error-steps">error steps</a> MUST be
-            executed.
+            is any error, the <a>error steps</a> MUST be executed.
             </li>
           </ol>
           <p>
             Depending on the protocol, there may be restrictions on methods.
             For instance, GSM does not permit disconnecting a held call. Also,
             disconnecting a participant in a held multiparty call is not
-            supported. In such case, the <a href="#error-steps">error steps</a>
-            MUST be executed. Also, if the controlling party disconnects in
-            IS-41 3-way call in CDMA, then all parties are disconnected, and it
-            is not possible for the controlling party to disconnect only one
-            participant (that participant must choose to hang up). Therefore if
-            the telephony service is CDMA, when invoking the
-            <code>disconnect()</code> method of a <a>TelephonyCall</a> object
-            participating in a <a>ConferenceCall</a> the <a href=
-            "#error-steps">error steps</a> MUST be executed.
+            supported. In such case, the <a>error steps</a> MUST be executed.
+            Also, if the controlling party disconnects in IS-41 3-way call in
+            CDMA, then all parties are disconnected, and it is not possible for
+            the controlling party to disconnect only one participant (that
+            participant must choose to hang up). Therefore if the telephony
+            service is CDMA, when invoking the <code>disconnect()</code> method
+            of a <a>TelephonyCall</a> object participating in a
+            <a>ConferenceCall</a> the <a href="#error-steps">error steps</a>
+            MUST be executed.
           </p>
           <p>
             When <a><var>TCallControl</var></a> is notified of actual call
@@ -2029,10 +2026,9 @@
             parameter. Note that in GSM this requires putting the current call
             on hold, dialing a new call to the third party, then initiating the
             call transfer procedure. If there is an error, the original call
-            MUST be resumed and the <a href="#error-steps">error steps</a> MUST
-            be executed without modifying the call state. If the request is
-            acknowledged, then set <code>state</code> to
-            <code>"transferring"</code>.
+            MUST be resumed and the <a>error steps</a> MUST be executed without
+            modifying the call state. If the request is acknowledged, then set
+            <code>state</code> to <code>"transferring"</code>.
             </li>
             <li>When <a><var>TCallControl</var></a> is notified that the call
             has been successfully transferred and the original call is
@@ -2097,9 +2093,9 @@
                 <li>Follow the state changes of <var>confCall</var> through the
                 state change events.
                 </li>
-                <li>If there is any error during the method call, then the
-                <a href="#error-steps">error steps</a> MUST be executed on the
-                <var>telCall</var> object.
+                <li>If there is any error during the method call, then the <a>
+                  error steps</a> MUST be executed on the <var>telCall</var>
+                  object.
                 </li>
               </ol>
             </li>
