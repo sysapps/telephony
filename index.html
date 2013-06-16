@@ -617,8 +617,8 @@
               name is "<a href=
               "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
               </li>
-              <li>Invoke <var>resolver</var>'s reject(value) method with
-              <var>error</var> as the value argument.
+              <li>Invoke <var>resolver</var>'s reject(value) method with <var>
+                error</var> as the value argument.
               </li>
             </ol>
           </li>
@@ -665,7 +665,8 @@
           <li>Otherwise, queue a task to:
             <ol>
               <li>Change the <a>defaultServiceId</a> attribute to the
-              <a>telephony service id</a> of the new default telephony service.
+              <a>telephony service id</a> of the new <a>default telephony
+              service</a>.
               </li>
               <li>If <a><code>Promise</code></a> was passed, invoke
               <var>resolver</var>'s accept(value) method with the id of the new
@@ -745,7 +746,7 @@
         <ol id="steps-sendtones">
           <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
           to be used, then validate and use that value, otherwise use the
-          default telephony service for sending the tones.
+          <a>default telephony service</a> for sending the tones.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>duration</code>, then validate and use that value, otherwise
@@ -786,7 +787,7 @@
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
           to be used, then validate and use that value, otherwise use the
-          default telephony service for sending the tones.
+          <a>default telephony service</a> for sending the tones.
           </li>
           <li>If the <a>ToneParams</a> parameter specifies the tone
           <code>duration</code>, then ignore that value.
