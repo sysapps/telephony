@@ -612,13 +612,13 @@
           identifier of any <a>telephony service</a> known to the user agent,
           run the following sub-steps and terminate this algorithm:
             <ol>
-              <li>Let <em>error</em> be a new <a href=
+              <li>Let <var>error</var> be a new <a href=
               "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose
               name is "<a href=
               "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
               </li>
               <li>Invoke <var>resolver</var>'s reject(value) method with
-              <em>error</em> as the value argument.
+              <var>error</var> as the value argument.
               </li>
             </ol>
           </li>
@@ -654,11 +654,11 @@
           <var>promise</var> was passed, run the following sub steps and
           terminate this algorithm:
             <ol>
-              <li>Let <em>error</em> be a new DOMError object whose name is
+              <li>Let <var>error</var> be a new DOMError object whose name is
               "NoModificationAllowedError".
               </li>
               <li>Call <var>resolver</var>'s reject(value) method with
-              <em>error</em> as the value argument.
+              <var>error</var> as the value argument.
               </li>
             </ol>
           </li>
