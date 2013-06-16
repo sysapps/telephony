@@ -456,7 +456,7 @@
           attribute EventHandler onserviceadded
         </dt>
         <dd>
-          The <code>serviceadded</code> event of type
+          The <a>serviceadded</a> event of type
           <a>TelephonyServiceEvent</a> MUST be fired whenever a new
           <a>telephony service</a> is enabled in the system. The
           <a>serviceId</a> attribute of the event MUST contain the <a>telephony
@@ -468,7 +468,7 @@
           attribute EventHandler onserviceremoved
         </dt>
         <dd>
-          The <code>serviceremoved</code> event of type
+          The <a>serviceremoved</a> event of type
           <a>TelephonyServiceEvent</a> MUST be fired when an existing
           <a>telephony service</a> is disabled in the system. The
           <a>serviceId</a> attribute of the event MUST contain the <a>telephony
@@ -616,7 +616,7 @@
               name is "<a href=
               "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
               </li>
-              <li>Invoke <em>resolver</em>'s reject(value) method with
+              <li>Invoke <var>resolver</var>'s reject(value) method with
               <em>error</em> as the value argument.
               </li>
             </ol>
@@ -625,7 +625,7 @@
           the current default telephony service, run the following sub-steps
           and terminate this algorithm:
             <ol>
-              <li>Invoke <em>resolver</em>'s accept(value) method with
+              <li>Invoke <var>resolver</var>'s accept(value) method with
               <var>potential service</var> as the value argument.
               </li>
             </ol>
@@ -655,7 +655,7 @@
               <li>Let <em>error</em> be a new DOMError object whose name is
               "NoModificationAllowedError".
               </li>
-              <li>Call <em>resolver</em>'s reject(value) method with
+              <li>Call <var>resolver</var>'s reject(value) method with
               <em>error</em> as the value argument.
               </li>
             </ol>
@@ -665,7 +665,7 @@
               <li>Change the <a>defaultServiceId</a> attribute to the
               <a>telephony service id</a> of the new default telephony service.
               </li>
-              <li>If <a>Promise</a> was passed, invoke <em>resolver</em>'s
+              <li>If <a>Promise</a> was passed, invoke <var>resolver</var>'s
               accept(value) method with the id of the new default service as
               value argument.
               </li>
@@ -764,11 +764,11 @@
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          request, invoke <var>resolver</var>'s <code>accept()</code> method with
           no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
@@ -804,11 +804,11 @@
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          request, invoke <var>resolver</var>'s <code>accept()</code> method with
           no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
@@ -834,11 +834,11 @@
           </li>
           <li>If the request to the telephony system is successful, or if the
           telephony system does not support feedback about the result of the
-          request, invoke <em>resolver</em>'s <code>accept()</code> method with
+          request, invoke <var>resolver</var>'s <code>accept()</code> method with
           no arguments.
           </li>
           <li>If the request to the telephony system is unsuccessful, invoke
-          <em>resolver</em>'s <code>reject()</code> method, with no arguments.
+          <var>resolver</var>'s <code>reject()</code> method, with no arguments.
           </li>
         </ol>
         <p>
