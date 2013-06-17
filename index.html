@@ -192,9 +192,11 @@
         the <dfn><a href=
         "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
         interface as well as the concepts of a <a href=
-        "http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a>
-        and <dfn><a href="http://dom.spec.whatwg.org/#concept-event-fire">fire
-        an event</a></dfn> are defined in [[!DOM4]].
+        "http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a>,
+        <dfn><a href="http://dom.spec.whatwg.org/#concept-event-fire">fire an
+        event</a></dfn>, and <dfn><a href=
+        "http://dom.spec.whatwg.org/#concept-event-dispatch">dispatch</a></dfn>
+        are defined in [[!DOM4]].
       </p>
     </section>
     <!-- - - - - - - - - - - - - -  Telephony Lifecycle  - - - - - - - - - - - -->
@@ -219,7 +221,25 @@
       <p>
         A <dfn>default telephony service</dfn> is the <a>telephony service</a>
         that is set as default for telephony operations by the implementation.
+        The default telephony service can change over time.
       </p>
+      <p>
+        When the <a>default telephony service</a> changes, the user agent MUST:
+      </p>
+      <ol>
+        <li>Let <var>service id</var> be the <a>telephony service id</a> of the
+        new <a>default telephony service</a>.
+        </li>
+        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with the
+        event name <code>defaultchanged</code>, which does not bubble, is not
+        cancelable, has no default action, and whose <a>serviceId</a> attribute
+        to <var>service id</var>.
+        </li>
+        <li>Queue a task to change the <a>defaultServiceId</a> attribute of the
+        TelephonyManager object to <var>sercive id</var>, and fire
+        <var>event</var> at the <a>TelephonyManager</a>.
+        </li>
+      </ol>
       <p>
         A telephony service can use different protocols for telephony signaling
         and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since
@@ -238,20 +258,42 @@
       <p>
         Telephony services can be added or removed from the system at any time
         (e.g., the user pops out the SIM card or adds a different SIM card).
-        When a <a>telephony service</a> is enabled in the system:
+      </p>
+      <p>
+        When a <a>telephony service</a> is added in the system, the user agent
+        MUST:
       </p>
       <ol>
-        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a>.
+        <li>Create an event that uses the <a>TelephonyServiceEvent</a>
+        interface, with the event name <code>serviceadded</code>, which does
+        not bubble, is not cancelable, has no default action, and whose
+        <a>serviceId</a> attribute is set to the <a>telephony service id</a> of
+        the added service.
         </li>
-        <li>Queue a task to fire
+        <li>
+          <a>Dispatch</a> the event at the <a>TelephonyManager</a>.
         </li>
       </ol>
       <p>
-        The <a>serviceadded</a> event of type MUST be fired The
-        <a>serviceId</a> attribute of the event MUST contain the <a>telephony
-        service id</a> of the new service. Note that compliant implementations
-        may not be reporting such events when they occur (e.g. OTA SIM update
-        or hot-swappable SIM cards).
+        When a <a>telephony service</a> is removed in the system, the user
+        agent MUST:
+      </p>
+      <ol>
+        <li>Create an event that uses the <a>TelephonyServiceEvent</a>
+        interface, with the event name <code>serviceremoved</code>, which does
+        not bubble, is not cancelable, has no default action, and whose
+        <a>serviceId</a> attribute is set to the <a>telephony service id</a> of
+        the removed service.
+        </li>
+        <li>
+          <a>Dispatch</a> the event at the <a>TelephonyManager</a>.
+        </li>
+      </ol>
+      <p class="issue">
+        Note that compliant implementations may not be reporting such events
+        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
+        <a href="https://github.com/sysapps/telephony/issues/127">See issue
+        127</a>.
       </p>
       <section>
         <h3>
@@ -385,7 +427,7 @@
           represents the id of the <a>default telephony service</a>.
         </dd>
         <dt>
-          Promise changeDefaultService(DOMString serviceID)
+          Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dd>
           Provides a means to change the <a>default telephony service</a> used
@@ -393,7 +435,7 @@
           update the default service</a>.
           <dl class='parameters'>
             <dt>
-              DOMString serviceID
+              DOMString serviceId
             </dt>
             <dd>
               A <a>service id</a> for a <a>telephony service</a> known to the
@@ -486,7 +528,7 @@
           specified telephony service. A <a><code>Promise</code></a> object
           will be returned in order to notify the result of the request.
         </dd>
-        <dt class="no-docs">
+        <dt>
           attribute EventHandler onincoming
         </dt>
         <dd>
@@ -496,7 +538,7 @@
           <a>call</a> attribute of the event MUST be set to the
           <a>TelephonyCall</a> object controlling the incoming call.
         </dd>
-        <dt class="no-docs">
+        <dt>
           attribute EventHandler oncallschanged
         </dt>
         <dd>
@@ -504,25 +546,15 @@
           the <a>user agent</a> MUST <a>queue a task</a> to <a>fire an
           event</a> named <code>callschanged</code>.
         </dd>
-        <dt class="no-docs">
+        <dt>
           attribute EventHandler onserviceadded
         </dt>
-        <dt class="no-docs">
+        <dt>
           attribute EventHandler onserviceremoved
         </dt>
-        <dd>
-          The <a>serviceremoved</a> event of type <a>TelephonyServiceEvent</a>
-          MUST be fired when an existing <a>telephony service</a> is disabled
-          in the system. The <a>serviceId</a> attribute of the event MUST
-          contain the <a>telephony service id</a> of the disabled service.
-        </dd>
         <dt>
           attribute EventHandler onservicechanged
         </dt>
-        <dd>
-          Handles a change of <a>default telephony service</a> from one to
-          another.
-        </dd>
       </dl>
       <section>
         <h2>
