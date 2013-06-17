@@ -172,9 +172,7 @@
       <p>
         The concepts <dfn><a href=
         "http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">queue a
-        task</a></dfn> and <dfn><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#fire-a-simple-event">fire
-        a simple event</a></dfn> are defined in [[!HTML5]]. The <a href=
+        task</a></dfn> is defined in [[!HTML5]]. The <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
         source</a> for all <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">tasks
@@ -190,12 +188,13 @@
       </p>
       <p>
         The <dfn><a href=
-        "http://dom.spec.whatwg.org/#event"><code>Event</code></a></dfn>
-        interface and the the <dfn><a href=
+        "http://dom.spec.whatwg.org/#event"><code>Event</code></a></dfn> and
+        the <dfn><a href=
         "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
-        interface as well as the concept of a <a href=
+        interface as well as the concepts of a <a href=
         "http://dom.spec.whatwg.org/#concept-resolver"><dfn>resolver</dfn></a>
-        are defined in [[!DOM4]].
+        and <dfn><a href="http://dom.spec.whatwg.org/#concept-event-fire">fire
+        an event</a></dfn> are defined in [[!DOM4]].
       </p>
     </section>
     <!-- - - - - - - - - - - - - -  Telephony Lifecycle  - - - - - - - - - - - -->
@@ -208,7 +207,8 @@
         associated to a subscriber identity registered with a telephony service
         provider. For example, in cellular telephony, a telephony service is
         associated to a SIM card (Subscriber Identity Module). Each telephony
-        service has a <a>telephony service id</a>. A device can have one or more telephony services.
+        service has a <a>telephony service id</a>. A device can have one or
+        more telephony services.
       </p>
       <p>
         A <dfn>telephony service id</dfn> uniquely identifies a <a>telephony
@@ -236,21 +236,22 @@
         devices.
       </p>
       <p>
-         Telephony services can be added or removed from the system at any time (e.g., the user pops out the SIM card or adds a different SIM card). 
-         When a <a>telephony service</a> is enabled in the
-        system:
+        Telephony services can be added or removed from the system at any time
+        (e.g., the user pops out the SIM card or adds a different SIM card).
+        When a <a>telephony service</a> is enabled in the system:
       </p>
       <ol>
-        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a>.</li>
-        <li>Queue a task to fire </li>
+        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a>.
+        </li>
+        <li>Queue a task to fire
+        </li>
       </ol>
-
-        The <a>serviceadded</a> event of type  MUST
-        be fired 
-        The <a>serviceId</a> attribute of the event MUST contain the
-        <a>telephony service id</a> of the new service. Note that compliant
-        implementations may not be reporting such events when they occur (e.g.
-        OTA SIM update or hot-swappable SIM cards).
+      <p>
+        The <a>serviceadded</a> event of type MUST be fired The
+        <a>serviceId</a> attribute of the event MUST contain the <a>telephony
+        service id</a> of the new service. Note that compliant implementations
+        may not be reporting such events when they occur (e.g. OTA SIM update
+        or hot-swappable SIM cards).
       </p>
       <section>
         <h3>
@@ -500,7 +501,7 @@
         </dt>
         <dd>
           Whenever a call is added to or removed from the <a>calls</a> array,
-          the <a>user agent</a> MUST <a>queue a task</a> to <a>fire a simple
+          the <a>user agent</a> MUST <a>queue a task</a> to <a>fire an
           event</a> named <code>callschanged</code>.
         </dd>
         <dt class="no-docs">
@@ -712,8 +713,8 @@
               default service as value argument.
               </li>
               <li>
-                <a>Fire a simple event</a> named <code>servicechange</code> at
-                the <a>telephony</a> attribute of the navigator object.
+                <a>Fire an event</a> named <code>servicechange</code> at the
+                <a>telephony</a> attribute of the navigator object.
               </li>
             </ol>
           </li>
@@ -762,11 +763,11 @@
               <li>Add <var>telCall</var> to the <a>calls</a> array.
               </li>
               <li>
-                <a>Queue a task</a> to <a>fire a simple event</a> named
+                <a>Queue a task</a> to <a>fire an event</a> named
                 <code>statechange</code> at the <var>telCall</var> object.
               </li>
               <li>
-                <a>Queue a task</a> to <a>fire a simple event</a> named
+                <a>Queue a task</a> to <a>fire an event</a> named
                 <code>dialing</code> at the <var>telCall</var> object.
               </li>
               <li>and finally return to the caller and <a>queue a task</a> <a>
@@ -903,16 +904,16 @@
           <li>Add <var>incomingCall</var> to the <a>calls</a> array.
           </li>
           <li>
-            <a>Queue a task</a> to <a>fire a simple event</a> named
+            <a>Queue a task</a> to <a>fire an event</a> named
             <code>statechange</code> at the <var>incomingCall</var> object.
           </li>
           <li>
-            <a>Queue a task</a> to <a>fire a simple event</a> named
+            <a>Queue a task</a> to <a>fire an event</a> named
             <code>incoming</code> at the <a>TelephonyManager</a> object
             managing the call.
           </li>
           <li>
-            <a>Queue a task</a> to <a>fire a simple event</a> named
+            <a>Queue a task</a> to <a>fire an event</a> named
             <code>callschanged</code> at the <a>TelephonyManager</a> object
             managing the call.
           </li>
@@ -1821,7 +1822,7 @@
           </p>
           <ol>
             <li>
-              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <a>Queue a task</a> to <a>fire an event</a> named
               <code>statechange</code> with the new value of the state
               attribute.
             </li>
@@ -1917,11 +1918,11 @@
             <code>"disconnecting"</code>.
             </li>
             <li>
-              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <a>Queue a task</a> to <a>fire an event</a> named
               <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
-              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <a>Queue a task</a> to <a>fire an event</a> named
               <code>disconnecting</code> at the <var>telCall</var> object.
             </li>
             <li>Request from the telephony system the disconnection of the
@@ -1953,11 +1954,11 @@
             <code>"disconnected"</code>.
             </li>
             <li>
-              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <a>Queue a task</a> to <a>fire an event</a> named
               <code>statechange</code> at the <var>telCall</var> object.
             </li>
             <li>
-              <a>Queue a task</a> to <a>fire a simple event</a> named
+              <a>Queue a task</a> to <a>fire an event</a> named
               <code>disconnected</code> at the <var>telCall</var> object.
             </li>
             <li>Remove the <var>telCall</var> object from the <a>calls</a>
@@ -2127,7 +2128,7 @@
                   "active"</code>.
                 </li>
                 <li>
-                  <a>Queue a task</a> to <a>fire a simple event</a> named
+                  <a>Queue a task</a> to <a>fire an event</a> named
                   <code><a>participantadded</a></code> at <var>confCall</var>.
                   object
                 </li>
@@ -2942,7 +2943,7 @@
         <a><code>CallHandler</code></a> object appropriately
         </li>
         <li>
-          <a>Queue a task</a> to <a>fire a simple event</a> named
+          <a>Queue a task</a> to <a>fire an event</a> named
           <a><code>error</code></a> at the <a><code>CallHandler</code></a>
           object.
         </li>
