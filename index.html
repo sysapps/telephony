@@ -273,14 +273,6 @@
         call objects contain information which identifies the service and the
         protocol used for making the call.
       </p>
-      <p>
-        An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
-        <a>active</a> state representing a connected call which is bound to the
-        media input and output devices (e.g. microphone, speaker, tone
-        generator). Note that a call on <a>hold</a> is also active from a call
-        signaling point of view, but not bound to media input and output
-        devices.
-      </p>
       <p class="issue">
         Note that compliant implementations may not be reporting such events
         when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
@@ -291,6 +283,14 @@
         <h3>
           Telephony Calls
         </h3>
+        <p>
+          An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
+          <a>active</a> state representing a connected call which is bound to
+          the media input and output devices (e.g. microphone, speaker, tone
+          generator). Note that a call on <a>hold</a> is also active from a
+          call signaling point of view, but not bound to media input and output
+          devices.
+        </p>
         <p class="issue">
           Whenever a call is added to or removed from the <a>calls</a> array,
           the <a>user agent</a> MUST <a>queue a task</a> to <a>fire an
@@ -408,15 +408,15 @@
           readonly attribute Call? activeCall
         </dt>
         <dd>
-          When getting, the user agent MUST return a <a>Call</a> object
-          representing the <a>active call</a>. If there is no active
+          When getting the activeCall attribute, the user agent MUST return the <a>Call</a> object
+          that represents the <a>active call</a>. If there is no active
           <a>Call</a> return <code>null</code>.
         </dd>
         <dt>
           readonly attribute Call[] calls
         </dt>
         <dd>
-          When getting, the user agent MUST return an array, which can be
+          When getting the calls attribute, the user agent MUST return an array, which can be
           empty, of <a>Call</a> objects managed by this objects. Note that
           <a>TelephonyCall</a> objects belonging to a multiparty call are
           managed by the corresponding <a>ConferenceCall</a> object and MUST
