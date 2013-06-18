@@ -434,13 +434,8 @@
           readonly attribute DOMString[] serviceIds
         </dt>
         <dt>
-          readonly attribute DOMString defaultServiceId
+          readonly attribute DOMString? defaultServiceId
         </dt>
-        <dd>
-          When getting the defaultServiceId attribute, the user agent MUST
-          return the <a>DOMString</a> that represents the id of the <a>default
-          telephony service</a>.
-        </dd>
         <dt>
           Promise changeDefaultService(DOMString serviceId)
         </dt>
@@ -583,6 +578,12 @@
       <p>
         When getting the <a>serviceIds</a> attribute, the user agent MUST
         return an array, which can be empty, of <a>telephony service id</a>'s.
+      </p>
+      <p>
+        When getting the <a>defaultServiceId</a> attribute, the user agent MUST
+        return the <a>DOMString</a> that represents the id of the <a>default
+        telephony service</a> (if any). Otherwise, it returns
+        <code>null</code>.
       </p>
       <section>
         <h2>
