@@ -445,42 +445,12 @@
         <dt>
           Promise sendTones()
         </dt>
-        <dd>
-          This method asynchronously emits a [[!DTMF]] tone sequence with the
-          platform default or specified duration and delay, in the platform
-          default or the specified telephony service. A
-          <a><code>Promise</code></a> object will be returned in order to
-          notify the result of the request.
-          <dl class='parameters'>
-            <dt>
-              DOMString tones
-            </dt>
-            <dd>
-              Represents the sequence of [[!DTMF]] tones to be emitted. Its
-              value can be any sequence of the following characters (0-9; A-D;
-              *; #).
-            </dd>
-            <dt>
-              optional ToneParams params
-            </dt>
-            <dd>
-              If set, represents the <a>telephony service id</a> to be used,
-              the tone duration and the delay (gap) before a tone. If not set,
-              implementations MUST use default values for these.
-            </dd>
-          </dl>
-        </dd>
         <dt>
           Promise startTone()
         </dt>
         <dt>
           Promise stopTone(optional DOMString serviceId)
         </dt>
-        <dd>
-          This method stops emitting a [[!DTMF]] tone in the default or the
-          specified telephony service. A <a><code>Promise</code></a> object
-          will be returned in order to notify the result of the request.
-        </dd>
         <dt>
           attribute EventHandler onincoming
         </dt>
@@ -527,6 +497,86 @@
         telephony service</a> (if any). Otherwise, it returns
         <code>null</code>.
       </p>
+      <section>
+        <h3>
+          The <a>sendTones()</a> method
+        </h3>
+        <p>
+          The <dfn>sendTones()</dfn> method requests a telephony service emit
+          one or more [[!DTMF]] tones. When invoked, the user agent MUST run
+          the following steps:
+        </p>
+        <ol id="steps-sendtones">
+          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
+          to be used, then validate and use that value, otherwise use the
+          <a>default telephony service</a> for sending the tones.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>duration</code>, then validate and use that value, otherwise
+          use a default value.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>gap</code>, then validate and use that value, otherwise use a
+          default value.
+          </li>
+          <li>Request from the telephony system to send the specified tones.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>resolver</code></a>.
+          </li>
+          <li>Return <var>promise</var> to the caller and continue the
+          following steps asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
+          </li>
+        </ol>
+      </section>
+      <section>
+        <h3>
+          The <a>stopTone()</a> method
+        </h3>
+        <p>
+          The <a>stopTone()</a> method stops emitting a [[!DTMF]] tone in the
+          default or the specified telephony service. When invoked, the user
+          agent MUST run the following steps:
+        </p>
+        <ol id="steps-stoptone">
+          <li>If the platform does not support long press [[!DTMF]] tones,
+          throw a <code>NotSupported</code> error.
+          </li>
+          <li>If the provided parameters are invalid, or there is no tone
+          playing on the specified telephony service, throw an
+          <code>InvalidStateError</code> error.
+          </li>
+          <li>Otherwise, request from the telephony system to stop sending the
+          specified tone.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>resolver</code></a>.
+          </li>
+          <li>Return <var>promise</var> to the caller and continue the
+          following steps asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
+          </li>
+        </ol>
+      </section>
       <section>
         <h3>
           The <a>startTone()</a> method
@@ -838,73 +888,6 @@
         </table>
       </section>
       <section id="telephonymanager-steps">
-        <p>
-          The <code>sendTones</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol id="steps-sendtones">
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>duration</code>, then validate and use that value, otherwise
-          use a default value.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>gap</code>, then validate and use that value, otherwise use a
-          default value.
-          </li>
-          <li>Request from the telephony system to send the specified tones.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated
-          <a><code>resolver</code></a>.
-          </li>
-          <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful, or if the
-          telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method
-          with no arguments.
-          </li>
-          <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no
-          arguments.
-          </li>
-        </ol>
-        <p>
-          The <a>stopTone</a> method when invoked MUST run the following steps:
-        </p>
-        <ol id="steps-stoptone">
-          <li>If the platform does not support long press [[!DTMF]] tones,
-          throw a <code>NotSupported</code> error.
-          </li>
-          <li>If the provided parameters are invalid, or there is no tone
-          playing on the specified telephony service, throw an
-          <code>InvalidStateError</code> error.
-          </li>
-          <li>Otherwise, request from the telephony system to stop sending the
-          specified tone.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated
-          <a><code>resolver</code></a>.
-          </li>
-          <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful, or if the
-          telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method
-          with no arguments.
-          </li>
-          <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no
-          arguments.
-          </li>
-        </ol>
         <p>
           Upon a new incoming or waiting call, the <a>user agent</a> MUST
           execute the following steps:
