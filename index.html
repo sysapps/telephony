@@ -259,15 +259,177 @@
       <h2>
         Security and privacy considerations
       </h2>
-      <p>
-        This API must be only exposed to trusted content.
-      </p>
       <div class="issue">
         <p>
-          To be written. See <a href=
+          To be improved. See <a href=
           "https://github.com/sysapps/telephony/issues/26">bug 26</a>.
         </p>
       </div>
+      <p>
+        This API provides access to a potentially dangerous and valuable feature of 
+        a device.  As a result, misuse of the API would have a large cost to users
+        and other system stakeholders.  This API should, therefore, not be 
+        implemented without careful consideration of security and privacy issues.  
+      </p>
+      <p>
+        This section provides a limited overview of security and privacy 
+        considerations relevant for this API.  It includes a set of threats to
+        users and other stakeholders, as well as requirements for mitigating
+        them.
+      </p>
+      <p>
+        However, this section cannot cover all of the potential threats, nor can it
+        reflect the context in which a conformant implementation may be operating.  As
+        a result, this security section should be considered only the starting 
+        point for implementers.
+      </p>
+      <section>
+        <h3>Threats</h3>
+        <p>
+          The following list of threats should be considered by the implementer.  
+          Note that these are not given in any order.
+        </p>
+        <ul>
+          <li>
+            The API could be used by a malicious application to deny other
+            system  applications access to the device's telephony services, 
+            creating an availability problem.  This is a safety, as well as security, 
+            concern.
+          </li>
+          <li>
+            The API could be used by a malicious application as part of a
+            distributed denial of service attack, making frequent calls to a
+            remote call system such as an emergency response number.
+          </li>
+          <li>
+            The API could be used by an application to list the telephone
+            numbers that the end user has called and is, at any time, calling.
+            This information ought to be considered private, and could also be
+            used as part of a social engineering attack, or for identity
+            theft.
+          </li>
+          <li>
+            The API could be used to make unwanted calls to premium-rate telephone
+            numbers.  A malicious application could use this to earn money at the user's
+            expense.  Similarly, this API could be misused to enrol the user into a 
+            premium-rate calling service, which would then charge the end user when 
+            calls are received.
+          </li>
+          <li>
+            The API could be used to make unwanted advertising calls, in a
+            similar manner to spam email campaigns.  When combined with access
+            to the user's contact list, this would be both expensive and
+            embarassing for the user, and could result in their telephony
+            service being terminated by the network operator.
+          </li>
+          <li>
+            The API could be used by a malicious application to make telephone 
+            calls impersonating the end user, or as part of a process to defeat a 
+            two-factor authentication system.
+          </li>
+          <li>
+            A poorly implemented application could misuse this API to make unnecessary 
+            or unexpected calls, costing the user money or embarassing them.
+          </li>
+          <li>
+            This API could be used to call a number other than the one that the user was
+            expecting, routing calls to an unknown man-in-the-middle.  This could be used
+            to eavesdrop on the user.  When used in combination with recordings from the
+            microphone, this API could be used to covertly survey the end user.
+          </li>
+          <li>
+            This API could be used to send USSD messages to the service provider and invoke
+            functions such as wiping the handset or accessing security settings.
+          </li>
+          <li>
+            The API could be misused to access the user's voicemail recordings.
+          </li>
+          <li>
+            The API could be misused as part of a DDoS attack on an operator or service provider,
+            flooding the network with calls at certain times.
+          </li>
+          <li>
+            The API could cost the end user money by making outgoing calls when
+            the user is roaming, or on an expensive network.
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Mitigations</h3>
+        <p>
+          The following mechanisms may be employed to help an implementer
+          mitigate the threats outlined in the previous section.
+        </p>
+        <ul>
+          <li>
+            The user agent should only expose this API to <em>privileged</em>
+            applications, as defined in the <a href="http://www.w3.org/TR/runtime/">
+            Runtime and Security Model</a>.
+          </li>
+          <li>
+            The user agent should only expose this API to applications which
+            were distributed by an institution that the handset recognises as
+            a valid source.  For example, the API might only be accessible to
+            applications distributed by the handset manufacturer.
+          </li>
+          <li>
+            All applications with access to this API should be reviewed before
+            they are made available.  A mechanism for remote update of
+            applications with access to this API should be provided to allow
+            for  identified security issues to be fixed.
+          </li>
+          <li>
+            The user agent should maintain the integrity of any application
+            with  access to this API when initially downloaded, as well as
+            when it is  stored offline.
+          </li>
+          <li>
+            The user agent should only expose this API to downloaded, offline 
+            applications which are not modifiable by external web servers.  
+            A restrictive content security policy should be used to enforce 
+            that application with external content (such as scripts) cannot 
+            access this API.
+          </li>
+          <li>
+            The API implementation should have different behaviour when used
+            with premium-rate numbers.  Accessing premium-rate numbers may
+            require  an additional permission to be listed in the manifest, a
+            different  (or additional) warning to be displayed to users, or
+            place an additional requirement on the valid distributors of the
+            application.  It is up to the implementing user agent to identify
+            whether a remote party identifier is premium-rate or not.
+          </li>
+          <li>
+            The API implementation should have different behaviour when the
+            user is roaming on a network with a different (less favourable)
+            service-level agreement.  For example, presenting a different
+            warning to the user, or denying access to this API from certain
+            applications altogether.
+          </li>
+          <li>
+            User consent must be captured when a call is made.  For example,
+            the user must press a 'dial' button, or equivalent, before the
+            call is placed.  The user must also be shown the recipients of the
+            call, and the numbers that have and will be dialled as part of
+            placing it.
+          </li>
+          <li>
+            It should be obvious, visually, when a call is being invoked, is
+            in progress, and has ended.  This should be visible to the end
+            user and it must not be possible for applications to hide or
+            obscure this indicator.
+          </li>
+          <li>
+            The user agent should introduce rate limiting to prevent an
+            application  from making too many calls in too short a period of
+            time.
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>User interaction guidelines</h3>
+        <p>TODO</p>
+      </section>
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - - - -->
     <section>
