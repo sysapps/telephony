@@ -211,7 +211,7 @@
         associated to a subscriber identity registered with a telephony service
         provider. For example, in cellular telephony, a telephony service is
         associated to a SIM card (Subscriber Identity Module). Each telephony
-        service has a <a>telephony service id</a>. A device can have one or
+        service has a <a>telephony service id</a>. A device can have zero or
         more telephony services.
       </p>
       <p>
@@ -408,49 +408,56 @@
           readonly attribute Call? activeCall
         </dt>
         <dd>
-          When getting the activeCall attribute, the user agent MUST return the <a>Call</a> object
-          that represents the <a>active call</a>. If there is no active
-          <a>Call</a> return <code>null</code>.
+          When getting the <a>activeCall</a> attribute, the user agent MUST
+          return the <a>Call</a> object that represents the <a>active call</a>.
+          If there is no active <a>Call</a> return <code>null</code>.
         </dd>
         <dt>
           readonly attribute Call[] calls
         </dt>
         <dd>
-          When getting the calls attribute, the user agent MUST return an array, which can be
-          empty, of <a>Call</a> objects managed by this objects. Note that
-          <a>TelephonyCall</a> objects belonging to a multiparty call are
-          managed by the corresponding <a>ConferenceCall</a> object and MUST
-          NOT be also present in this array.
+          <p>
+            When getting the <a>calls</a> attribute, the user agent MUST return
+            an array, which can be empty, of <a>Call</a> objects managed by
+            this objects.
+          </p>
+          <p class="Note">
+            <a>TelephonyCall</a> objects belonging to a multiparty call are
+            managed by the corresponding <a>ConferenceCall</a> object and won't
+            be present in this array.
+          </p>
         </dd>
         <dt>
           readonly attribute DOMString[] emergencyNumbers
         </dt>
         <dd>
-          When getting, the user agent MUST return an array, which can be
-          empty, of telephone numbers for the emergency services in the current
-          geographical area.
+          When getting the emergencyNumbers attribute, the user agent MUST
+          return an array, which can be empty, of telephone numbers for the
+          emergency services in the current geographical area.
         </dd>
         <dt>
           readonly attribute DOMString[] serviceIds
         </dt>
         <dd>
-          When getting, the user agent MUST return an array, which can be
-          empty, of <a>telephony service id</a>'s.
+          When getting the serviceIds attributues, the user agent MUST return
+          an array, which can be empty, of <a>telephony service id</a>'s.
         </dd>
         <dt>
           readonly attribute DOMString defaultServiceId
         </dt>
         <dd>
-          When getting, the user agent MUST return the <a>DOMString</a> that
-          represents the id of the <a>default telephony service</a>.
+          When getting the defaultServiceId attribute, the user agent MUST
+          return the <a>DOMString</a> that represents the id of the <a>default
+          telephony service</a>.
         </dd>
         <dt>
           Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dd>
-          Provides a means to change the <a>default telephony service</a> used
-          by the user agent. When invoked, the user agent runs the <a>steps to
-          update the default service</a>.
+          The changeDefaultService() method provides a means to change the
+          <a>default telephony service</a> used by the user agent. When
+          invoked, the user agent runs the <a>steps to update the default
+          service</a>.
           <dl class='parameters'>
             <dt>
               DOMString serviceId
