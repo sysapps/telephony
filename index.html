@@ -427,18 +427,6 @@
         <dt>
           readonly attribute Call[] calls
         </dt>
-        <dd>
-          <p>
-            When getting the <a>calls</a> attribute, the user agent MUST return
-            an array, which can be empty, of <a>Call</a> objects managed by
-            this objects.
-          </p>
-          <p class="Note">
-            <a>TelephonyCall</a> objects belonging to a multiparty call are
-            managed by the corresponding <a>ConferenceCall</a> object and won't
-            be present in this array.
-          </p>
-        </dd>
         <dt>
           readonly attribute DOMString[] emergencyNumbers
         </dt>
@@ -585,6 +573,16 @@
         When getting the <a>activeCall</a> attribute, the user agent MUST
         return the <a>Call</a> object that represents the <a>active call</a>.
         If there is no active <a>Call</a> return <code>null</code>.
+      </p>
+      <p>
+        When getting the <a>calls</a> attribute, the user agent MUST return
+        an array, which can be empty, of <a>Call</a> objects managed by
+        this objects.
+      </p>
+      <p class="Note">
+        <a>TelephonyCall</a> objects belonging to a multiparty call are
+        managed by the corresponding <a>ConferenceCall</a> object and won't
+        be present in this array.
       </p>
       <section>
         <h2>
