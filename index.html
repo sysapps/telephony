@@ -335,7 +335,7 @@
           <a>call</a> attribute of the event MUST be set to the
           <a>TelephonyCall</a> object controlling the incoming call.
         </p>
-         <p>
+        <p>
           Upon a new incoming or waiting call, the <a>user agent</a> MUST
           execute the following steps:
         </p>
@@ -424,7 +424,7 @@
         </p>
       </section>
     </section>
-    <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
     <section>
       <h2>
         Extensions to <code>Navigator</code> object
@@ -501,39 +501,65 @@
           attribute EventHandler ondefaultchanged
         </dt>
       </dl>
-      <p>
-        When getting the <a>activeCall</a> attribute, the user agent MUST
-        return the <a>Call</a> object that represents the <a>active call</a>.
-        If there is no active <a>Call</a> return <code>null</code>.
-      </p>
-      <p>
-        When getting the <a>calls</a> attribute, the user agent MUST return an
-        array, which can be empty, of <a>Call</a> objects managed by this
-        objects.
-      </p>
-      <p class="Note">
-        <a>TelephonyCall</a> objects belonging to a multiparty call are managed
-        by the corresponding <a>ConferenceCall</a> object and won't be present
-        in this array.
-      </p>
-      <p>
-        When getting the <a>emergencyNumbers</a> attribute, the user agent MUST
-        return an array, which can be empty, of telephone numbers for the
-        emergency services in the current geographical area.
-      </p>
-      <p>
-        When getting the <a>serviceIds</a> attribute, the user agent MUST
-        return an array, which can be empty, of <a>telephony service id</a>'s.
-      </p>
-      <p>
-        When getting the <a>defaultServiceId</a> attribute, the user agent MUST
-        return the <a>DOMString</a> that represents the id of the <a>default
-        telephony service</a> (if any). Otherwise, it returns
-        <code>null</code>.
-      </p>
       <section>
         <h3>
-          The <a>sendTones()</a> method
+          The <code>activeCall</code> attribute
+        </h3>
+        <p>
+          When getting the <a>activeCall</a> attribute, the user agent MUST
+          return the <a>Call</a> object that represents the <a>active call</a>.
+          If there is no active <a>Call</a> return <code>null</code>.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>calls</code> attribute
+        </h3>
+        <p>
+          When getting the <a>calls</a> attribute, the user agent MUST return
+          an array, which can be empty, of <a>Call</a> objects managed by this
+          objects.
+        </p>
+        <p class="Note">
+          <a>TelephonyCall</a> objects belonging to a multiparty call are
+          managed by the corresponding <a>ConferenceCall</a> object and won't
+          be present in this array.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>emergencyNumbers</code> attribute
+        </h3>
+        <p>
+          When getting the <a>emergencyNumbers</a> attribute, the user agent
+          MUST return an array, which can be empty, of telephone numbers for
+          the emergency services in the current geographical area.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>serviceIds</code> attribute
+        </h3>
+        <p>
+          When getting the <a>serviceIds</a> attribute, the user agent MUST
+          return an array, which can be empty, of <a>telephony service
+          id</a>'s.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>defaultServiceId</code> attribute
+        </h3>
+        <p>
+          When getting the <a>defaultServiceId</a> attribute, the user agent
+          MUST return the <a>DOMString</a> that represents the id of the
+          <a>default telephony service</a> (if any). Otherwise, it returns
+          <code>null</code>.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>sendTones()</code> method
         </h3>
         <p>
           The <dfn>sendTones()</dfn> method requests a telephony service emit
@@ -575,7 +601,7 @@
       </section>
       <section>
         <h3>
-          The <a>stopTone()</a> method
+          The <code>stopTone()</code> method
         </h3>
         <p>
           The <a>stopTone()</a> method stops emitting a [[!DTMF]] tone in the
@@ -613,7 +639,7 @@
       </section>
       <section>
         <h3>
-          The <a>startTone()</a> method
+          The <code>startTone()</code> method
         </h3>
         <p>
           The <dfn>startTone()</dfn> method starts emitting a [[!DTMF]] tone
@@ -666,10 +692,10 @@
       </section>
       <section>
         <h3>
-          The <a>Dial()</a> method
+          The <code>dial()</code> method
         </h3>
         <p>
-          The <dfn>Dial()</dfn> method initiates a new telephony call. When
+          The <dfn>dial()</dfn> method initiates a new telephony call. When
           invoked the user agent MUST run the following steps:
         </p>
         <ol id="steps-dial">
@@ -732,7 +758,7 @@
       </section>
       <section>
         <h3>
-          The <a>changeDefaultService()</a> method
+          The <code>changeDefaultService()</code> method
         </h3>
         <p>
           The <dfn>changeDefaultService()</dfn> method provides a means to
@@ -921,14 +947,6 @@
           </tbody>
         </table>
       </section>
-      <section id="telephonymanager-steps">
-        <p>
-          The task <a><var>TCallControl</var></a> MUST listen to any event that
-          results in a call disconnection, and upon such events, follow the
-          steps described for <a href='#steps-disconnect-system'>handling
-          disconnected calls</a>.
-        </p>
-      </section><!-- telephonymanager-steps -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
       <section>
         <h3>
@@ -2981,6 +2999,12 @@ call ID's in the mpty call
       <p>
         Represents the [[!DTMF]] tone. Its value can be any of the following
         characters: 0-9; A-D; *; #.
+      </p>
+      <p>
+        The task <a><var>TCallControl</var></a> MUST listen to any event that
+        results in a call disconnection, and upon such events, follow the steps
+        described for <a href='#steps-disconnect-system'>handling disconnected
+        calls</a>.
       </p>
     </section>
   </body>
