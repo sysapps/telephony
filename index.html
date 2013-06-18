@@ -265,6 +265,7 @@
         this can include the ICC-ID as the service identifier. However, the
         user agent MUST NOT use the MSISDN as the telephony service id.
       </p>
+      <!-- - - - - - - - - - -  Default Telephony Service - - - - - - - - - -->
       <section>
         <h3>
           Default Telephony Service
@@ -296,6 +297,7 @@
           </li>
         </ol>
       </section>
+      <!-- - - - - - - - - - - - - - Telephony Calls  - - - - - - - - - - - -->
       <section>
         <h3>
           Telephony Calls
@@ -318,6 +320,7 @@
           of a call.
         </p>
       </section>
+      <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
       <section>
         <h3>
           Receiving calls (inbound states)
@@ -377,6 +380,7 @@
           </figcaption>
         </figure>
       </section><!-- Inbound states -->
+      <!-- - - - - - - - - -  Making calls (outbound states) - - - - - - - -->
       <section>
         <h3>
           Making calls (outbound states)
@@ -396,6 +400,7 @@
           </figcaption>
         </figure>
       </section><!-- Outbound states -->
+      <!-- - - - - - - - - - - - - -  Multiparty calls  - - - - - - - - - - -->
       <section>
         <h3>
           Multiparty calls
@@ -422,7 +427,7 @@
           conference call as a result of the <a>createConference</a> method,
           and the <code>participantadded</code> event is dispatched.
         </p>
-      </section>
+      </section> <!-- Multiparty calls -->
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
     <section>
@@ -501,6 +506,7 @@
           attribute EventHandler ondefaultchanged
         </dt>
       </dl>
+      <!-- - - - - - - - - - - - -  activeCall attribute  - - - - - - - - - -->
       <section>
         <h3>
           The <code>activeCall</code> attribute
@@ -511,6 +517,7 @@
           If there is no active <a>Call</a> return <code>null</code>.
         </p>
       </section>
+      <!-- - - - - - - - - - - - - calls attribute - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>calls</code> attribute
@@ -526,6 +533,7 @@
           be present in this array.
         </p>
       </section>
+      <!-- - - - - - - - - - - emergencyNumbers attribute - - - - - - - - - -->
       <section>
         <h3>
           The <code>emergencyNumbers</code> attribute
@@ -536,6 +544,7 @@
           the emergency services in the current geographical area.
         </p>
       </section>
+      <!-- - - - - - - - - - - serviceIds attribute - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>serviceIds</code> attribute
@@ -546,6 +555,7 @@
           id</a>'s.
         </p>
       </section>
+      <!-- - - - - - - - - - - defaultServiceId attribute - - - - - - - - - -->
       <section>
         <h3>
           The <code>defaultServiceId</code> attribute
@@ -557,6 +567,7 @@
           <code>null</code>.
         </p>
       </section>
+      <!-- - - - - - - - - - - sendTones() method - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>sendTones()</code> method
@@ -598,7 +609,8 @@
           arguments.
           </li>
         </ol>
-      </section>
+      </section> <!-- sendTones() method -->
+      <!-- - - - - - - - - - - stopTone() method - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>stopTone()</code> method
@@ -636,7 +648,8 @@
           arguments.
           </li>
         </ol>
-      </section>
+      </section> <!-- stopTone() method -->
+      <!-- - - - - - - - - - - startTone() method - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>startTone()</code> method
@@ -689,7 +702,8 @@
           arguments.
           </li>
         </ol>
-      </section>
+      </section><!-- startTone() method -->
+      <!-- - - - - - - - - - - dial() method  - - - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>dial()</code> method
@@ -755,7 +769,8 @@
           execute the <a>error steps</a> for <var>telCall</var>.
           </li>
         </ol>
-      </section>
+      </section><!--dial() method-->
+      <!-- - - - - - - - - - - changeDefaultService() method  - - - - - - - -->
       <section>
         <h3>
           The <code>changeDefaultService()</code> method
@@ -846,7 +861,8 @@
             </ol>
           </li>
         </ol>
-      </section>
+      </section><!-- changeDefaultService() method -->
+      <!-- - - - - - - - - - -  Event handlers  - - - - - - - - - - - - - - -->
       <section>
         <h2>
           Event handlers
@@ -946,7 +962,7 @@
             </tr>
           </tbody>
         </table>
-      </section>
+      </section> <!-- event handers -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
       <section>
         <h3>
