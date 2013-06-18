@@ -430,11 +430,6 @@
         <dt>
           readonly attribute DOMString[] emergencyNumbers
         </dt>
-        <dd>
-          When getting the emergencyNumbers attribute, the user agent MUST
-          return an array, which can be empty, of telephone numbers for the
-          emergency services in the current geographical area.
-        </dd>
         <dt>
           readonly attribute DOMString[] serviceIds
         </dt>
@@ -575,14 +570,19 @@
         If there is no active <a>Call</a> return <code>null</code>.
       </p>
       <p>
-        When getting the <a>calls</a> attribute, the user agent MUST return
-        an array, which can be empty, of <a>Call</a> objects managed by
-        this objects.
+        When getting the <a>calls</a> attribute, the user agent MUST return an
+        array, which can be empty, of <a>Call</a> objects managed by this
+        objects.
       </p>
       <p class="Note">
-        <a>TelephonyCall</a> objects belonging to a multiparty call are
-        managed by the corresponding <a>ConferenceCall</a> object and won't
-        be present in this array.
+        <a>TelephonyCall</a> objects belonging to a multiparty call are managed
+        by the corresponding <a>ConferenceCall</a> object and won't be present
+        in this array.
+      </p>
+      <p>
+        When getting the <a>emergencyNumbers</a> attribute, the user agent MUST
+        return an array, which can be empty, of telephone numbers for the
+        emergency services in the current geographical area.
       </p>
       <section>
         <h2>
