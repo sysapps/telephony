@@ -335,6 +335,40 @@
           <a>call</a> attribute of the event MUST be set to the
           <a>TelephonyCall</a> object controlling the incoming call.
         </p>
+         <p>
+          Upon a new incoming or waiting call, the <a>user agent</a> MUST
+          execute the following steps:
+        </p>
+        <ol id="steps-incoming">
+          <li>Let <var>incomingCall</var> be a new instance of
+          <a>TelephonyCall</a>.
+          </li>
+          <li>Set the <code>state</code> of <var>incomingCall</var> to
+          <code>"incoming"</code> in case there is no other call in <a href=
+          "#call-state-active"><code>active</code></a> state, or otherwise set
+          it to <code>"waiting"</code>.
+          </li>
+          <li>Add <var>incomingCall</var> to the <a>calls</a> array.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>statechange</code> at the <var>incomingCall</var> object.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>incoming</code> at the <a>TelephonyManager</a> object
+            managing the call.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>callschanged</code> at the <a>TelephonyManager</a> object
+            managing the call.
+          </li>
+          <li>
+            <a>Queue a task</a> <a><var>TCallControl</var></a> to monitor call
+            flow progress.
+          </li>
+        </ol>
         <figure>
           <img src="images/inbound_call_state_diagram.gif" alt="">
           <figcaption>
@@ -888,45 +922,6 @@
         </table>
       </section>
       <section id="telephonymanager-steps">
-        <p>
-          Upon a new incoming or waiting call, the <a>user agent</a> MUST
-          execute the following steps:
-        </p>
-        <ol id="steps-incoming">
-          <li>Let <var>incomingCall</var> be a new instance of
-          <a>TelephonyCall</a>.
-          </li>
-          <li>Set the <code>state</code> of <var>incomingCall</var> to
-          <code>"incoming"</code> in case there is no other call in <a href=
-          "#call-state-active"><code>active</code></a> state, or otherwise set
-          it to <code>"waiting"</code>.
-          </li>
-          <li>Add <var>incomingCall</var> to the <a>calls</a> array.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> at the <var>incomingCall</var> object.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>incoming</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>callschanged</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-          <li>
-            <a>Queue a task</a> <a><var>TCallControl</var></a> to monitor call
-            flow progress.
-          </li>
-        </ol>
-        <p class="issue">
-          The <code>incoming</code>, <code>serviceadded</code> and
-          <code>serviceremoved</code> events have to be defined according to
-          DOM4.
-        </p>
         <p>
           The task <a><var>TCallControl</var></a> MUST listen to any event that
           results in a call disconnection, and upon such events, follow the
