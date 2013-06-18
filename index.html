@@ -442,25 +442,6 @@
         <dt>
           TelephonyCall dial ()
         </dt>
-        <dd>
-          Initiates a new telephony call. Returns a <a>TelephonyCall</a>
-          object, which will manage the asynchronous call signaling events.
-          <dl class='parameters'>
-            <dt>
-              DOMString remoteParty
-            </dt>
-            <dd>
-              Represents the destination number of the call.
-            </dd>
-            <dt>
-              optional DialParams params
-            </dt>
-            <dd>
-              If set, represents the optional parameters of the call, including
-              the telephony service to be used, and whether caller ID is hidden
-            </dd>
-          </dl>
-        </dd>
         <dt>
           Promise sendTones()
         </dt>
@@ -570,6 +551,72 @@
         telephony service</a> (if any). Otherwise, it returns
         <code>null</code>.
       </p>
+      <section>
+        <h3>
+          The <a>Dial()</a> method
+        </h3>
+        <p>
+          The <dfn>Dial()</dfn> method initiates a new telephony call. When
+          invoked the user agent MUST run the following steps:
+        </p>
+        <ol id="steps-dial">
+          <li>Create a new <a>TelephonyCall</a> object, referred as
+          <var>telCall</var> in these steps.
+          </li>
+          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
+          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
+          </li>
+          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
+          object with identical <a>remoteParty</a> attribute, then an
+          <code>InvalidModificationError</code> MUST be thrown.
+          </li>
+          <li>Otherwise, make a request to the telephony system to dial in the
+          <a>remote party id</a> passed in the <var>remoteParty</var>
+          parameter. Note that the value can be also an emergency number.
+          According to the value of the <code>hideCallerId</code> in the <code>
+            params</code> parameter, the own number is requested to be either
+            displayed, hidden or otherwise the default system configuration to
+            this regard is requested to be followed. The call MUST be made
+            using the <a>telephony service</a> specified in the
+            <code>service</code> member of the <code>params</code> arguement.
+            If not specified, then the implementation MUST use the <a>default
+            telephony service</a>. Even if there is no SIM card and no other
+            telephony services are available, but emergency calls are known to
+            be possible (e.g. because a cellular modem is present), it is
+            considered as a default service with only emergency call
+            capability, and the implementation MUST define a <a>telephony
+            service id</a> for it. When not even emergency calls are possible
+            (e.g. it is a purely IP based implementation and there is no
+            cellular modem), the implementation MAY use empty string for
+            default <a>telephony service id</a>, but it is encouraged that a
+            default service is created, with the methods throwing a
+            <code>NotSupported</code> error.
+          </li>
+          <li>If the request is successful, then
+            <ol>
+              <li>Set the <code>state</code> of <var>telCall</var> to
+              <code>"dialing"</code> value.
+              </li>
+              <li>Add <var>telCall</var> to the <a>calls</a> array.
+              </li>
+              <li>
+                <a>Queue a task</a> to <a>fire an event</a> named
+                <code>statechange</code> at the <var>telCall</var> object.
+              </li>
+              <li>
+                <a>Queue a task</a> to <a>fire an event</a> named
+                <code>dialing</code> at the <var>telCall</var> object.
+              </li>
+              <li>and finally return to the caller and <a>queue a task</a> <a>
+                <var>TCallControl</var></a> to monitor call flow progress.
+              </li>
+            </ol>
+          </li>
+          <li>If during further steps for call connection there is an error,
+          execute the <a>error steps</a> for <var>telCall</var>.
+          </li>
+        </ol>
+      </section>
       <section>
         <h3>
           The <a>changeDefaultService()</a> method
@@ -762,66 +809,6 @@
         </table>
       </section>
       <section id="telephonymanager-steps">
-        <p>
-          The <a>dial</a> method when invoked MUST run the following steps:
-        </p>
-        <ol id="steps-dial">
-          <li>Create a new <a>TelephonyCall</a> object, referred as
-          <var>telCall</var> in these steps.
-          </li>
-          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
-          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
-          </li>
-          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> attribute, then an
-          <code>InvalidModificationError</code> MUST be thrown.
-          </li>
-          <li>Otherwise, make a request to the telephony system to dial in the
-          <a>remote party id</a> passed in the <var>remoteParty</var>
-          parameter. Note that the value can be also an emergency number.
-          According to the value of the <code>hideCallerId</code> in the <code>
-            params</code> parameter, the own number is requested to be either
-            displayed, hidden or otherwise the default system configuration to
-            this regard is requested to be followed. The call MUST be made
-            using the <a>telephony service</a> specified in the
-            <code>service</code> member of the <code>params</code> arguement.
-            If not specified, then the implementation MUST use the <a>default
-            telephony service</a>. Even if there is no SIM card and no other
-            telephony services are available, but emergency calls are known to
-            be possible (e.g. because a cellular modem is present), it is
-            considered as a default service with only emergency call
-            capability, and the implementation MUST define a <a>telephony
-            service id</a> for it. When not even emergency calls are possible
-            (e.g. it is a purely IP based implementation and there is no
-            cellular modem), the implementation MAY use empty string for
-            default <a>telephony service id</a>, but it is encouraged that a
-            default service is created, with the methods throwing a
-            <code>NotSupported</code> error.
-          </li>
-          <li>If the request is successful, then
-            <ol>
-              <li>Set the <code>state</code> of <var>telCall</var> to
-              <code>"dialing"</code> value.
-              </li>
-              <li>Add <var>telCall</var> to the <a>calls</a> array.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>statechange</code> at the <var>telCall</var> object.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>dialing</code> at the <var>telCall</var> object.
-              </li>
-              <li>and finally return to the caller and <a>queue a task</a> <a>
-                <var>TCallControl</var></a> to monitor call flow progress.
-              </li>
-            </ol>
-          </li>
-          <li>If during further steps for call connection there is an error,
-          execute the <a>error steps</a> for <var>telCall</var>.
-          </li>
-        </ol>
         <p>
           The <code>sendTones</code> method when invoked MUST run the following
           steps:
