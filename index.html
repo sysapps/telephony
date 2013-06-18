@@ -439,21 +439,6 @@
         <dt>
           Promise changeDefaultService(DOMString serviceId)
         </dt>
-        <dd>
-          The changeDefaultService() method provides a means to change the
-          <a>default telephony service</a> used by the user agent. When
-          invoked, the user agent runs the <a>steps to update the default
-          service</a>.
-          <dl class='parameters'>
-            <dt>
-              DOMString serviceId
-            </dt>
-            <dd>
-              A <a>service id</a> for a <a>telephony service</a> known to the
-              user agent.
-            </dd>
-          </dl>
-        </dd>
         <dt>
           TelephonyCall dial ()
         </dt>
@@ -586,6 +571,97 @@
         <code>null</code>.
       </p>
       <section>
+        <h3>
+          The <a>changeDefaultService()</a> method
+        </h3>
+        <p>
+          The <dfn>changeDefaultService()</dfn> method provides a means to
+          change the <a>default telephony service</a> used by the user agent.
+          When invoked, the user agent runs the the following steps:
+        </p>
+        <ol>
+          <li>Let <var>potential service</var> be the first argument passed to
+          this operation.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+          asynchronously.
+          </li>
+          <li>If <var>potential service</var> does not exactly match the
+          identifier of any <a>telephony service</a> known to the user agent,
+          run the following sub-steps and terminate this algorithm:
+            <ol>
+              <li>Let <var>error</var> be a new <a href=
+              "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose
+              name is "<a href=
+              "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
+              </li>
+              <li>Invoke <var>resolver</var>'s reject(value) method with <var>
+                error</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>If <var>potential service</var> exactly matches the service id of
+          the current default telephony service, run the following sub-steps
+          and terminate this algorithm:
+            <ol>
+              <li>Invoke <var>resolver</var>'s accept(value) method with <var>
+                potential service</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise, run the <a>steps to change the default service</a>,
+          with <var>potential service</var> as the <a>telephony service id</a>,
+          and <var>promise</var> as the <a><code>Promise</code></a>.
+          </li>
+        </ol>
+        <p>
+          The <dfn>steps to change the default service</dfn> are given by the
+          following algorithm. This abstract operation takes as an argument a
+          <a>telephony service id</a> and an optional
+          <a><code>Promise</code></a>.
+        </p>
+        <ol>
+          <li>Make a platform/system specific request to the underlying system
+          to change from the current default telephony service to the one
+          identified by <var>service id</var>.
+          </li>
+          <li>Possibly wait indefinately.
+          </li>
+          <li>If it's not possible (for whatever reason: timeout, security,
+          etc.) to change the default telephony service, and if
+          <var>promise</var> was passed, run the following sub steps and
+          terminate this algorithm:
+            <ol>
+              <li>Let <var>error</var> be a new DOMError object whose name is
+              "NoModificationAllowedError".
+              </li>
+              <li>Call <var>resolver</var>'s reject(value) method with
+              <var>error</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise, <a>queue a task</a> to:
+            <ol>
+              <li>Change the <a>defaultServiceId</a> attribute to the
+              <a>telephony service id</a> of the new <a>default telephony
+              service</a>.
+              </li>
+              <li>If <a><code>Promise</code></a> was passed, invoke
+              <var>resolver</var>'s accept(value) method with the id of the new
+              default service as value argument.
+              </li>
+              <li>
+                <a>Fire an event</a> named <code>servicechange</code> at the
+                <a>telephony</a> attribute of the navigator object.
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </section>
+      <section>
         <h2>
           Event handlers
         </h2>
@@ -686,93 +762,6 @@
         </table>
       </section>
       <section id="telephonymanager-steps">
-        <h3>
-          Methods
-        </h3>
-        <p>
-          The <dfn>steps to update the default service</dfn> are as follows:
-        </p>
-        <ol>
-          <li>Let <var>potential service</var> be the first argument passed to
-          this operation.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated resolver.
-          </li>
-          <li>Return <var>promise</var> and continue the following steps
-          asynchronously.
-          </li>
-          <li>If <var>potential service</var> does not exactly match the
-          identifier of any <a>telephony service</a> known to the user agent,
-          run the following sub-steps and terminate this algorithm:
-            <ol>
-              <li>Let <var>error</var> be a new <a href=
-              "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose
-              name is "<a href=
-              "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
-              </li>
-              <li>Invoke <var>resolver</var>'s reject(value) method with <var>
-                error</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>If <var>potential service</var> exactly matches the service id of
-          the current default telephony service, run the following sub-steps
-          and terminate this algorithm:
-            <ol>
-              <li>Invoke <var>resolver</var>'s accept(value) method with <var>
-                potential service</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>Otherwise, run the <a>steps to change the default service</a>,
-          with <var>potential service</var> as the <a>telephony service id</a>,
-          and <var>promise</var> as the <a><code>Promise</code></a>.
-          </li>
-        </ol>
-        <p>
-          The <dfn>steps to change the default service</dfn> are given by the
-          following algorithm. This abstract operation takes as an argument a
-          <a>telephony service id</a> and an optional
-          <a><code>Promise</code></a>.
-        </p>
-        <ol>
-          <li>Make a platform/system specific request to the underlying system
-          to change from the current default telephony service to the one
-          identified by <var>service id</var>.
-          </li>
-          <li>Possibly wait indefinately.
-          </li>
-          <li>If it's not possible (for whatever reason: timeout, security,
-          etc.) to change the default telephony service, and if
-          <var>promise</var> was passed, run the following sub steps and
-          terminate this algorithm:
-            <ol>
-              <li>Let <var>error</var> be a new DOMError object whose name is
-              "NoModificationAllowedError".
-              </li>
-              <li>Call <var>resolver</var>'s reject(value) method with
-              <var>error</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>Otherwise, <a>queue a task</a> to:
-            <ol>
-              <li>Change the <a>defaultServiceId</a> attribute to the
-              <a>telephony service id</a> of the new <a>default telephony
-              service</a>.
-              </li>
-              <li>If <a><code>Promise</code></a> was passed, invoke
-              <var>resolver</var>'s accept(value) method with the id of the new
-              default service as value argument.
-              </li>
-              <li>
-                <a>Fire an event</a> named <code>servicechange</code> at the
-                <a>telephony</a> attribute of the navigator object.
-              </li>
-            </ol>
-          </li>
-        </ol>
         <p>
           The <a>dial</a> method when invoked MUST run the following steps:
         </p>
