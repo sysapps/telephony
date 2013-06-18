@@ -214,6 +214,19 @@
         service has a <a>telephony service id</a>.
       </p>
       <p>
+        A telephony service can use different protocols for telephony signaling
+        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since
+        <a>call states</a> can differ depending on the protocol, the telephony
+        call objects contain information which identifies the service and the
+        protocol used for making the call.
+      </p>
+      <p class="issue">
+        Note that compliant implementations may not be reporting such events
+        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
+        <a href="https://github.com/sysapps/telephony/issues/127">See issue
+        127</a>.
+      </p>
+      <p>
         A can user agent can access zero or more telephony services of the
         device. Which telephony services are available to the user agent is
         dictated by policy, or by the user choosing which services are
@@ -249,43 +262,33 @@
         this can include the ICC-ID as the service identifier. However, the
         user agent MUST NOT use the MSISDN as the telephony service id.
       </p>
-      <p>
-        A <dfn>default telephony service</dfn> is the <a>telephony service</a>
-        that is set as default for telephony operations by the implementation.
-        The default telephony service can be change over time by the user or,
-        if supported by the user agent, through the <a>changeDefaultService</a>
-        method of the <a>TelephonyService</a> object.
-      </p>
-      <p>
-        When the <a>default telephony service</a> changes, the user agent MUST:
-      </p>
-      <ol>
-        <li>Let <var>service id</var> be the <a>telephony service id</a> of the
-        new <a>default telephony service</a>.
-        </li>
-        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with the
-        event name <code>defaultchanged</code>, which does not bubble, is not
-        cancelable, has no default action, and whose <a>serviceId</a> attribute
-        to <var>service id</var>.
-        </li>
-        <li>Queue a task to change the <a>defaultServiceId</a> attribute of the
-        <a>TelephonyManager</a> object to <var>sercive id</var>, and fire <var>
-          event</var> at the <a>TelephonyManager</a>.
-        </li>
-      </ol>
-      <p>
-        A telephony service can use different protocols for telephony signaling
-        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since
-        <a>call states</a> can differ depending on the protocol, the telephony
-        call objects contain information which identifies the service and the
-        protocol used for making the call.
-      </p>
-      <p class="issue">
-        Note that compliant implementations may not be reporting such events
-        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
-        <a href="https://github.com/sysapps/telephony/issues/127">See issue
-        127</a>.
-      </p>
+      <section> 
+        <h3>Default Telephony Service</h3>
+        <p>
+          A <dfn>default telephony service</dfn> is the <a>telephony service</a>
+          that is set as default for telephony operations by the implementation.
+          The default telephony service can be change over time by the user or,
+          if supported by the user agent, through the <a>changeDefaultService</a>
+          method of the <a>TelephonyService</a> object.
+        </p>
+        <p>
+          When the <a>default telephony service</a> changes, the user agent MUST:
+        </p>
+        <ol>
+          <li>Let <var>service id</var> be the <a>telephony service id</a> of the
+          new <a>default telephony service</a>.
+          </li>
+          <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with the
+          event name <code>defaultchanged</code>, which does not bubble, is not
+          cancelable, has no default action, and whose <a>serviceId</a> attribute
+          to <var>service id</var>.
+          </li>
+          <li>Queue a task to change the <a>defaultServiceId</a> attribute of the
+          <a>TelephonyManager</a> object to <var>sercive id</var>, and fire <var>
+            event</var> at the <a>TelephonyManager</a>.
+          </li>
+        </ol>
+      </section>
       <section>
         <h3>
           Telephony Calls
