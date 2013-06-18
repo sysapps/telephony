@@ -215,10 +215,13 @@
       </p>
       <p>
         A telephony service can use different protocols for telephony signaling
-        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since
-        <a>call states</a> can differ depending on the protocol, the telephony
-        call objects contain information which identifies the service and the
-        protocol used for making the call.
+        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity.
+      </p>
+      <p class="issue">
+        Since <a>call states</a> can differ depending on the protocol, do we
+        need to expose the service and the protocol used for making the call?
+        <a href="https://github.com/sysapps/telephony/issues/125">See issue
+        125</a>.
       </p>
       <p class="issue">
         Note that compliant implementations may not be reporting such events
@@ -262,30 +265,34 @@
         this can include the ICC-ID as the service identifier. However, the
         user agent MUST NOT use the MSISDN as the telephony service id.
       </p>
-      <section> 
-        <h3>Default Telephony Service</h3>
+      <section>
+        <h3>
+          Default Telephony Service
+        </h3>
         <p>
-          A <dfn>default telephony service</dfn> is the <a>telephony service</a>
-          that is set as default for telephony operations by the implementation.
-          The default telephony service can be change over time by the user or,
-          if supported by the user agent, through the <a>changeDefaultService</a>
-          method of the <a>TelephonyService</a> object.
+          A <dfn>default telephony service</dfn> is the <a>telephony
+          service</a> that is set as default for telephony operations by the
+          implementation. The default telephony service can be change over time
+          by the user or, if supported by the user agent, through the
+          <a>changeDefaultService</a> method of the <a>TelephonyService</a>
+          object.
         </p>
         <p>
-          When the <a>default telephony service</a> changes, the user agent MUST:
+          When the <a>default telephony service</a> changes, the user agent
+          MUST:
         </p>
         <ol>
-          <li>Let <var>service id</var> be the <a>telephony service id</a> of the
-          new <a>default telephony service</a>.
+          <li>Let <var>service id</var> be the <a>telephony service id</a> of
+          the new <a>default telephony service</a>.
           </li>
-          <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with the
-          event name <code>defaultchanged</code>, which does not bubble, is not
-          cancelable, has no default action, and whose <a>serviceId</a> attribute
-          to <var>service id</var>.
+          <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with
+          the event name <code>defaultchanged</code>, which does not bubble, is
+          not cancelable, has no default action, and whose <a>serviceId</a>
+          attribute to <var>service id</var>.
           </li>
-          <li>Queue a task to change the <a>defaultServiceId</a> attribute of the
-          <a>TelephonyManager</a> object to <var>sercive id</var>, and fire <var>
-            event</var> at the <a>TelephonyManager</a>.
+          <li>Queue a task to change the <a>defaultServiceId</a> attribute of
+          the <a>TelephonyManager</a> object to <var>sercive id</var>, and fire
+          <var>event</var> at the <a>TelephonyManager</a>.
           </li>
         </ol>
       </section>
