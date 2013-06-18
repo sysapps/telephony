@@ -424,11 +424,6 @@
         <dt>
           readonly attribute Call? activeCall
         </dt>
-        <dd>
-          When getting the <a>activeCall</a> attribute, the user agent MUST
-          return the <a>Call</a> object that represents the <a>active call</a>.
-          If there is no active <a>Call</a> return <code>null</code>.
-        </dd>
         <dt>
           readonly attribute Call[] calls
         </dt>
@@ -586,6 +581,11 @@
           attribute EventHandler ondefaultchanged
         </dt>
       </dl>
+      <p>
+        When getting the <a>activeCall</a> attribute, the user agent MUST
+        return the <a>Call</a> object that represents the <a>active call</a>.
+        If there is no active <a>Call</a> return <code>null</code>.
+      </p>
       <section>
         <h2>
           Event handlers
