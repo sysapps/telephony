@@ -688,15 +688,8 @@
       </section>
       <section id="telephonymanager-steps">
         <h3>
-          Steps
+          Methods
         </h3>
-        <p>
-          The <a>TelephonyManager</a> object MUST <a>queue a task</a>
-          <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
-          <a>ConferenceCall</a> object it manages, which MUST listen to any
-          event that results in changing the call, and upon such events, follow
-          the steps described in this specification.
-        </p>
         <p>
           The <dfn>steps to update the default service</dfn> are as follows:
         </p>
@@ -3034,5 +3027,17 @@ IMS TS 23.228 IP Multimedia Subsystem (IMS); Stage 2
 call ID's in the mpty call
 
 -->
+    <section>
+      <h2>
+        Temp space for text
+      </h2>
+      <p>
+        The <a>TelephonyManager</a> object MUST <a>queue a task</a>
+        <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
+        <a>ConferenceCall</a> object it manages, which MUST listen to any event
+        that results in changing the call, and upon such events, follow the
+        steps described in this specification.
+      </p>
+    </section>
   </body>
 </html>
