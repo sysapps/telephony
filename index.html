@@ -433,10 +433,6 @@
         <dt>
           readonly attribute DOMString[] serviceIds
         </dt>
-        <dd>
-          When getting the serviceIds attributues, the user agent MUST return
-          an array, which can be empty, of <a>telephony service id</a>'s.
-        </dd>
         <dt>
           readonly attribute DOMString defaultServiceId
         </dt>
@@ -583,6 +579,10 @@
         When getting the <a>emergencyNumbers</a> attribute, the user agent MUST
         return an array, which can be empty, of telephone numbers for the
         emergency services in the current geographical area.
+      </p>
+      <p>
+        When getting the <a>serviceIds</a> attribute, the user agent MUST
+        return an array, which can be empty, of <a>telephony service id</a>'s.
       </p>
       <section>
         <h2>
