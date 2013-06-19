@@ -319,6 +319,17 @@
           Event handler dispatched when there is an error during the life cycle
           of a call.
         </p>
+        <p>
+          The implementation MUST follow the call state changes in the
+          supported telephony backend(s) and networks, and MUST keep the
+          <a>state</a> attribute updated. Since call state transitions depend
+          on protocol, network equipment, modem, etc., the implementation MUST
+          NOT fire error events on assumed erroneous state transitions.
+          Applications MUST always re-synchronize any eventual internal states
+          to the current call state reported by the telephony system. The
+          implementation MUST NOT set the call state to any other value than
+          specified in the descriptions of the methods of this interface.
+        </p>
       </section>
       <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
       <section>
@@ -1758,20 +1769,6 @@
         The call state events have to be defined according to DOM4.
       </p>
       <section id="telephony-steps">
-        <h3>
-          Steps
-        </h3>
-        <p>
-          The implementation MUST follow the call state changes in the
-          supported telephony backend(s) and networks, and MUST keep the
-          <a>state</a> attribute updated. Since call state transitions depend
-          on protocol, network equipment, modem, etc., the implementation MUST
-          NOT fire error events on assumed erroneous state transitions.
-          Applications MUST always re-synchronize any eventual internal states
-          to the current call state reported by the telephony system. The
-          implementation MUST NOT set the call state to any other value than
-          specified in the descriptions of the methods of this interface.
-        </p>
         <p>
           Whenever there is a change in the <a>state</a> attribute the <a>user
           agent</a> MUST:
