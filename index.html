@@ -211,8 +211,31 @@
         associated to a subscriber identity registered with a telephony service
         provider. For example, in cellular telephony, a telephony service is
         associated to a SIM card (Subscriber Identity Module). Each telephony
-        service has a <a>telephony service id</a>. A device can have zero or
-        more telephony services.
+        service has a <a>telephony service id</a>.
+      </p>
+      <p>
+        A telephony service can use different protocols for telephony signaling
+        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity.
+      </p>
+      <p class="issue">
+        Since <a>call states</a> can differ depending on the protocol, do we
+        need to expose the service and the protocol used for making the call?
+        <a href="https://github.com/sysapps/telephony/issues/125">See issue
+        125</a>.
+      </p>
+      <p class="issue">
+        Note that compliant implementations may not be reporting such events
+        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
+        <a href="https://github.com/sysapps/telephony/issues/127">See issue
+        127</a>.
+      </p>
+      <p>
+        A can user agent can access zero or more telephony services of the
+        device. Which telephony services are available to the user agent is
+        dictated by policy, or by the user choosing which services are
+        available to the user agent. When one or more telephony services is
+        available to the user agent, one serves as the <a>default telephony
+        service</a>.
       </p>
       <p>
         Telephony services can be added or removed from the system at any time
@@ -242,43 +265,39 @@
         this can include the ICC-ID as the service identifier. However, the
         user agent MUST NOT use the MSISDN as the telephony service id.
       </p>
-      <p>
-        A <dfn>default telephony service</dfn> is the <a>telephony service</a>
-        that is set as default for telephony operations by the implementation.
-        The default telephony service can be change over time by the user or,
-        if supported by the user agent, through the <a>changeDefaultService</a>
-        method of the <a>TelephonyService</a> object.
-      </p>
-      <p>
-        When the <a>default telephony service</a> changes, the user agent MUST:
-      </p>
-      <ol>
-        <li>Let <var>service id</var> be the <a>telephony service id</a> of the
-        new <a>default telephony service</a>.
-        </li>
-        <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with the
-        event name <code>defaultchanged</code>, which does not bubble, is not
-        cancelable, has no default action, and whose <a>serviceId</a> attribute
-        to <var>service id</var>.
-        </li>
-        <li>Queue a task to change the <a>defaultServiceId</a> attribute of the
-        <a>TelephonyManager</a> object to <var>sercive id</var>, and fire <var>
-          event</var> at the <a>TelephonyManager</a>.
-        </li>
-      </ol>
-      <p>
-        A telephony service can use different protocols for telephony signaling
-        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity. Since
-        <a>call states</a> can differ depending on the protocol, the telephony
-        call objects contain information which identifies the service and the
-        protocol used for making the call.
-      </p>
-      <p class="issue">
-        Note that compliant implementations may not be reporting such events
-        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
-        <a href="https://github.com/sysapps/telephony/issues/127">See issue
-        127</a>.
-      </p>
+      <!-- - - - - - - - - - -  Default Telephony Service - - - - - - - - - -->
+      <section>
+        <h3>
+          Default Telephony Service
+        </h3>
+        <p>
+          A <dfn>default telephony service</dfn> is the <a>telephony
+          service</a> that is set as default for telephony operations by the
+          implementation. The default telephony service can be change over time
+          by the user or, if supported by the user agent, through the
+          <a>changeDefaultService</a> method of the <a>TelephonyService</a>
+          object.
+        </p>
+        <p>
+          When the <a>default telephony service</a> changes, the user agent
+          MUST:
+        </p>
+        <ol>
+          <li>Let <var>service id</var> be the <a>telephony service id</a> of
+          the new <a>default telephony service</a>.
+          </li>
+          <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with
+          the event name <code>defaultchanged</code>, which does not bubble, is
+          not cancelable, has no default action, and whose <a>serviceId</a>
+          attribute to <var>service id</var>.
+          </li>
+          <li>Queue a task to change the <a>defaultServiceId</a> attribute of
+          the <a>TelephonyManager</a> object to <var>sercive id</var>, and fire
+          <var>event</var> at the <a>TelephonyManager</a>.
+          </li>
+        </ol>
+      </section>
+      <!-- - - - - - - - - - - - - - Telephony Calls  - - - - - - - - - - - -->
       <section>
         <h3>
           Telephony Calls
@@ -301,6 +320,7 @@
           of a call.
         </p>
       </section>
+      <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
       <section>
         <h3>
           Receiving calls (inbound states)
@@ -318,6 +338,40 @@
           <a>call</a> attribute of the event MUST be set to the
           <a>TelephonyCall</a> object controlling the incoming call.
         </p>
+        <p>
+          Upon a new incoming or waiting call, the <a>user agent</a> MUST
+          execute the following steps:
+        </p>
+        <ol id="steps-incoming">
+          <li>Let <var>incomingCall</var> be a new instance of
+          <a>TelephonyCall</a>.
+          </li>
+          <li>Set the <code>state</code> of <var>incomingCall</var> to
+          <code>"incoming"</code> in case there is no other call in <a href=
+          "#call-state-active"><code>active</code></a> state, or otherwise set
+          it to <code>"waiting"</code>.
+          </li>
+          <li>Add <var>incomingCall</var> to the <a>calls</a> array.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>statechange</code> at the <var>incomingCall</var> object.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>incoming</code> at the <a>TelephonyManager</a> object
+            managing the call.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>callschanged</code> at the <a>TelephonyManager</a> object
+            managing the call.
+          </li>
+          <li>
+            <a>Queue a task</a> <a><var>TCallControl</var></a> to monitor call
+            flow progress.
+          </li>
+        </ol>
         <figure>
           <img src="images/inbound_call_state_diagram.gif" alt="">
           <figcaption>
@@ -326,6 +380,7 @@
           </figcaption>
         </figure>
       </section><!-- Inbound states -->
+      <!-- - - - - - - - - -  Making calls (outbound states) - - - - - - - -->
       <section>
         <h3>
           Making calls (outbound states)
@@ -345,6 +400,7 @@
           </figcaption>
         </figure>
       </section><!-- Outbound states -->
+      <!-- - - - - - - - - - - - - -  Multiparty calls  - - - - - - - - - - -->
       <section>
         <h3>
           Multiparty calls
@@ -371,9 +427,9 @@
           conference call as a result of the <a>createConference</a> method,
           and the <code>participantadded</code> event is dispatched.
         </p>
-      </section>
+      </section> <!-- Multiparty calls -->
     </section>
-    <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
     <section>
       <h2>
         Extensions to <code>Navigator</code> object
@@ -407,152 +463,33 @@
         <dt>
           readonly attribute Call? activeCall
         </dt>
-        <dd>
-          When getting the <a>activeCall</a> attribute, the user agent MUST
-          return the <a>Call</a> object that represents the <a>active call</a>.
-          If there is no active <a>Call</a> return <code>null</code>.
-        </dd>
         <dt>
           readonly attribute Call[] calls
         </dt>
-        <dd>
-          <p>
-            When getting the <a>calls</a> attribute, the user agent MUST return
-            an array, which can be empty, of <a>Call</a> objects managed by
-            this objects.
-          </p>
-          <p class="Note">
-            <a>TelephonyCall</a> objects belonging to a multiparty call are
-            managed by the corresponding <a>ConferenceCall</a> object and won't
-            be present in this array.
-          </p>
-        </dd>
         <dt>
           readonly attribute DOMString[] emergencyNumbers
         </dt>
-        <dd>
-          When getting the emergencyNumbers attribute, the user agent MUST
-          return an array, which can be empty, of telephone numbers for the
-          emergency services in the current geographical area.
-        </dd>
         <dt>
           readonly attribute DOMString[] serviceIds
         </dt>
-        <dd>
-          When getting the serviceIds attributues, the user agent MUST return
-          an array, which can be empty, of <a>telephony service id</a>'s.
-        </dd>
         <dt>
-          readonly attribute DOMString defaultServiceId
+          readonly attribute DOMString? defaultServiceId
         </dt>
-        <dd>
-          When getting the defaultServiceId attribute, the user agent MUST
-          return the <a>DOMString</a> that represents the id of the <a>default
-          telephony service</a>.
-        </dd>
         <dt>
           Promise changeDefaultService(DOMString serviceId)
         </dt>
-        <dd>
-          The changeDefaultService() method provides a means to change the
-          <a>default telephony service</a> used by the user agent. When
-          invoked, the user agent runs the <a>steps to update the default
-          service</a>.
-          <dl class='parameters'>
-            <dt>
-              DOMString serviceId
-            </dt>
-            <dd>
-              A <a>service id</a> for a <a>telephony service</a> known to the
-              user agent.
-            </dd>
-          </dl>
-        </dd>
         <dt>
           TelephonyCall dial ()
         </dt>
-        <dd>
-          Initiates a new telephony call. Returns a <a>TelephonyCall</a>
-          object, which will manage the asynchronous call signaling events.
-          <dl class='parameters'>
-            <dt>
-              DOMString remoteParty
-            </dt>
-            <dd>
-              Represents the destination number of the call.
-            </dd>
-            <dt>
-              optional DialParams params
-            </dt>
-            <dd>
-              If set, represents the optional parameters of the call, including
-              the telephony service to be used, and whether caller ID is hidden
-            </dd>
-          </dl>
-        </dd>
         <dt>
           Promise sendTones()
         </dt>
-        <dd>
-          This method asynchronously emits a [[!DTMF]] tone sequence with the
-          platform default or specified duration and delay, in the platform
-          default or the specified telephony service. A
-          <a><code>Promise</code></a> object will be returned in order to
-          notify the result of the request.
-          <dl class='parameters'>
-            <dt>
-              DOMString tones
-            </dt>
-            <dd>
-              Represents the sequence of [[!DTMF]] tones to be emitted. Its
-              value can be any sequence of the following characters (0-9; A-D;
-              *; #).
-            </dd>
-            <dt>
-              optional ToneParams params
-            </dt>
-            <dd>
-              If set, represents the <a>telephony service id</a> to be used,
-              the tone duration and the delay (gap) before a tone. If not set,
-              implementations MUST use default values for these.
-            </dd>
-          </dl>
-        </dd>
         <dt>
           Promise startTone()
         </dt>
-        <dd>
-          This method starts emitting a [[!DTMF]] tone with the platform
-          default or specified delay, in the platform default or the specified
-          telephony service. A <a><code>Promise</code></a> object will be
-          returned in order to notify the result of the request.
-          <dl class='parameters'>
-            <dt>
-              DOMString tone
-            </dt>
-            <dd>
-              Represents the [[!DTMF]] tone. Its value can be any of the
-              following characters: 0-9; A-D; *; #.
-            </dd>
-            <dt>
-              optional ToneParams params
-            </dt>
-            <dd>
-              If set, represents the <a>telephony service id</a> to be used,
-              and the delay before a tone. The <a>duration</a> member is
-              ignored. If not set, implementations MUST use default values for
-              telephony service and delay.
-            </dd>
-          </dl>
-        </dd>
         <dt>
           Promise stopTone(optional DOMString serviceId)
         </dt>
-        <dd>
-          This method stops emitting a [[!DTMF]] tone in the default or the
-          specified telephony service. A <a><code>Promise</code></a> object
-          will be returned in order to notify the result of the request.
-        </dd>
         <dt>
           attribute EventHandler onincoming
         </dt>
@@ -566,9 +503,366 @@
           attribute EventHandler onserviceremoved
         </dt>
         <dt>
-          attribute EventHandler onservicechanged
+          attribute EventHandler ondefaultchanged
         </dt>
       </dl>
+      <!-- - - - - - - - - - - - -  activeCall attribute  - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>activeCall</code> attribute
+        </h3>
+        <p>
+          When getting the <a>activeCall</a> attribute, the user agent MUST
+          return the <a>Call</a> object that represents the <a>active call</a>.
+          If there is no active <a>Call</a> return <code>null</code>.
+        </p>
+      </section>
+      <!-- - - - - - - - - - - - - calls attribute - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>calls</code> attribute
+        </h3>
+        <p>
+          When getting the <a>calls</a> attribute, the user agent MUST return
+          an array, which can be empty, of <a>Call</a> objects managed by this
+          objects.
+        </p>
+        <p class="Note">
+          <a>TelephonyCall</a> objects belonging to a multiparty call are
+          managed by the corresponding <a>ConferenceCall</a> object and won't
+          be present in this array.
+        </p>
+      </section>
+      <!-- - - - - - - - - - - emergencyNumbers attribute - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>emergencyNumbers</code> attribute
+        </h3>
+        <p>
+          When getting the <a>emergencyNumbers</a> attribute, the user agent
+          MUST return an array, which can be empty, of telephone numbers for
+          the emergency services in the current geographical area.
+        </p>
+      </section>
+      <!-- - - - - - - - - - - serviceIds attribute - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>serviceIds</code> attribute
+        </h3>
+        <p>
+          When getting the <a>serviceIds</a> attribute, the user agent MUST
+          return an array, which can be empty, of <a>telephony service
+          id</a>'s.
+        </p>
+      </section>
+      <!-- - - - - - - - - - - defaultServiceId attribute - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>defaultServiceId</code> attribute
+        </h3>
+        <p>
+          When getting the <a>defaultServiceId</a> attribute, the user agent
+          MUST return the <a>DOMString</a> that represents the id of the
+          <a>default telephony service</a> (if any). Otherwise, it returns
+          <code>null</code>.
+        </p>
+      </section>
+      <!-- - - - - - - - - - - sendTones() method - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>sendTones()</code> method
+        </h3>
+        <p>
+          The <dfn>sendTones()</dfn> method requests a telephony service emit
+          one or more [[!DTMF]] tones. When invoked, the user agent MUST run
+          the following steps:
+        </p>
+        <ol id="steps-sendtones">
+          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
+          to be used, then validate and use that value, otherwise use the
+          <a>default telephony service</a> for sending the tones.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>duration</code>, then validate and use that value, otherwise
+          use a default value.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>gap</code>, then validate and use that value, otherwise use a
+          default value.
+          </li>
+          <li>Request from the telephony system to send the specified tones.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>resolver</code></a>.
+          </li>
+          <li>Return <var>promise</var> to the caller and continue the
+          following steps asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
+          </li>
+        </ol>
+      </section> <!-- sendTones() method -->
+      <!-- - - - - - - - - - - stopTone() method - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>stopTone()</code> method
+        </h3>
+        <p>
+          The <a>stopTone()</a> method stops emitting a [[!DTMF]] tone in the
+          default or the specified telephony service. When invoked, the user
+          agent MUST run the following steps:
+        </p>
+        <ol id="steps-stoptone">
+          <li>If the platform does not support long press [[!DTMF]] tones,
+          throw a <code>NotSupported</code> error.
+          </li>
+          <li>If the provided parameters are invalid, or there is no tone
+          playing on the specified telephony service, throw an
+          <code>InvalidStateError</code> error.
+          </li>
+          <li>Otherwise, request from the telephony system to stop sending the
+          specified tone.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>resolver</code></a>.
+          </li>
+          <li>Return <var>promise</var> to the caller and continue the
+          following steps asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
+          </li>
+        </ol>
+      </section> <!-- stopTone() method -->
+      <!-- - - - - - - - - - - startTone() method - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>startTone()</code> method
+        </h3>
+        <p>
+          The <dfn>startTone()</dfn> method starts emitting a [[!DTMF]] tone
+          with the platform default or specified delay, in the platform default
+          or the specified telephony service. A <a><code>Promise</code></a>
+          object will be returned in order to notify the result of the request.
+        </p>
+        <p>
+          When the <code>startTone</code> method is invoked, the user agent
+          MUST run the following steps:
+        </p>
+        <ol id="steps-starttone">
+          <li>If the platform does not support long press [[!DTMF]] tones,
+          throw a <code>NotSupported</code> error and finish these steps. In
+          this case applications may then use the <code>sendTones</code> method
+          for sending [[!DTMF]].
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
+          to be used, then validate and use that value, otherwise use the
+          <a>default telephony service</a> for sending the tones.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>duration</code>, then ignore that value.
+          </li>
+          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <code>gap</code>, meaning the delay before sending the tone, then
+          validate and use that value, otherwise use a default value.
+          </li>
+          <li>Request from the telephony system to start sending the specified
+          tone. The tone SHOULD play until the <code>stopTone</code> method is
+          called.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated
+          <a><code>resolver</code></a>.
+          </li>
+          <li>Return <var>promise</var> to the caller and continue the
+          following steps asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful, or if the
+          telephony system does not support feedback about the result of the
+          request, invoke <var>resolver</var>'s <code>accept()</code> method
+          with no arguments.
+          </li>
+          <li>If the request to the telephony system is unsuccessful, invoke
+          <var>resolver</var>'s <code>reject()</code> method, with no
+          arguments.
+          </li>
+        </ol>
+      </section><!-- startTone() method -->
+      <!-- - - - - - - - - - - dial() method  - - - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>dial()</code> method
+        </h3>
+        <p>
+          The <dfn>dial()</dfn> method initiates a new telephony call. When
+          invoked the user agent MUST run the following steps:
+        </p>
+        <ol id="steps-dial">
+          <li>Create a new <a>TelephonyCall</a> object, referred as
+          <var>telCall</var> in these steps.
+          </li>
+          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
+          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
+          </li>
+          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
+          object with identical <a>remoteParty</a> attribute, then an
+          <code>InvalidModificationError</code> MUST be thrown.
+          </li>
+          <li>Otherwise, make a request to the telephony system to dial in the
+          <a>remote party id</a> passed in the <var>remoteParty</var>
+          parameter. Note that the value can be also an emergency number.
+          According to the value of the <code>hideCallerId</code> in the <code>
+            params</code> parameter, the own number is requested to be either
+            displayed, hidden or otherwise the default system configuration to
+            this regard is requested to be followed. The call MUST be made
+            using the <a>telephony service</a> specified in the
+            <code>service</code> member of the <code>params</code> arguement.
+            If not specified, then the implementation MUST use the <a>default
+            telephony service</a>. Even if there is no SIM card and no other
+            telephony services are available, but emergency calls are known to
+            be possible (e.g. because a cellular modem is present), it is
+            considered as a default service with only emergency call
+            capability, and the implementation MUST define a <a>telephony
+            service id</a> for it. When not even emergency calls are possible
+            (e.g. it is a purely IP based implementation and there is no
+            cellular modem), the implementation MAY use empty string for
+            default <a>telephony service id</a>, but it is encouraged that a
+            default service is created, with the methods throwing a
+            <code>NotSupported</code> error.
+          </li>
+          <li>If the request is successful, then
+            <ol>
+              <li>Set the <code>state</code> of <var>telCall</var> to
+              <code>"dialing"</code> value.
+              </li>
+              <li>Add <var>telCall</var> to the <a>calls</a> array.
+              </li>
+              <li>
+                <a>Queue a task</a> to <a>fire an event</a> named
+                <code>statechange</code> at the <var>telCall</var> object.
+              </li>
+              <li>
+                <a>Queue a task</a> to <a>fire an event</a> named
+                <code>dialing</code> at the <var>telCall</var> object.
+              </li>
+              <li>and finally return to the caller and <a>queue a task</a> <a>
+                <var>TCallControl</var></a> to monitor call flow progress.
+              </li>
+            </ol>
+          </li>
+          <li>If during further steps for call connection there is an error,
+          execute the <a>error steps</a> for <var>telCall</var>.
+          </li>
+        </ol>
+      </section><!--dial() method-->
+      <!-- - - - - - - - - - - changeDefaultService() method  - - - - - - - -->
+      <section>
+        <h3>
+          The <code>changeDefaultService()</code> method
+        </h3>
+        <p>
+          The <dfn>changeDefaultService()</dfn> method provides a means to
+          change the <a>default telephony service</a> used by the user agent.
+          When invoked, the user agent runs the the following steps:
+        </p>
+        <ol>
+          <li>Let <var>potential service</var> be the first argument passed to
+          this operation.
+          </li>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+          asynchronously.
+          </li>
+          <li>If <var>potential service</var> does not exactly match the
+          identifier of any <a>telephony service</a> known to the user agent,
+          run the following sub-steps and terminate this algorithm:
+            <ol>
+              <li>Let <var>error</var> be a new <a href=
+              "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose
+              name is "<a href=
+              "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
+              </li>
+              <li>Invoke <var>resolver</var>'s reject(value) method with <var>
+                error</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>If <var>potential service</var> exactly matches the service id of
+          the current default telephony service, run the following sub-steps
+          and terminate this algorithm:
+            <ol>
+              <li>Invoke <var>resolver</var>'s accept(value) method with <var>
+                potential service</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise, run the <a>steps to change the default service</a>,
+          with <var>potential service</var> as the <a>telephony service id</a>,
+          and <var>promise</var> as the <a><code>Promise</code></a>.
+          </li>
+        </ol>
+        <p>
+          The <dfn>steps to change the default service</dfn> are given by the
+          following algorithm. This abstract operation takes as an argument a
+          <a>telephony service id</a> and an optional
+          <a><code>Promise</code></a>.
+        </p>
+        <ol>
+          <li>Make a platform/system specific request to the underlying system
+          to change from the current default telephony service to the one
+          identified by <var>service id</var>.
+          </li>
+          <li>Possibly wait indefinately.
+          </li>
+          <li>If it's not possible (for whatever reason: timeout, security,
+          etc.) to change the default telephony service, and if
+          <var>promise</var> was passed, run the following sub steps and
+          terminate this algorithm:
+            <ol>
+              <li>Let <var>error</var> be a new DOMError object whose name is
+              "NoModificationAllowedError".
+              </li>
+              <li>Call <var>resolver</var>'s reject(value) method with
+              <var>error</var> as the value argument.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise, <a>queue a task</a> to:
+            <ol>
+              <li>Change the <a>defaultServiceId</a> attribute to the
+              <a>telephony service id</a> of the new <a>default telephony
+              service</a>.
+              </li>
+              <li>If <a><code>Promise</code></a> was passed, invoke
+              <var>resolver</var>'s accept(value) method with the id of the new
+              default service as value argument.
+              </li>
+              <li>
+                <a>Fire an event</a> named <code>servicechange</code> at the
+                <a>telephony</a> attribute of the navigator object.
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </section><!-- changeDefaultService() method -->
+      <!-- - - - - - - - - - -  Event handlers  - - - - - - - - - - - - - - -->
       <section>
         <h2>
           Event handlers
@@ -654,10 +948,10 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onservicechanged</code></dfn>
+                <dfn><code>ondefaultchanged</code></dfn>
               </td>
               <td>
-                <dfn><code>servicechanged</code></dfn>
+                <dfn><code>defaultchanged</code></dfn>
               </td>
               <td>
                 <a>TelephonyServiceEvent</a>
@@ -668,317 +962,7 @@
             </tr>
           </tbody>
         </table>
-      </section>
-      <section id="telephonymanager-steps">
-        <h3>
-          Steps
-        </h3>
-        <p>
-          The <a>TelephonyManager</a> object MUST <a>queue a task</a>
-          <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
-          <a>ConferenceCall</a> object it manages, which MUST listen to any
-          event that results in changing the call, and upon such events, follow
-          the steps described in this specification.
-        </p>
-        <p>
-          The <dfn>steps to update the default service</dfn> are as follows:
-        </p>
-        <ol>
-          <li>Let <var>potential service</var> be the first argument passed to
-          this operation.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated resolver.
-          </li>
-          <li>Return <var>promise</var> and continue the following steps
-          asynchronously.
-          </li>
-          <li>If <var>potential service</var> does not exactly match the
-          identifier of any <a>telephony service</a> known to the user agent,
-          run the following sub-steps and terminate this algorithm:
-            <ol>
-              <li>Let <var>error</var> be a new <a href=
-              "http://dom.spec.whatwg.org/#domerror">DOMError</a> object whose
-              name is "<a href=
-              "http://dom.spec.whatwg.org/#notfounderror">NotFoundError</a>".
-              </li>
-              <li>Invoke <var>resolver</var>'s reject(value) method with <var>
-                error</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>If <var>potential service</var> exactly matches the service id of
-          the current default telephony service, run the following sub-steps
-          and terminate this algorithm:
-            <ol>
-              <li>Invoke <var>resolver</var>'s accept(value) method with <var>
-                potential service</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>Otherwise, run the <a>steps to change the default service</a>,
-          with <var>potential service</var> as the <a>telephony service id</a>,
-          and <var>promise</var> as the <a><code>Promise</code></a>.
-          </li>
-        </ol>
-        <p>
-          The <dfn>steps to change the default service</dfn> are given by the
-          following algorithm. This abstract operation takes as an argument a
-          <a>telephony service id</a> and an optional
-          <a><code>Promise</code></a>.
-        </p>
-        <ol>
-          <li>Make a platform/system specific request to the underlying system
-          to change from the current default telephony service to the one
-          identified by <var>service id</var>.
-          </li>
-          <li>Possibly wait indefinately.
-          </li>
-          <li>If it's not possible (for whatever reason: timeout, security,
-          etc.) to change the default telephony service, and if
-          <var>promise</var> was passed, run the following sub steps and
-          terminate this algorithm:
-            <ol>
-              <li>Let <var>error</var> be a new DOMError object whose name is
-              "NoModificationAllowedError".
-              </li>
-              <li>Call <var>resolver</var>'s reject(value) method with
-              <var>error</var> as the value argument.
-              </li>
-            </ol>
-          </li>
-          <li>Otherwise, <a>queue a task</a> to:
-            <ol>
-              <li>Change the <a>defaultServiceId</a> attribute to the
-              <a>telephony service id</a> of the new <a>default telephony
-              service</a>.
-              </li>
-              <li>If <a><code>Promise</code></a> was passed, invoke
-              <var>resolver</var>'s accept(value) method with the id of the new
-              default service as value argument.
-              </li>
-              <li>
-                <a>Fire an event</a> named <code>servicechange</code> at the
-                <a>telephony</a> attribute of the navigator object.
-              </li>
-            </ol>
-          </li>
-        </ol>
-        <p>
-          The <a>dial</a> method when invoked MUST run the following steps:
-        </p>
-        <ol id="steps-dial">
-          <li>Create a new <a>TelephonyCall</a> object, referred as
-          <var>telCall</var> in these steps.
-          </li>
-          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
-          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
-          </li>
-          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> attribute, then an
-          <code>InvalidModificationError</code> MUST be thrown.
-          </li>
-          <li>Otherwise, make a request to the telephony system to dial in the
-          <a>remote party id</a> passed in the <var>remoteParty</var>
-          parameter. Note that the value can be also an emergency number.
-          According to the value of the <code>hideCallerId</code> in the <code>
-            params</code> parameter, the own number is requested to be either
-            displayed, hidden or otherwise the default system configuration to
-            this regard is requested to be followed. The call MUST be made
-            using the <a>telephony service</a> specified in the
-            <code>service</code> member of the <code>params</code> arguement.
-            If not specified, then the implementation MUST use the <a>default
-            telephony service</a>. Even if there is no SIM card and no other
-            telephony services are available, but emergency calls are known to
-            be possible (e.g. because a cellular modem is present), it is
-            considered as a default service with only emergency call
-            capability, and the implementation MUST define a <a>telephony
-            service id</a> for it. When not even emergency calls are possible
-            (e.g. it is a purely IP based implementation and there is no
-            cellular modem), the implementation MAY use empty string for
-            default <a>telephony service id</a>, but it is encouraged that a
-            default service is created, with the methods throwing a
-            <code>NotSupported</code> error.
-          </li>
-          <li>If the request is successful, then
-            <ol>
-              <li>Set the <code>state</code> of <var>telCall</var> to
-              <code>"dialing"</code> value.
-              </li>
-              <li>Add <var>telCall</var> to the <a>calls</a> array.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>statechange</code> at the <var>telCall</var> object.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>dialing</code> at the <var>telCall</var> object.
-              </li>
-              <li>and finally return to the caller and <a>queue a task</a> <a>
-                <var>TCallControl</var></a> to monitor call flow progress.
-              </li>
-            </ol>
-          </li>
-          <li>If during further steps for call connection there is an error,
-          execute the <a>error steps</a> for <var>telCall</var>.
-          </li>
-        </ol>
-        <p>
-          The <code>sendTones</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol id="steps-sendtones">
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>duration</code>, then validate and use that value, otherwise
-          use a default value.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>gap</code>, then validate and use that value, otherwise use a
-          default value.
-          </li>
-          <li>Request from the telephony system to send the specified tones.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated
-          <a><code>resolver</code></a>.
-          </li>
-          <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful, or if the
-          telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method
-          with no arguments.
-          </li>
-          <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no
-          arguments.
-          </li>
-        </ol>
-        <p>
-          The <code>startTone</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol id="steps-starttone">
-          <li>If the platform does not support long press [[!DTMF]] tones,
-          throw a <code>NotSupported</code> error and finish these steps. In
-          this case applications may then use the <code>sendTones</code> method
-          for sending [[!DTMF]].
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>duration</code>, then ignore that value.
-          </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
-          <code>gap</code>, meaning the delay before sending the tone, then
-          validate and use that value, otherwise use a default value.
-          </li>
-          <li>Request from the telephony system to start sending the specified
-          tone. The tone SHOULD play until the <code>stopTone</code> method is
-          called.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated
-          <a><code>resolver</code></a>.
-          </li>
-          <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful, or if the
-          telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method
-          with no arguments.
-          </li>
-          <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no
-          arguments.
-          </li>
-        </ol>
-        <p>
-          The <a>stopTone</a> method when invoked MUST run the following steps:
-        </p>
-        <ol id="steps-stoptone">
-          <li>If the platform does not support long press [[!DTMF]] tones,
-          throw a <code>NotSupported</code> error.
-          </li>
-          <li>If the provided parameters are invalid, or there is no tone
-          playing on the specified telephony service, throw an
-          <code>InvalidStateError</code> error.
-          </li>
-          <li>Otherwise, request from the telephony system to stop sending the
-          specified tone.
-          </li>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated
-          <a><code>resolver</code></a>.
-          </li>
-          <li>Return <var>promise</var> to the caller and continue the
-          following steps asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful, or if the
-          telephony system does not support feedback about the result of the
-          request, invoke <var>resolver</var>'s <code>accept()</code> method
-          with no arguments.
-          </li>
-          <li>If the request to the telephony system is unsuccessful, invoke
-          <var>resolver</var>'s <code>reject()</code> method, with no
-          arguments.
-          </li>
-        </ol>
-        <p>
-          Upon a new incoming or waiting call, the <a>user agent</a> MUST
-          execute the following steps:
-        </p>
-        <ol id="steps-incoming">
-          <li>Let <var>incomingCall</var> be a new instance of
-          <a>TelephonyCall</a>.
-          </li>
-          <li>Set the <code>state</code> of <var>incomingCall</var> to
-          <code>"incoming"</code> in case there is no other call in <a href=
-          "#call-state-active"><code>active</code></a> state, or otherwise set
-          it to <code>"waiting"</code>.
-          </li>
-          <li>Add <var>incomingCall</var> to the <a>calls</a> array.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> at the <var>incomingCall</var> object.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>incoming</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>callschanged</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-          <li>
-            <a>Queue a task</a> <a><var>TCallControl</var></a> to monitor call
-            flow progress.
-          </li>
-        </ol>
-        <p class="issue">
-          The <code>incoming</code>, <code>serviceadded</code> and
-          <code>serviceremoved</code> events have to be defined according to
-          DOM4.
-        </p>
-        <p>
-          The task <a><var>TCallControl</var></a> MUST listen to any event that
-          results in a call disconnection, and upon such events, follow the
-          steps described for <a href='#steps-disconnect-system'>handling
-          disconnected calls</a>.
-        </p>
-      </section><!-- telephonymanager-steps -->
+      </section> <!-- event handers -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
       <section>
         <h3>
@@ -3017,5 +3001,27 @@ IMS TS 23.228 IP Multimedia Subsystem (IMS); Stage 2
 call ID's in the mpty call
 
 -->
+    <section>
+      <h2>
+        Temp space for text
+      </h2>
+      <p>
+        The <a>TelephonyManager</a> object MUST <a>queue a task</a>
+        <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
+        <a>ConferenceCall</a> object it manages, which MUST listen to any event
+        that results in changing the call, and upon such events, follow the
+        steps described in this specification.
+      </p>
+      <p>
+        Represents the [[!DTMF]] tone. Its value can be any of the following
+        characters: 0-9; A-D; *; #.
+      </p>
+      <p>
+        The task <a><var>TCallControl</var></a> MUST listen to any event that
+        results in a call disconnection, and upon such events, follow the steps
+        described for <a href='#steps-disconnect-system'>handling disconnected
+        calls</a>.
+      </p>
+    </section>
   </body>
 </html>
