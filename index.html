@@ -1532,7 +1532,27 @@
           new call between the remote party of this call and another remote
           party, then disconnects the call. The method takes one argument,
           which represents the remote party to which the call is transferred.
+          When invoked, the user agent MUST run the following steps:
         </p>
+        <ol>
+          <li>If <code>state</code> is not equal to <code>"active"</code> or
+          <code>"held"</code>, then an<code>InvalidStateError</code>MUST be
+          thrown.
+          </li>
+          <li>Otherwise make a request to the telephony system to transfer the
+          call to the number indicated in the <var>thirdParty</var> parameter.
+          Note that in GSM this requires putting the current call on hold,
+          dialing a new call to the third party, then initiating the call
+          transfer procedure. If there is an error, the original call MUST be
+          resumed and the <a>error steps</a> MUST be executed without modifying
+          the call state. If the request is acknowledged, then set
+          <code>state</code> to <code>"transferring"</code>.
+          </li>
+          <li>When <a><var>TCallControl</var></a> is notified that the call has
+          been successfully transferred and the original call is disconnected,
+          it MUST set <code>state</code> to <code>"disconnected"</code>.
+          </li>
+        </ol>
       </section><!-- transfer() method -->
       <!-- - - - - - - - - - - - createConference() method  - - - - - - - - -->
       <section>
@@ -1726,29 +1746,6 @@
           enabled in order that this method could succeed. For instance, in
           GSM, the Call Deflection supplementary service must be active.
         </p>
-        <p>
-          The <code>transfer</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>"active"</code> or
-          <code>"held"</code>, then an<code>InvalidStateError</code>MUST be
-          thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to transfer the
-          call to the number indicated in the <var>thirdParty</var> parameter.
-          Note that in GSM this requires putting the current call on hold,
-          dialing a new call to the third party, then initiating the call
-          transfer procedure. If there is an error, the original call MUST be
-          resumed and the <a>error steps</a> MUST be executed without modifying
-          the call state. If the request is acknowledged, then set
-          <code>state</code> to <code>"transferring"</code>.
-          </li>
-          <li>When <a><var>TCallControl</var></a> is notified that the call has
-          been successfully transferred and the original call is disconnected,
-          it MUST set <code>state</code> to <code>"disconnected"</code>.
-          </li>
-        </ol>
         <p class="note">
           The <a>telephony service</a> in use must have the call transfer
           feature enabled in order that this method could succeed. For
