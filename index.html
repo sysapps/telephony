@@ -427,7 +427,7 @@
           conference call as a result of the <a>createConference</a> method,
           and the <code>participantadded</code> event is dispatched.
         </p>
-      </section> <!-- Multiparty calls -->
+      </section><!-- Multiparty calls -->
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
     <section>
@@ -609,7 +609,7 @@
           arguments.
           </li>
         </ol>
-      </section> <!-- sendTones() method -->
+      </section><!-- sendTones() method -->
       <!-- - - - - - - - - - - stopTone() method - - - - - - - - - - - - - -->
       <section>
         <h3>
@@ -648,7 +648,7 @@
           arguments.
           </li>
         </ol>
-      </section> <!-- stopTone() method -->
+      </section><!-- stopTone() method -->
       <!-- - - - - - - - - - - startTone() method - - - - - - - - - - - - - -->
       <section>
         <h3>
@@ -962,7 +962,7 @@
             </tr>
           </tbody>
         </table>
-      </section> <!-- event handers -->
+      </section><!-- event handers -->
       <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
       <section>
         <h3>
@@ -1372,80 +1372,68 @@
       </p>
       <dl title="TelephonyCall implements CallHandler" class="idl"></dl>
       <dl title="interface TelephonyCall : EventHandler" class="idl">
-        <!-- removed inConference, as conferenceId can provide the same info
-        <dt>
-          readonly attribute boolean inConference
-        </dt>
-        <dd>
-          When getting, the user agent MUST return <code>true</code> if the
-          <a>Call</a> is participating in a <a>ConferenceCall</a> (i.e., is
-          present in the <a>calls</a> attribute of a <a>ConferenceCall</a>
-          object), <code>false</code> otherwise.
-        </dd>
-        -->
         <dt>
           readonly attribute DOMString? remoteParty
         </dt>
         <dd>
-          When getting, the user agent MUST return the remote party identifier
-          (e.g. telephone number) of the call participant. If not available
-          (e.g. callerId has been hidden), return <code>null</code>.
+          When getting the DOMString attribute, the user agent MUST return the
+          remote party identifier (e.g. telephone number) of the call
+          participant. If not available (e.g. callerId has been hidden), return
+          <code>null</code>.
         </dd>
         <dt>
           readonly attribute DOMString? conferenceId
         </dt>
         <dd>
-          When getting, if this call is managed as a part of a multiparty call
-          then the user agent MUST return the value of the
-          <code>conferenceId</code> attribute of the <a>ConferenceCall</a>
-          multiparty call to which this call is part of. Otherwise, return
-          <code>null</code>.
+          When getting the conferenceId attribute, if this call is managed as a
+          part of a multiparty call then the user agent MUST return the value
+          of the <code>conferenceId</code> attribute of the
+          <a>ConferenceCall</a> multiparty call to which this call is part of.
+          Otherwise, return <code>null</code>.
         </dd>
         <dt>
           void accept()
         </dt>
         <dd>
-          Accepts the incoming or waiting telephony call.
+          The <a>accept()</a> method accepts an incoming or waiting
+          <a>telephony call</a>.
         </dd>
         <dt>
-          void redirect(in DOMString remoteParty)
+          void redirect(DOMString remoteParty)
         </dt>
         <dd>
-          Initiates deflecting an incoming or waiting telephone call to another
-          remote party.
+          The redirect() method initiates deflecting an incoming or waiting
+          telephone call to a remote party. The method takes one argument,
+          which represents the remote party to which the call is redirected.
           <dl class='parameters'>
             <dt>
               DOMString remoteParty
             </dt>
-            <dd>
-              Represents the remote party to which the call is redirected.
-            </dd>
           </dl>
         </dd>
         <dt>
-          void transfer(in DOMString thirdParty)
+          void transfer(DOMString thirdParty)
         </dt>
         <dd>
-          Initiates transferring the call to a new call between the remote
-          party of this call and another remote party, then disconnects the
-          call.
+          The <a>transfer()</a>method Initiates transferring the call to a new
+          call between the remote party of this call and another remote party,
+          then disconnects the call. The method takes one argument, which
+          represents the remote party to which the call is transferred.
           <dl class='parameters'>
             <dt>
               DOMString thirdParty
             </dt>
-            <dd>
-              Represents the remote party to which the call is transferred.
-            </dd>
           </dl>
         </dd>
         <dt>
           ConferenceCall createConference()
         </dt>
         <dd>
-          Creates a multiparty call from the current call. On cellular
-          telephony services, this happens by initiating merging the active and
-          held calls into a multiparty call. Using this method MUST be the only
-          way to create a <a>ConferenceCall</a> object.
+          The <a>createConference()</a> method Creates a multiparty call from
+          the current call. On cellular telephony services, this happens by
+          initiating merging the active and held calls into a multiparty call.
+          Using this method MUST be the only way to create a
+          <a>ConferenceCall</a> object.
         </dd>
         <dt>
           attribute EventHandler ondialing
