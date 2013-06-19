@@ -1375,22 +1375,9 @@
         <dt>
           readonly attribute DOMString? remoteParty
         </dt>
-        <dd>
-          When getting the DOMString attribute, the user agent MUST return the
-          remote party identifier (e.g. telephone number) of the call
-          participant. If not available (e.g. callerId has been hidden), return
-          <code>null</code>.
-        </dd>
         <dt>
           readonly attribute DOMString? conferenceId
         </dt>
-        <dd>
-          When getting the conferenceId attribute, if this call is managed as a
-          part of a multiparty call then the user agent MUST return the value
-          of the <code>conferenceId</code> attribute of the
-          <a>ConferenceCall</a> multiparty call to which this call is part of.
-          Otherwise, return <code>null</code>.
-        </dd>
         <dt>
           void accept()
         </dt>
@@ -1481,6 +1468,19 @@
           attribute EventHandler onsplitting
         </dt>
       </dl>
+      <p>
+          When getting the DOMString attribute, the user agent MUST return the
+          remote party identifier (e.g. telephone number) of the call
+          participant. If not available (e.g. callerId has been hidden), return
+          <code>null</code>.
+        </p>
+      <p>
+        When getting the conferenceId attribute, if this call is managed as a
+        part of a multiparty call then the user agent MUST return the value
+        of the <code>conferenceId</code> attribute of the
+        <a>ConferenceCall</a> multiparty call to which this call is part of.
+        Otherwise, return <code>null</code>.
+      </p>
       <section id="telephony-eventhandlers">
         <h3>
           Event handlers
