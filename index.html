@@ -1105,6 +1105,36 @@
         and <a>ConferenceCall</a>. It serves as an editorial aid in this
         specification, and has no functional utility on its own.
       </p>
+      <p>
+          The <code>hold</code> method when invoked MUST run the following
+          steps:
+        </p>
+        <ol>
+          <li>If <code>state</code> is not equal to <code>active</code>, then
+          an <code>InvalidStateError</code> MUST be thrown.
+          </li>
+          <li>Otherwise make a request to the telephony system to hold the
+          call.
+          </li>
+          <li>Return, and continue these steps asynchronously.
+          </li>
+          <li>If the request is acknowledged then set <code>state</code> to
+          <code>"holding"</code>.
+          </li>
+        </ol>
+        <p>
+          The <code>resume</code> method when invoked MUST run the following
+          steps:
+        </p>
+        <ol>
+          <li>If <code>state</code> is not equal to <code>"held"</code>, then
+          an <code>InvalidStateError</code> MUST be thrown.
+          </li>
+          <li>Otherwise make a request to the telephony system to resume the
+          call. If the request is acknowledged, then set <code>state</code> to
+          <code>"resuming"</code>.
+          </li>
+        </ol>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
         <dt>
           void resume()
@@ -1759,40 +1789,10 @@
           values SHOULD be supported.
         </p>
         <p>
-          The <code>hold</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>active</code>, then
-          an <code>InvalidStateError</code> MUST be thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to hold the
-          call.
-          </li>
-          <li>Return, and continue these steps asynchronously.
-          </li>
-          <li>If the request is acknowledged then set <code>state</code> to
-          <code>"holding"</code>.
-          </li>
-        </ol>
-        <p>
           When <a><var>TCallControl</var></a> is notified that the call has
           been put on hold it MUST set <code>state</code> to
           <code>"held"</code>.
         </p>
-        <p>
-          The <code>resume</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          an <code>InvalidStateError</code> MUST be thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to resume the
-          call. If the request is acknowledged, then set <code>state</code> to
-          <code>"resuming"</code>.
-          </li>
-        </ol>
         <p>
           When <a><var>TCallControl</var></a> detects that the call has being
           actually resumed it MUST set <code>state</code> to
