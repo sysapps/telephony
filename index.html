@@ -1381,47 +1381,15 @@
         <dt>
           void accept()
         </dt>
-        <dd>
-          The <a>accept()</a> method accepts an incoming or waiting
-          <a>telephony call</a>.
-        </dd>
         <dt>
           void redirect(DOMString remoteParty)
         </dt>
-        <dd>
-          The redirect() method initiates deflecting an incoming or waiting
-          telephone call to a remote party. The method takes one argument,
-          which represents the remote party to which the call is redirected.
-          <dl class='parameters'>
-            <dt>
-              DOMString remoteParty
-            </dt>
-          </dl>
-        </dd>
         <dt>
           void transfer(DOMString thirdParty)
         </dt>
-        <dd>
-          The <a>transfer()</a>method Initiates transferring the call to a new
-          call between the remote party of this call and another remote party,
-          then disconnects the call. The method takes one argument, which
-          represents the remote party to which the call is transferred.
-          <dl class='parameters'>
-            <dt>
-              DOMString thirdParty
-            </dt>
-          </dl>
-        </dd>
         <dt>
           ConferenceCall createConference()
         </dt>
-        <dd>
-          The <a>createConference()</a> method Creates a multiparty call from
-          the current call. On cellular telephony services, this happens by
-          initiating merging the active and held calls into a multiparty call.
-          Using this method MUST be the only way to create a
-          <a>ConferenceCall</a> object.
-        </dd>
         <dt>
           attribute EventHandler ondialing
         </dt>
@@ -1468,19 +1436,72 @@
           attribute EventHandler onsplitting
         </dt>
       </dl>
-      <p>
-          When getting the DOMString attribute, the user agent MUST return the
-          remote party identifier (e.g. telephone number) of the call
-          participant. If not available (e.g. callerId has been hidden), return
-          <code>null</code>.
+      <section>
+        <h3>
+          The <code>remoteParty</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>remoteParty</dfn> attribute, the user agent
+          MUST return the remote party identifier (e.g. telephone number) of
+          the call participant. If not available (e.g. callerId has been
+          hidden), return <code>null</code>.
         </p>
-      <p>
-        When getting the conferenceId attribute, if this call is managed as a
-        part of a multiparty call then the user agent MUST return the value
-        of the <code>conferenceId</code> attribute of the
-        <a>ConferenceCall</a> multiparty call to which this call is part of.
-        Otherwise, return <code>null</code>.
-      </p>
+      </section>
+      <section>
+        <h3>
+          The <code>conferenceId</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>conferenceId</dfn> attribute, if this call is
+          managed as a part of a multiparty call then the user agent MUST
+          return the value of the <code>conferenceId</code> attribute of the
+          <a>ConferenceCall</a> multiparty call to which this call is part of.
+          Otherwise, return <code>null</code>.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>accept()</code> method
+        </h3>
+        <p>
+          The <dfn>accept()</dfn> method accepts an incoming or waiting
+          <a>telephony call</a>.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>redirect()</code> method
+        </h3>
+        <p>
+          The <dfn>redirect()</dfn> method initiates deflecting an incoming or
+          waiting telephone call to a remote party. The method takes one
+          argument, which represents the remote party to which the call is
+          redirected.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>transfer()</code> method
+        </h3>
+        <p>
+          The <dfn>transfer()</dfn> method Initiates transferring the call to a
+          new call between the remote party of this call and another remote
+          party, then disconnects the call. The method takes one argument,
+          which represents the remote party to which the call is transferred.
+        </p>
+      </section>
+      <section>
+        <h3>
+          The <code>createConference()</code> method
+        </h3>
+        <p>
+          The <dfn>createConference()</dfn> method Creates a multiparty call
+          from the current call. On cellular telephony services, this happens
+          by initiating merging the active and held calls into a multiparty
+          call. Using this method MUST be the only way to create a
+          <a>ConferenceCall</a> object.
+        </p>
+      </section>
       <section id="telephony-eventhandlers">
         <h3>
           Event handlers
