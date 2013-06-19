@@ -1479,8 +1479,19 @@
         </h3>
         <p>
           The <dfn>accept()</dfn> method accepts an incoming or waiting
-          <a>telephony call</a>.
+          <a>telephony call</a>. When invoked, the user agent MUST run the
+          following steps:
         </p>
+        <ol>
+          <li>If <code>state</code> is not equal to <code>"incoming"</code> or
+          <code>"waiting"</code>, then throw and <code>InvalidStateError</code>
+          DOMError.
+          </li>
+          <li>Otherwise make a request to the telephony system to accept the
+          call. If the request is acknowledged then set <code>state</code> to
+          <code>"accepted"</code>.
+          </li>
+        </ol>
       </section><!-- accept() method -->
       <!-- - - - - - - - - - - - redirect() method  - - - - - - - - - - - - -->
       <section>
@@ -1694,20 +1705,6 @@
           <code>"active"</code>.
         </p>
         <p>
-          The <code>accept</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>"incoming"</code> or
-          <code>"waiting"</code>, then an <code>InvalidStateError</code> MUST
-          be thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to accept the
-          call. If the request is acknowledged then set <code>state</code> to
-          <code>"accepted"</code>.
-          </li>
-        </ol>
-        <p>
           The <code>redirect</code> method when invoked MUST run the following
           steps:
         </p>
@@ -1821,7 +1818,7 @@
           </li>
         </ol>
       </section><!-- telephony-steps -->
-            <section id="telephony-eventhandlers">
+      <section id="telephony-eventhandlers">
         <h3>
           Event handlers
         </h3>
