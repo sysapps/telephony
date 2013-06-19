@@ -1564,8 +1564,65 @@
           from the current call. On cellular telephony services, this happens
           by initiating merging the active and held calls into a multiparty
           call. Using this method MUST be the only way to create a
-          <a>ConferenceCall</a> object.
+          <a>ConferenceCall</a> object. When invoked, the user agent MUST run
+          the following steps:
         </p>
+        <ol id="steps-createConference">
+          <li>Let <var>telCall</var> be the <a>telephony call</a> on which this
+          method was invoked.
+          </li>
+          <li>Set the <code>state</code> of <var>telCall</var> to
+          <code>"joining"</code>.
+          </li>
+          <li>Then, in cellular telephony services, make a request to the
+          telephony system to join the active and held calls into a multiparty
+          call.
+          </li>
+          <li>If one of the calls is already a <a>ConferenceCall</a> object,
+          use it as <var>confCall</var> in these steps.
+          </li>
+          <li>Otherwise create a new <a>ConferenceCall</a> object with a unique
+          conference id, named <var>confCall</var>.
+          </li>
+          <li>Set the <code>state</code> of <var>confCall</var> to
+          <code>"joining"</code>.
+          </li>
+          <li>Return the <var>confCall</var> object, and continue these steps
+          asynchronously.
+          </li>
+          <li>If the request to the telephony system is successful,
+            <ol>
+              <li>set the <code>conferenceId</code> attribute of the
+              participating calls to the unique identifier generated for the
+              multiparty call <var>confCall</var>.
+              </li>
+              <li>Add the calls participating in the multiparty call to the <a>
+                calls</a> attribute of the <var>confCall</var> object, remove
+                them from the <a>calls</a> array of the <a>TelephonyManager</a>
+                object, and set their <code>state</code> to
+                <code>'multiparty'</code>.
+              </li>
+              <li>Add the <var>confCall</var> object to the <a>calls</a> array
+              of the <a>TelephonyManager</a> object.
+              </li>
+              <li>Set the <code>state</code> of <var>confCall</var> to
+              <code>"active"</code>.
+              </li>
+              <li>
+                <a>Queue a task</a> to <a>fire an event</a> named
+                <code><a>participantadded</a></code> at <var>confCall</var>.
+                object
+              </li>
+              <li>Follow the state changes of <var>confCall</var> through the
+              state change events.
+              </li>
+              <li>If there is any error during the method call, then the
+              <a>error steps</a> MUST be executed on the <var>telCall</var>
+              object.
+              </li>
+            </ol>
+          </li>
+        </ol>
       </section><!-- createConference() method -->
       <section id="telephony-steps">
         <p>
@@ -1752,64 +1809,6 @@
           instance, in GSM, the Call Transfer supplementary service must be
           active.
         </p>
-        <p>
-          The <a>createConference</a> method MUST run the following steps when
-          invoked on a <a>TelephonyCall</a> object, referred as
-          <var>telCall</var> in these steps:
-        </p>
-        <ol id="steps-createConference">
-          <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"joining"</code>.
-          </li>
-          <li>Then, in cellular telephony services, make a request to the
-          telephony system to join the active and held calls into a multiparty
-          call.
-          </li>
-          <li>If one of the calls is already a <a>ConferenceCall</a> object,
-          use it as <var>confCall</var> in these steps.
-          </li>
-          <li>Otherwise create a new <a>ConferenceCall</a> object with a unique
-          conference id, named <var>confCall</var>.
-          </li>
-          <li>Set the <code>state</code> of <var>confCall</var> to
-          <code>"joining"</code>.
-          </li>
-          <li>Return the <var>confCall</var> object, and continue these steps
-          asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful,
-            <ol>
-              <li>set the <code>conferenceId</code> attribute of the
-              participating calls to the unique identifier generated for the
-              multiparty call <var>confCall</var>.
-              </li>
-              <li>Add the calls participating in the multiparty call to the <a>
-                calls</a> attribute of the <var>confCall</var> object, remove
-                them from the <a>calls</a> array of the <a>TelephonyManager</a>
-                object, and set their <code>state</code> to
-                <code>'multiparty'</code>.
-              </li>
-              <li>Add the <var>confCall</var> object to the <a>calls</a> array
-              of the <a>TelephonyManager</a> object.
-              </li>
-              <li>Set the <code>state</code> of <var>confCall</var> to
-              <code>"active"</code>.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code><a>participantadded</a></code> at <var>confCall</var>.
-                object
-              </li>
-              <li>Follow the state changes of <var>confCall</var> through the
-              state change events.
-              </li>
-              <li>If there is any error during the method call, then the
-              <a>error steps</a> MUST be executed on the <var>telCall</var>
-              object.
-              </li>
-            </ol>
-          </li>
-        </ol>
       </section><!-- telephony-steps -->
       <section id="telephony-eventhandlers">
         <h3>
