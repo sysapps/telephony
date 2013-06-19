@@ -1502,8 +1502,25 @@
           The <dfn>redirect()</dfn> method initiates deflecting an incoming or
           waiting telephone call to a remote party. The method takes one
           argument, which represents the remote party to which the call is
-          redirected.
+          redirected. When invoked, the user agent MUST run the following
+          steps:
         </p>
+        <ol>
+          <li>If the <a>state</a> is not <a>"incoming"</a> or <a>"waiting"</a>,
+          then throw an <code>InvalidStateError</code> DOMError.
+          </li>
+          <li>Otherwise make a request to the telephony system to redirect the
+          call to the number indicated in the <var>remoteParty</var> parameter,
+          return, and continue these steps asynchronously.
+          </li>
+          <li>If the request is acknowledged, then set <code>state</code> to
+          <code>"redirecting"</code>.
+          </li>
+          <li>When <a><var>TCallControl</var></a> is notified that the call has
+          been successfully redirected it MUST set <code>state</code> to <code>
+            "disconnected"</code>.
+          </li>
+        </ol>
       </section><!-- redirect() method -->
       <!-- - - - - - - - - - - - transfer() method  - - - - - - - - - - - - -->
       <section>
@@ -1704,27 +1721,6 @@
           actually resumed it MUST set <code>state</code> to
           <code>"active"</code>.
         </p>
-        <p>
-          The <code>redirect</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>"incoming"</code> or
-          <code>"waiting"</code>, then an<code>InvalidStateError</code> MUST be
-          thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to redirect the
-          call to the number indicated in the <var>remoteParty</var> parameter,
-          return, and continue these steps asynchronously.
-          </li>
-          <li>If the request is acknowledged, then set <code>state</code> to
-          <code>"redirecting"</code>.
-          </li>
-          <li>When <a><var>TCallControl</var></a> is notified that the call has
-          been successfully redirected it MUST set <code>state</code> to <code>
-            "disconnected"</code>.
-          </li>
-        </ol>
         <p class="note">
           The telephony service in use must have the call deflection feature
           enabled in order that this method could succeed. For instance, in
