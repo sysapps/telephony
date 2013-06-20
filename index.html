@@ -1135,49 +1135,114 @@
           <code>"resuming"</code>.
           </li>
         </ol>
+      <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - - -->
+    <section>
+      <h2>
+        <a>CallHandler</a> interface
+      </h2>
+      <p>
+        The <code>CallHandler</code> interface provides common properties and
+        event handling infrastructure that is <a href=
+        "http://www.w3.org/TR/WebIDL/#idl-implements-statements">implemented</a>
+        by other interfaces in this specification, e.g. <a>TelephonyCall</a>
+        and <a>ConferenceCall</a>. It serves as an editorial aid in this
+        specification, and has no functional utility on its own.
+      </p>
+      <p>
+        The <code>hold</code> method when invoked MUST run the following steps:
+      </p>
+      <ol>
+        <li>If <code>state</code> is not equal to <code>active</code>, then an
+        <code>InvalidStateError</code> MUST be thrown.
+        </li>
+        <li>Otherwise make a request to the telephony system to hold the call.
+        </li>
+        <li>Return, and continue these steps asynchronously.
+        </li>
+        <li>If the request is acknowledged then set <code>state</code> to
+        <code>"holding"</code>.
+        </li>
+      </ol>
+      <p>
+        The <code>resume</code> method when invoked MUST run the following
+        steps:
+      </p>
+      <ol>
+        <li>If <code>state</code> is not equal to <code>"held"</code>, then an
+        <code>InvalidStateError</code> MUST be thrown.
+        </li>
+        <li>Otherwise make a request to the telephony system to resume the
+        call. If the request is acknowledged, then set <code>state</code> to
+        <code>"resuming"</code>.
+        </li>
+      </ol>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
         <dt>
           void resume()
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           Initiates resuming a held <a>Call</a>.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           void hold()
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           Initiates putting the <a>Call</a> on hold.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           void disconnect()
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           If invoked on a <a>TelephonyCall</a>, it initiates releasing of the
           telephony call. If invoked on a <a>ConferenceCall</a>, Initiates
           releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           readonly attribute DOMString callId
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           When getting, the user agent MUST return the <a>call id</a> of the
           <a>Call</a> object, unique in the system and call history.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           readonly attribute DOMString serviceId
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           When getting, the user agent MUST return the <a>telephony service
           id</a> of the <a>telephony service</a> associated with this call.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           readonly attribute CallState state
         </dt>
-        <dd>
+        <!-- - - - - - - - - - - -   - - - - - - - - - - - - -->
+        <section>
+          <h3>The <code></code></h3>
+          <p>
           When getting, the user agent MUST return the <a>CallState</a> value
           that represents the state of for the <a>Call</a>.
-        </dd>
+          </p>
+        </section><!-- -->
         <dt>
           attribute EventHandler onerror
         </dt>
