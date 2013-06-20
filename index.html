@@ -442,6 +442,132 @@
           conference call as a result of the <a>createConference</a> method,
           and the <code>participantadded</code> event is dispatched.
         </p>
+        <table class="simple">
+          <thead>
+            <tr>
+              <th>
+                multiparty call state
+              </th>
+              <th>
+                string value
+              </th>
+              <th>
+                description
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <dfn id="call-state-joining"><code>joining</code></dfn>
+              </td>
+              <td>
+                <code>'joining'</code>
+              </td>
+              <td>
+                The multiparty call is being created, or joined with another
+                call.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="call-state-active"><code>active</code></dfn>
+              </td>
+              <td>
+                <code>"active"</code>
+              </td>
+              <td>
+                The multiparty call is ongoing.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="call-state-splitting"><code>splitting</code></dfn>
+              </td>
+              <td>
+                <code>'splitting'</code>
+              </td>
+              <td>
+                A call is being split from a multiparty call.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="call-state-holding"><code>holding</code></dfn>
+              </td>
+              <td>
+                <code>'holding'</code>
+              </td>
+              <td>
+                The call is being put on hold.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="call-state-held"><code>held</code></dfn>
+              </td>
+              <td>
+                <code>'held'</code>
+              </td>
+              <td>
+                The call has been put on hold.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id="call-state-resuming"><code>resuming</code></dfn>
+              </td>
+              <td>
+                <code>'resuming'</code>
+              </td>
+              <td>
+                The call, which was on hold, is being resumed.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id=
+                "call-state-disconnecting"><code>disconnecting</code></dfn>
+              </td>
+              <td>
+                <code>'disconnecting'</code>
+              </td>
+              <td>
+                A request to disconnect the call has been made and it is
+                progressing.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <dfn id=
+                "call-state-disconnected"><code>disconnected</code></dfn>
+              </td>
+              <td>
+                <code>'disconnected'</code>
+              </td>
+              <td>
+                The multiparty call has been disconnected and this object is
+                invalid for call control. In this final state, the
+                implementation MUST throw an <code>InvalidStateError</code>
+                exception when any method call is attempted.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          For multiparty calls, the implementation MUST generate a unique
+          identifier stored in the <code>callId</code> attribute. In GSM, the
+          <code>callId</code> of any participating call could be used in a
+          multiparty operation, and the telephony network will reply with using
+          the same value. But for forward compatibility reasons, the
+          implementation MUST generate a separate <code>callId</code> value for
+          the multiparty call, which MUST be unique in the system and the local
+          call history. For GSM multiparty functionality, The implementation
+          MUST map this to an appropriate transaction identifier accepted by
+          the telephony service. Also, the transaction identifiers received
+          from the network MUST be mapped back by the implementation to the
+          unique conference call identifier of the multiparty call.
+        </p>
       </section><!-- Multiparty calls -->
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
@@ -2126,16 +2252,9 @@
         </dt>
         <dd>
           Initiates splitting the specified participant <a>TelephonyCall</a>
-          object, activate it and put this multiparty call on hold.
-          <dl class='parameters'>
-            <dt>
-              TelephonyCall participantCall
-            </dt>
-            <dd>
-              Represents the <a>TelephonyCall</a> object of the call
-              participant to be split from the multiparty call.
-            </dd>
-          </dl>
+          object, activate it and put this multiparty call on hold. The method
+          takes one argument, which represents the <a>TelephonyCall</a> object
+          of the call participant to be split from the multiparty call.
         </dd>
         <dt>
           attribute EventHandler onparticipantadded
@@ -2152,201 +2271,29 @@
         <dt>
           attribute EventHandler onjoining
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"joining"</code> and the <code>joining</code> event is
-          dispatched.
-        </dd>
         <dt>
           attribute EventHandler onactive
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"active"</code> and the <code>active</code> event is
-          dispatched.
-        </dd>
         <dt>
           attribute EventHandler onsplitting
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"splitting"</code> and the <code>splitting</code> event is
-          dispatched.
-        </dd>
         <dt>
           attribute EventHandler onholding
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"holding"</code> and the <code>holding</code> event is
-          dispatched.
-        </dd>
         <dt>
           attribute EventHandler onheld
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"held"</code> and the <code>held</code> event is dispatched.
-        </dd>
         <dt>
           attribute EventHandler onresuming
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"resuming"</code> and the <code>resuming</code> event is
-          dispatched.
-        </dd>
         <dt>
           attribute EventHandler ondisconnecting
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"disconnecting"</code> and the <code>disconnecting</code> event
-          is dispatched.
-        </dd>
         <dt>
           attribute EventHandler ondisconnected
         </dt>
-        <dd>
-          Event handler called when the call state changes to
-          <code>"disconnected"</code> and the <code>disconnected</code> event
-          is dispatched.
-        </dd>
       </dl>
       <section id="multiparty-steps">
-        <h3>
-          Steps
-        </h3>
-        <p>
-          The <a>state</a> attribute MUST return the current status of the
-          multiparty call. It MUST be one of the following values:
-        </p>
-        <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                multiparty call state
-              </th>
-              <th>
-                string value
-              </th>
-              <th>
-                description
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn id="call-state-joining"><code>joining</code></dfn>
-              </td>
-              <td>
-                <code>'joining'</code>
-              </td>
-              <td>
-                The multiparty call is being created, or joined with another
-                call.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-active"><code>active</code></dfn>
-              </td>
-              <td>
-                <code>"active"</code>
-              </td>
-              <td>
-                The multiparty call is ongoing.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-splitting"><code>splitting</code></dfn>
-              </td>
-              <td>
-                <code>'splitting'</code>
-              </td>
-              <td>
-                A call is being split from a multiparty call.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-holding"><code>holding</code></dfn>
-              </td>
-              <td>
-                <code>'holding'</code>
-              </td>
-              <td>
-                The call is being put on hold.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-held"><code>held</code></dfn>
-              </td>
-              <td>
-                <code>'held'</code>
-              </td>
-              <td>
-                The call has been put on hold.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-resuming"><code>resuming</code></dfn>
-              </td>
-              <td>
-                <code>'resuming'</code>
-              </td>
-              <td>
-                The call, which was on hold, is being resumed.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id=
-                "call-state-disconnecting"><code>disconnecting</code></dfn>
-              </td>
-              <td>
-                <code>'disconnecting'</code>
-              </td>
-              <td>
-                A request to disconnect the call has been made and it is
-                progressing.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id=
-                "call-state-disconnected"><code>disconnected</code></dfn>
-              </td>
-              <td>
-                <code>'disconnected'</code>
-              </td>
-              <td>
-                The multiparty call has been disconnected and this object is
-                invalid for call control. In this final state, the
-                implementation MUST throw an <code>InvalidStateError</code>
-                exception when any method call is attempted.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p>
-          For multiparty calls, the implementation MUST generate a unique
-          identifier stored in the <code>callId</code> attribute. In GSM, the
-          <code>callId</code> of any participating call could be used in a
-          multiparty operation, and the telephony network will reply with using
-          the same value. But for forward compatibility reasons, the
-          implementation MUST generate a separate <code>callId</code> value for
-          the multiparty call, which MUST be unique in the system and the local
-          call history. For GSM multiparty functionality, The implementation
-          MUST map this to an appropriate transaction identifier accepted by
-          the telephony service. Also, the transaction identifiers received
-          from the network MUST be mapped back by the implementation to the
-          unique conference call identifier of the multiparty call.
-        </p>
         <p>
           The <code>split</code> method when invoked MUST run the following
           steps:
