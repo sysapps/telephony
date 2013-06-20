@@ -1113,7 +1113,6 @@
           </p>
         </section><!-- serviceId member -->
       </section><!-- DialParams Dictionary -->
-
       <!-- - - - - - - - - - - - ToneParams Dictionary  - - - - - - - - - - -->
       <section>
         <h3>
@@ -1175,13 +1174,19 @@
         <dt>
           readonly attribute Call call
         </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>TelephonyCall</a>
-          that triggered the event.
-        </dd>
       </dl>
+      <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>call</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>call</dfn> attribute, the user agent MUST
+          return the <a>TelephonyCall</a> that triggered the event.
+        </p>
+      </section>
     </section><!-- interface TelephonyEvent -->
-    <!-- - - - - - - - - - Interface TelephonyServiceEvent - - - - - - - - - -  -->
+    <!-- - - - - - - - - - Interface TelephonyServiceEvent  - - - - - - - - -->
     <section>
       <h2>
         <a>TelephonyServiceEvent</a> Interface
@@ -1200,7 +1205,7 @@
         </dd>
       </dl>
     </section><!-- interface TelephonyServiceEvent -->
-    <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - -->
     <section>
       <h2>
         <a>CallHandler</a> interface
