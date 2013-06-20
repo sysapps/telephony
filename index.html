@@ -2399,81 +2399,6 @@
         supported.
       </p>
     </section>
-    <!-- - - - - - - - - - -  Interface CallHistoryEntry - - - - - - - - - - -  -->
-    <section class="informative">
-      <h2>
-        <a>CallHistoryEntry</a> Interface
-      </h2>
-      <p>
-        This interface describes the minimum set of properties which SHOULD be
-        supported for call history entries. For multiparty call there MUST be a
-        separate <a>CallHistoryEntry</a> object for each call participant,
-        sharing the same value for the <code>conferenceId</code> attribute.
-      </p>
-      <p class='note'>
-        It is up the the implementations and applications how to store and
-        access call history. This document only specifies the minimum content
-        of the data to be saved.
-      </p>
-      <dl title="interface CallHistoryEntry" class="idl">
-        <dt>
-          readonly attribute DOMString remoteParty
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>remote party id</a>
-          (e.g. telephone number) of the call participant.
-        </dd>
-        <dt>
-          readonly attribute DOMString serviceId
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>telephony service
-          id</a> of the <a>telephony service</a> used for the call.
-        </dd>
-        <dt>
-          readonly attribute DOMString? conferenceId
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>conference id</a> of
-          the call, if the call has participated in a multiparty call.
-          Otherwise, return <code>null</code>. string.
-        </dd>
-        <dt>
-          readonly attribute Date startTime
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the starting time of the
-          call, measured from when the call is in <code>"active"</code> state.
-        </dd>
-        <dt>
-          readonly attribute unsigned long long duration
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the duration of the call
-          expressed in milliseconds.
-        </dd>
-        <dt>
-          readonly attribute CallDirection direction
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>CallDirection</a>.
-        </dd>
-        <dt>
-          readonly attribute DisconnectReason? disconnectReason
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>DisconnectReason</a>
-          if available, or return <code>null</code> otherwise.
-        </dd>
-        <dt>
-          readonly attribute boolean emergency
-        </dt>
-        <dd>
-          When getting, the user agent MUST return true if the call was an
-          emergency call, or false otherwise.
-        </dd>
-      </dl>
-    </section><!-- CallHistoryEntry -->
     <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - -  -->
     <section>
       <h2>
@@ -2621,6 +2546,142 @@
         </li>
       </ol>
     </section>
+    <!-- - - - - - - - - - -  Managing Call History   - - - - - - - - - - - -->
+    <section class="appendix">
+      <h2>
+        Managing call history
+      </h2>
+      <p>
+        The <a>CallHistoryEntry</a> interface describes the minimum set of
+        properties which a user agent would need to support for call history
+        entries. For multiparty call there needs to be a separate
+        <a>CallHistoryEntry</a> object for each call participant, sharing the
+        same value for the <a>conferenceId</a> attribute.
+      </p>
+      <p class='note'>
+        It is up the the implementations and applications how to store and
+        access call history. This document only specifies the minimum content
+        of the data to be saved.
+      </p>
+      <!-- - - - - - - - - - - CallHistoryEntry Interface - - - - - - - - - -->
+      <section>
+        <h3>
+          <code>CallHistoryEntry</code> interface
+        </h3>
+        <dl title="interface CallHistoryEntry" class="idl">
+          <dt>
+            readonly attribute DOMString remoteParty
+          </dt>
+          <dt>
+            readonly attribute DOMString serviceId
+          </dt>
+          <dt>
+            readonly attribute DOMString? conferenceId
+          </dt>
+          <dt>
+            readonly attribute Date startTime
+          </dt>
+          <dt>
+            readonly attribute unsigned long long duration
+          </dt>
+          <dt>
+            readonly attribute CallDirection direction
+          </dt>
+          <dt>
+            readonly attribute DisconnectReason? disconnectReason
+          </dt>
+          <dt>
+            readonly attribute boolean emergency
+          </dt>
+        </dl>
+        <!-- - - - - - - - - - -  remoteParty attribute - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>remoteParty</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>remoteParty</dfn> attribute, the user agent
+            MUST return the <a>remote party id</a> (e.g. telephone number) of
+            the call participant.
+          </p>
+        </section><!-- remoteParty attribute -->
+        <!-- - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>serviceId</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>serviceId</dfn> attribute, the user agent
+            MUST return the <a>telephony service id</a> of the <a>telephony
+            service</a> used for the call.
+          </p>
+        </section><!-- serviceId attribute -->
+        <!-- - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>conferenceId</code> attribute
+          </h3>
+          <p>
+            When getting, the user agent MUST return the <a>conference id</a>
+            of the call, if the call has participated in a multiparty call.
+            Otherwise, return <code>null</code>. string.
+          </p>
+        </section><!-- conferenceId attribute -->
+        <!-- - - - - - - - - - - startTime attribute  - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>startTime</code> attribute
+          </h3>
+          <p>
+            When getting startTime, the user agent MUST return the starting
+            time of the call, measured from when the call is in
+            <code>"active"</code> state.
+          </p>
+        </section><!-- startTime attribute -->
+        <!-- - - - - - - - - - -  duration attribute  - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>duration</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>duration</dfn>, the user agent MUST return
+            the duration of the call expressed in milliseconds.
+          </p>
+        </section><!-- duration attribute -->
+        <!-- - - - - - - - - - -  CallDirection attribute - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>CallDirection</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>CallDirection</dfn> attribute, the user agent
+            MUST return the <a>CallDirection</a>.
+          </p>
+        </section><!-- CallDirection attribute -->
+        <!-- - - - - - - - - - - disconnectReason attribute  - - - -  - - - -->
+        <section>
+          <h3>
+            The <code>disconnectReason</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>disconnectReason</dfn> attribute, the user
+            agent MUST return the <a>DisconnectReason</a> if available, or
+            return <code>null</code> otherwise.
+          </p>
+        </section><!-- disconnectReason attribute -->
+        <!-- - - - - - - - - - -   emergency attribute  - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>emergency</code> attribute
+          </h3>
+          <p>
+            When getting the <dfn>emergency</dfn> attribute, the user agent
+            MUST return <code>true</code> if the call was an emergency call, or
+            <code>false</code> otherwise.
+          </p>
+        </section><!-- emergency attribute -->
+      </section><!-- CallHistoryEntry Interface-->
+    </section><!-- Managing Call History -->
     <!-- - - - - - - - - - - - - -  Changes - - - - - - - - - - - - - - - - -->
     <section class="appendix" id="Changes">
       <h2>
