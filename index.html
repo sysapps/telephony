@@ -339,9 +339,156 @@
           <h3>
             <code>Call</code> typedef
           </h3>
-          <dl title="typedef (TelephonyCall or ConferenceCall) Call" class="idl">
-          </dl>
+          <dl title="typedef (TelephonyCall or ConferenceCall) Call" class=
+          "idl"></dl>
         </section><!-- Call typedef -->
+        <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
+        <section>
+          <h2>
+            <a>CallState</a> enum
+          </h2>
+          <dl class="idl" title="enum CallState">
+            <dt>
+              dialing
+            </dt>
+            <dd>
+              An outbound call that has been dialed and is being connected.
+            </dd>
+            <dt>
+              connecting
+            </dt>
+            <dd>
+              A request to establish the call has been made and it is
+              progressing.
+            </dd>
+            <dt>
+              alerting
+            </dt>
+            <dd>
+              The destination number has been reached and alerting is taking
+              place.
+            </dd>
+            <dt>
+              active
+            </dt>
+            <dd>
+              The call is ongoing.
+            </dd>
+            <dt>
+              incoming
+            </dt>
+            <dd>
+              An incoming call is being received whilst no other call is
+              progressing.
+            </dd>
+            <dt>
+              waiting
+            </dt>
+            <dd>
+              An incoming call that has been received whilst there was another
+              call progressing, and the call waiting service is active.
+            </dd>
+            <dt>
+              accepted
+            </dt>
+            <dd>
+              An incoming call has been accepted and is being connected.
+            </dd>
+            <dt>
+              holding
+            </dt>
+            <dd>
+              The call is being put on hold.
+            </dd>
+            <dt>
+              held
+            </dt>
+            <dd>
+              The call has been put on hold.
+            </dd>
+            <dt>
+              resuming
+            </dt>
+            <dd>
+              The call, which was on hold, is being resumed.
+            </dd>
+            <dt>
+              redirecting
+            </dt>
+            <dd>
+              The call is being redirected to another remote party from the
+              same <a>telephony service</a>.
+            </dd>
+            <dt>
+              transferring
+            </dt>
+            <dd>
+              The call is being transferred to another remote party from the
+              same <a>telephony service</a>.
+            </dd>
+            <dt>
+              disconnecting
+            </dt>
+            <dd>
+              A request to disconnect the call has been made and it is
+              progressing.
+            </dd>
+            <dt>
+              disconnected
+            </dt>
+            <dd>
+              The call has been disconnected and this object is invalid for
+              call control. In this final state, the implementation MUST throw
+              an <code>InvalidStateError</code> exception when any method call
+              is attempted.
+            </dd>
+            <dt>
+              joining
+            </dt>
+            <dd>
+              The call is being joined with another call to become a multiparty
+              call.
+            </dd>
+            <dt>
+              multiparty
+            </dt>
+            <dd>
+              The call is locked in a <a>ConferenceCall</a> object and MUST NOT
+              be managed any more using this object. While in this state, the
+              implementation MUST throw an <code>InvalidStateError</code>
+              exception when any method call is attempted.
+            </dd>
+            <dt>
+              splitting
+            </dt>
+            <dd>
+              The call is being split from a multiparty call.
+            </dd>
+          </dl>
+          <p>
+            Some of these states are <dfn>soft states</dfn>, that is,
+            transitory states in which the application is placed after making a
+            request to the telephony system and until it is completed. For
+            instance the application remains in <code>"holding"</code> state
+            since it invokes the hold() method and until the telephony system
+            actually holds the call. In some implementations these soft states
+            can be skipped. The following are the soft states defined by this
+            specification: <code>"accepted"</code>,
+            <code>"disconnecting"</code>, <code>"holding"</code>,
+            <code>"resuming"</code>.
+          </p>
+          <p>
+            On the contrary, <dfn>hard states</dfn> MUST be supported by the
+            implementation: <code>"dialing"</code>, <code>"alerting"</code>,
+            <code>"active"</code>, <code>"disconnected"</code>,
+            <code>"incoming"</code>, <code>"waiting"</code>,
+            <code>"held"</code>. For calls participating in multiparty calls,
+            the following additional call states MUST be supported:
+            <code>"joining"</code>, <code>"splitting"</code>,
+            <code>"multiparty"</code>. For call transfer functionality, the
+            additional <code>"transferring"</code> state MUST be supported.
+          </p>
+        </section><!-- CallState Enum -->
       </section><!-- Telephony Calls -->
       <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
       <section>
@@ -1226,7 +1373,8 @@
         <h3>
           <code>TelephonyServiceEventInit</code> dictionary
         </h3>
-        <dl title="dictionary TelephonyServiceEventInit : EventInit" class="idl">
+        <dl title="dictionary TelephonyServiceEventInit : EventInit" class=
+        "idl">
           <dt>
             DOMString serviceId
           </dt>
@@ -2330,149 +2478,6 @@
         </table>
       </section><!-- conference-eventhandlers -->
     </section><!-- ConferenceCall -->
-    <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
-    <section>
-      <h2>
-        <a>CallState</a> enum
-      </h2>
-      <dl class="idl" title="enum CallState">
-        <dt>
-          dialing
-        </dt>
-        <dd>
-          An outbound call that has been dialed and is being connected.
-        </dd>
-        <dt>
-          connecting
-        </dt>
-        <dd>
-          A request to establish the call has been made and it is progressing.
-        </dd>
-        <dt>
-          alerting
-        </dt>
-        <dd>
-          The destination number has been reached and alerting is taking place.
-        </dd>
-        <dt>
-          active
-        </dt>
-        <dd>
-          The call is ongoing.
-        </dd>
-        <dt>
-          incoming
-        </dt>
-        <dd>
-          An incoming call is being received whilst no other call is
-          progressing.
-        </dd>
-        <dt>
-          waiting
-        </dt>
-        <dd>
-          An incoming call that has been received whilst there was another call
-          progressing, and the call waiting service is active.
-        </dd>
-        <dt>
-          accepted
-        </dt>
-        <dd>
-          An incoming call has been accepted and is being connected.
-        </dd>
-        <dt>
-          holding
-        </dt>
-        <dd>
-          The call is being put on hold.
-        </dd>
-        <dt>
-          held
-        </dt>
-        <dd>
-          The call has been put on hold.
-        </dd>
-        <dt>
-          resuming
-        </dt>
-        <dd>
-          The call, which was on hold, is being resumed.
-        </dd>
-        <dt>
-          redirecting
-        </dt>
-        <dd>
-          The call is being redirected to another remote party from the same
-          <a>telephony service</a>.
-        </dd>
-        <dt>
-          transferring
-        </dt>
-        <dd>
-          The call is being transferred to another remote party from the same
-          <a>telephony service</a>.
-        </dd>
-        <dt>
-          disconnecting
-        </dt>
-        <dd>
-          A request to disconnect the call has been made and it is progressing.
-        </dd>
-        <dt>
-          disconnected
-        </dt>
-        <dd>
-          The call has been disconnected and this object is invalid for call
-          control. In this final state, the implementation MUST throw an
-          <code>InvalidStateError</code> exception when any method call is
-          attempted.
-        </dd>
-        <dt>
-          joining
-        </dt>
-        <dd>
-          The call is being joined with another call to become a multiparty
-          call.
-        </dd>
-        <dt>
-          multiparty
-        </dt>
-        <dd>
-          The call is locked in a <a>ConferenceCall</a> object and MUST NOT be
-          managed any more using this object. While in this state, the
-          implementation MUST throw an <code>InvalidStateError</code> exception
-          when any method call is attempted.
-        </dd>
-        <dt>
-          splitting
-        </dt>
-        <dd>
-          The call is being split from a multiparty call.
-        </dd>
-      </dl>
-      <p>
-        Some of these states are <dfn>soft states</dfn>, that is, transitory
-        states in which the application is placed after making a request to the
-        telephony system and until it is completed. For instance the
-        application remains in <code>"holding"</code> state since it invokes
-        the hold() method and until the telephony system actually holds the
-        call. In some implementations these soft states can be skipped. The
-        following are the soft states defined by this specification:
-        <code>"accepted"</code>, <code>"disconnecting"</code>,
-        <code>"holding"</code>, <code>"resuming"</code>.
-      </p>
-      <p>
-        On the contrary, <dfn>hard states</dfn> MUST be supported by the
-        implementation: <code>"dialing"</code>, <code>"alerting"</code>,
-        <code>"active"</code>, <code>"disconnected"</code>,
-        <code>"incoming"</code>, <code>"waiting"</code>, <code>"held"</code>.
-        For calls participating in multiparty calls, the following additional
-        call states MUST be supported: <code>"joining"</code>,
-        <code>"splitting"</code>, <code>"multiparty"</code>. For call transfer
-        functionality, the additional <code>"transferring"</code> state MUST be
-        supported.
-      </p>
-    </section>
     <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - -  -->
     <section>
       <h2>
