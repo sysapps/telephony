@@ -2546,7 +2546,7 @@
         </li>
       </ol>
     </section>
-    <!-- - - - - - - - - - -  Interface CallHistoryEntry  - - - - - - - - - -->
+    <!-- - - - - - - - - - -  Managing Call History   - - - - - - - - - - - -->
     <section class="appendix">
       <h2>
         Managing call history
@@ -2563,6 +2563,7 @@
         access call history. This document only specifies the minimum content
         of the data to be saved.
       </p>
+      <!-- - - - - - - - - - - CallHistoryEntry Interface - - - - - - - - - -->
       <section>
         <h3>
           <code>CallHistoryEntry</code> interface
@@ -2593,6 +2594,7 @@
             readonly attribute boolean emergency
           </dt>
         </dl>
+        <!-- - - - - - - - - - -  remoteParty attribute - - - - - - - - - - -->
         <section>
           <h3>
             The <code>remoteParty</code> attribute
@@ -2602,7 +2604,8 @@
             MUST return the <a>remote party id</a> (e.g. telephone number) of
             the call participant.
           </p>
-        </section>
+        </section><!-- remoteParty attribute -->
+        <!-- - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
         <section>
           <h3>
             The <code>serviceId</code> attribute
@@ -2612,7 +2615,8 @@
             MUST return the <a>telephony service id</a> of the <a>telephony
             service</a> used for the call.
           </p>
-        </section>
+        </section><!-- serviceId attribute -->
+        <!-- - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
         <section>
           <h3>
             The <code>conferenceId</code> attribute
@@ -2622,7 +2626,8 @@
             of the call, if the call has participated in a multiparty call.
             Otherwise, return <code>null</code>. string.
           </p>
-        </section>
+        </section><!-- conferenceId attribute -->
+        <!-- - - - - - - - - - - startTime attribute  - - - - - - - - - - - -->
         <section>
           <h3>
             The <code>startTime</code> attribute
@@ -2632,7 +2637,8 @@
             time of the call, measured from when the call is in
             <code>"active"</code> state.
           </p>
-        </section>
+        </section><!-- startTime attribute -->
+        <!-- - - - - - - - - - -  duration attribute  - - - - - - - - - - - -->
         <section>
           <h3>
             The <code>duration</code> attribute
@@ -2641,7 +2647,8 @@
             When getting the <dfn>duration</dfn>, the user agent MUST return
             the duration of the call expressed in milliseconds.
           </p>
-        </section>
+        </section><!-- duration attribute -->
+        <!-- - - - - - - - - - -  CallDirection attribute - - - - - - - - - -->
         <section>
           <h3>
             The <code>CallDirection</code> attribute
@@ -2650,7 +2657,8 @@
             When getting the <dfn>CallDirection</dfn> attribute, the user agent
             MUST return the <a>CallDirection</a>.
           </p>
-        </section>
+        </section><!-- CallDirection attribute -->
+        <!-- - - - - - - - - - - disconnectReason attribute  - - - -  - - - -->
         <section>
           <h3>
             The <code>disconnectReason</code> attribute
@@ -2660,7 +2668,8 @@
             agent MUST return the <a>DisconnectReason</a> if available, or
             return <code>null</code> otherwise.
           </p>
-        </section>
+        </section><!-- disconnectReason attribute -->
+        <!-- - - - - - - - - - -   emergency attribute  - - - - - - - - - - -->
         <section>
           <h3>
             The <code>emergency</code> attribute
@@ -2670,9 +2679,9 @@
             MUST return true if the call was an emergency call, or false
             otherwise.
           </p>
-        </section>
-      </section>
-    </section><!-- CallHistoryEntry -->
+        </section><!-- emergency attribute -->
+      </section><!-- CallHistoryEntry Interface-->
+    </section><!-- Managing Call History -->
     <!-- - - - - - - - - - - - - -  Changes - - - - - - - - - - - - - - - - -->
     <section class="appendix" id="Changes">
       <h2>
