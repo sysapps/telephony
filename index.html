@@ -201,7 +201,7 @@
         event</a></dfn> are defined in [[!DOM4]].
       </p>
     </section>
-    <!-- - - - - - - - - - - - - -  Telephony Lifecycle  - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - - -  Telephony Services  - - - - - - - - - - -->
     <section>
       <h2>
         Telephony services
@@ -1077,7 +1077,7 @@
           </tbody>
         </table>
       </section><!-- event handers -->
-      <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - -->
       <section>
         <h3>
           <a>DialParams</a> Dictionary
@@ -1086,22 +1086,34 @@
           <dt>
             boolean hideCallerId
           </dt>
-          <dd>
-            Represents whether the own number is to be hidden or displayed to
-            the remote party being called. If missing, the user agent uses the
-            default configuration for the <a>telephony service</a> that
-            initiated the call.
-          </dd>
           <dt>
             DOMString serviceId
           </dt>
-          <dd>
-            Represents the <a>telephony service id</a> of the <a>telephony
-            service</a> to be used when dialing.
-          </dd>
         </dl>
+        <!-- - - - - - - - - - - -  hideCallerId member - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>hideCallerId</code> member
+          </h3>
+          <p>
+            The <dfn>hideCallerId</dfn> member represents whether the own
+            number is to be hidden or displayed to the remote party being
+            called. If missing, the user agent uses the default configuration
+            for the <a>telephony service</a> that initiated the call.
+          </p>
+        </section>
+        <!-- - - - - - - - - - - -  serviceId member - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>serviceId</code> member
+          </h3>
+          <p>
+            The serviceId member represents the <a>telephony service id</a> of
+            the <a>telephony service</a> to be used when dialing.
+          </p>
+        </section>
       </section>
-      <!-- - - - - - - - - - - -  Dictionary ToneParams - - - - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  Dictionary ToneParams - - - - - - - - - - -->
       <section>
         <h3>
           <a>ToneParams</a> Dictionary
