@@ -449,9 +449,6 @@
                 multiparty call state
               </th>
               <th>
-                string value
-              </th>
-              <th>
                 description
               </th>
             </tr>
@@ -460,9 +457,6 @@
             <tr>
               <td>
                 <dfn id="call-state-joining"><code>joining</code></dfn>
-              </td>
-              <td>
-                <code>'joining'</code>
               </td>
               <td>
                 The multiparty call is being created, or joined with another
@@ -474,18 +468,12 @@
                 <dfn id="call-state-active"><code>active</code></dfn>
               </td>
               <td>
-                <code>"active"</code>
-              </td>
-              <td>
                 The multiparty call is ongoing.
               </td>
             </tr>
             <tr>
               <td>
                 <dfn id="call-state-splitting"><code>splitting</code></dfn>
-              </td>
-              <td>
-                <code>'splitting'</code>
               </td>
               <td>
                 A call is being split from a multiparty call.
@@ -496,9 +484,6 @@
                 <dfn id="call-state-holding"><code>holding</code></dfn>
               </td>
               <td>
-                <code>'holding'</code>
-              </td>
-              <td>
                 The call is being put on hold.
               </td>
             </tr>
@@ -507,18 +492,12 @@
                 <dfn id="call-state-held"><code>held</code></dfn>
               </td>
               <td>
-                <code>'held'</code>
-              </td>
-              <td>
                 The call has been put on hold.
               </td>
             </tr>
             <tr>
               <td>
                 <dfn id="call-state-resuming"><code>resuming</code></dfn>
-              </td>
-              <td>
-                <code>'resuming'</code>
               </td>
               <td>
                 The call, which was on hold, is being resumed.
@@ -530,9 +509,6 @@
                 "call-state-disconnecting"><code>disconnecting</code></dfn>
               </td>
               <td>
-                <code>'disconnecting'</code>
-              </td>
-              <td>
                 A request to disconnect the call has been made and it is
                 progressing.
               </td>
@@ -541,9 +517,6 @@
               <td>
                 <dfn id=
                 "call-state-disconnected"><code>disconnected</code></dfn>
-              </td>
-              <td>
-                <code>'disconnected'</code>
               </td>
               <td>
                 The multiparty call has been disconnected and this object is
@@ -1354,8 +1327,8 @@
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> that MUST be supported as
-          attributes:
+          The following are the <a>event handlers</a> are implemented by the
+          CallHandler interface. The event type is <a><code>Event</code></a>.
         </p>
         <table class="simple">
           <thead>
@@ -1365,12 +1338,6 @@
               </th>
               <th>
                 event name
-              </th>
-              <th>
-                event type
-              </th>
-              <th>
-                short description
               </th>
             </tr>
           </thead>
@@ -1382,12 +1349,6 @@
               <td>
                 <dfn><code>statechange</code></dfn>
               </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles any call state change
-              </td>
             </tr>
             <tr>
               <td>
@@ -1395,12 +1356,6 @@
               </td>
               <td>
                 <dfn><code>error</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles error conditions
               </td>
             </tr>
           </tbody>
@@ -1979,8 +1934,9 @@
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> MUST be supported as
-          attributes by the <a>TelephonyCall</a> object:
+          To handle changes in telephony state, the <a>TelephonyCall</a>
+          interface implements the following <a>event handlers</a>. The event
+          type for the events is <a><code>Event</code></a>.
         </p>
         <table class="simple">
           <thead>
@@ -1989,13 +1945,7 @@
                 event handler
               </th>
               <th>
-                event name
-              </th>
-              <th>
-                event type
-              </th>
-              <th>
-                short description
+                event name / telephony state
               </th>
             </tr>
           </thead>
@@ -2005,13 +1955,7 @@
                 <dfn><code>ondialing</code></dfn>
               </td>
               <td>
-                <dfn><code>dialing</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"dialing"</code> state
+                <a>dialing</a>
               </td>
             </tr>
             <tr>
@@ -2019,13 +1963,7 @@
                 <dfn><code>onalerting</code></dfn>
               </td>
               <td>
-                <dfn><code>alerting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"alerting"</code> state
+                <a>alerting</a>
               </td>
             </tr>
             <tr>
@@ -2033,13 +1971,7 @@
                 <dfn><code>onaccepted</code></dfn>
               </td>
               <td>
-                <dfn><code>accepted</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"accepted"</code> state
+                <a>accepted</a>
               </td>
             </tr>
             <tr>
@@ -2047,14 +1979,7 @@
                 <dfn><code>onconnecting</code></dfn>
               </td>
               <td>
-                <dfn><code>connecting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"connecting"</code>
-                state
+                <a>connecting</a>
               </td>
             </tr>
             <tr>
@@ -2062,13 +1987,7 @@
                 <dfn><code>onactive</code></dfn>
               </td>
               <td>
-                <dfn><code>active</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"active"</code> state
+                <a>active</a>
               </td>
             </tr>
             <tr>
@@ -2076,14 +1995,7 @@
                 <dfn><code>ondisconnecting</code></dfn>
               </td>
               <td>
-                <dfn><code>disconnecting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles the call state changes to the
-                <code>"disconnecting"</code> state
+                <a>disconnecting</a>
               </td>
             </tr>
             <tr>
@@ -2091,14 +2003,7 @@
                 <dfn><code>ondisconnected</code></dfn>
               </td>
               <td>
-                <dfn><code>disconnected</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyEvent</a>
-              </td>
-              <td>
-                handles call state changes to the <code>"disconnected"</code>
-                state
+                <a>disconnected</a>
               </td>
             </tr>
             <tr>
@@ -2106,13 +2011,7 @@
                 <dfn><code>onholding</code></dfn>
               </td>
               <td>
-                <dfn><code>holding</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"holding"</code> state
+                <a>holding</a>
               </td>
             </tr>
             <tr>
@@ -2120,13 +2019,7 @@
                 <dfn><code>onheld</code></dfn>
               </td>
               <td>
-                <dfn><code>held</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"held"</code> state
+                <a>held</a>
               </td>
             </tr>
             <tr>
@@ -2134,13 +2027,7 @@
                 <dfn><code>onresuming</code></dfn>
               </td>
               <td>
-                <dfn><code>resuming</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"resuming"</code> state
+                <a>resuming</a>
               </td>
             </tr>
             <tr>
@@ -2148,14 +2035,7 @@
                 <dfn><code>onredirecting</code></dfn>
               </td>
               <td>
-                <dfn><code>redirecting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"redirecting"</code>
-                state
+                <a>redirecting</a>
               </td>
             </tr>
             <tr>
@@ -2163,14 +2043,7 @@
                 <dfn><code>ontransferring</code></dfn>
               </td>
               <td>
-                <dfn><code>transferring</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"transferring"</code>
-                state
+                <a>transferring</a>
               </td>
             </tr>
             <tr>
@@ -2178,13 +2051,7 @@
                 <dfn><code>onjoining</code></dfn>
               </td>
               <td>
-                <dfn><code>joining</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"joining"</code> state
+                <a>joining</a>
               </td>
             </tr>
             <tr>
@@ -2192,14 +2059,7 @@
                 <dfn><code>onsplitting</code></dfn>
               </td>
               <td>
-                <dfn><code>splitting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"splitting"</code>
-                state
+                <a>splitting</a>
               </td>
             </tr>
             <tr>
@@ -2207,14 +2067,7 @@
                 <dfn><code>onmultiparty</code></dfn>
               </td>
               <td>
-                <dfn><code>multiparty</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"multiparty"</code>
-                state
+                <a>multiparty</a>
               </td>
             </tr>
           </tbody>
@@ -2344,8 +2197,10 @@
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> MUST be supported as
-          attributes by the <a>ConferenceCall</a> object:
+          To handle changes in <a>telephony state</a>, the
+          <a>ConferenceCall</a> interface implements the following <a>event
+          handlers</a>. The event type for the events is
+          <a><code>Event</code></a>.
         </p>
         <table class="simple">
           <thead>
@@ -2354,13 +2209,7 @@
                 event handler
               </th>
               <th>
-                event name
-              </th>
-              <th>
-                event type
-              </th>
-              <th>
-                short description
+                event name/telephony state
               </th>
             </tr>
           </thead>
@@ -2370,13 +2219,7 @@
                 <dfn><code>onactive</code></dfn>
               </td>
               <td>
-                <dfn><code>active</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"active"</code> state
+                <a>active</a>
               </td>
             </tr>
             <tr>
@@ -2384,14 +2227,7 @@
                 <dfn><code>ondisconnecting</code></dfn>
               </td>
               <td>
-                <dfn><code>disconnecting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles the call state changes to the
-                <code>"disconnecting"</code> state
+                <a>disconnecting</a>
               </td>
             </tr>
             <tr>
@@ -2399,14 +2235,7 @@
                 <dfn><code>ondisconnected</code></dfn>
               </td>
               <td>
-                <dfn><code>disconnected</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyEvent</a>
-              </td>
-              <td>
-                handles call state changes to the <code>"disconnected"</code>
-                state
+                <a>disconnected</a>
               </td>
             </tr>
             <tr>
@@ -2414,13 +2243,7 @@
                 <dfn><code>onholding</code></dfn>
               </td>
               <td>
-                <dfn><code>holding</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"holding"</code> state
+                <a>holding</a>
               </td>
             </tr>
             <tr>
@@ -2428,13 +2251,7 @@
                 <dfn><code>onheld</code></dfn>
               </td>
               <td>
-                <dfn><code>held</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"held"</code> state
+                <a>held</a>
               </td>
             </tr>
             <tr>
@@ -2442,13 +2259,7 @@
                 <dfn><code>onresuming</code></dfn>
               </td>
               <td>
-                <dfn><code>resuming</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"resuming"</code> state
+                <a>resuming</a>
               </td>
             </tr>
             <tr>
@@ -2456,13 +2267,7 @@
                 <dfn><code>onjoining</code></dfn>
               </td>
               <td>
-                <dfn><code>joining</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"joining"</code> state
+                <a>joining</a>
               </td>
             </tr>
             <tr>
@@ -2470,14 +2275,7 @@
                 <dfn><code>onsplitting</code></dfn>
               </td>
               <td>
-                <dfn><code>splitting</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles call state changes to the <code>"splitting"</code>
-                state
+                <a>splitting</a>
               </td>
             </tr>
           </tbody>
