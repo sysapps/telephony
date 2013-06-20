@@ -1195,15 +1195,45 @@
         Defines a telephony event for notifying a changed <a>telephony
         service</a>.
       </p>
-      <dl title="interface TelephonyServiceEvent : Event" class="idl">
+      <dl title=
+      "[Constructor(DOMString type, optional TelephonyServiceEventInit eventInitDict)]interface TelephonyServiceEvent : Event"
+      class="idl">
         <dt>
           readonly attribute DOMString serviceId
         </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>telephony service
-          id</a> of the <a>telephony service</a> that triggered the event.
-        </dd>
       </dl>
+      <!-- - - - - - - - - - serviceId attribute  - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>serviceId</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>serviceId</dfn>, the user agent MUST return the
+          <a>telephony service id</a> of the <a>telephony service</a> that
+          triggered the event.
+        </p>
+      </section>
+      <!-- - - - - - - - - - TelephonyServiceEventInit dictionary - - - - - -->
+      <section>
+        <h3>
+          <code>TelephonyServiceEventInit</code> dictionary
+        </h3>
+        <dl title="TelephonyServiceEventInit : EventInit">
+          <dt>
+            DOMString serviceId
+          </dt>
+        </dl>
+        <!-- - - - - - - - - - serviceId member - - - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>serviceId</code> member
+          </h3>
+          <p>
+            The <dfn>serviceId</dfn> member represents the <a>telephony service
+            id</a> of a <a>telephony service</a>.
+          </p>
+        </section><!-- serviceId member -->
+      </section><!-- TelephonyServiceEventInit interface -->
     </section><!-- interface TelephonyServiceEvent -->
     <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - -->
     <section>
