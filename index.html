@@ -2235,39 +2235,18 @@
         <dt>
           readonly attribute DOMString conferenceId
         </dt>
-        <dd>
-          When getting, the user agent MUST return the conference identifier
-          unique in the system and in call history. It MUST NOT be the empty
-          string.
-        </dd>
         <dt>
           readonly attribute TelephonyCall[] calls
         </dt>
-        <dd>
-          When getting, the user agent MUST return the array of
-          <a>TelephonyCall</a> objects managed by the multiparty call object.
-        </dd>
         <dt>
           void split(TelephonyCall participantCall)
         </dt>
-        <dd>
-          Initiates splitting the specified participant <a>TelephonyCall</a>
-          object, activate it and put this multiparty call on hold. The method
-          takes one argument, which represents the <a>TelephonyCall</a> object
-          of the call participant to be split from the multiparty call.
-        </dd>
         <dt>
           attribute EventHandler onparticipantadded
         </dt>
         <dt>
           attribute EventHandler onparticipantremoved
         </dt>
-        <dd>
-          Event handler called when a participant has been removed from the
-          conference call as the result of the <code>split</code> method, or
-          because the participant call was disconnected, and the
-          <code>participantadded</code> event is dispatched.
-        </dd>
         <dt>
           attribute EventHandler onjoining
         </dt>
@@ -2293,10 +2272,39 @@
           attribute EventHandler ondisconnected
         </dt>
       </dl>
-      <section id="multiparty-steps">
+      <!-- - - - - - - - - - - -  conferenceId attribute - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>conferenceId</code>attribute
+        </h3>
         <p>
-          The <code>split</code> method when invoked MUST run the following
-          steps:
+          When getting the <dfn>conferenceId</dfn> attribute, the user agent
+          MUST return the conference identifier unique in the system and in
+          call history. It MUST NOT be the empty string.
+        </p>
+      </section><!-- conferenceId attribute -->
+      <!-- - - - - - - - - - - -  calls attribute - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>calls</code> attribute
+        </h3>
+        <p>
+          When getting, the user agent MUST return the array of
+          <a>TelephonyCall</a> objects managed by the multiparty call object.
+        </p>
+      </section><!-- calls attribute -->
+      <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>split()</code> method
+        </h3>
+        <p>
+          The <dfn>split()</dfn> method requests the telephony system split the
+          specified participant <a>TelephonyCall</a> object, activate it and
+          put this multiparty call on hold. The method takes one argument,
+          which represents the <a>TelephonyCall</a> object of the call
+          participant to be split from the multiparty call. When invoked, the
+          user agent MUST run the following steps:
         </p>
         <ol>
           <li>If the provided <var>participantCall</var> does not identify a
@@ -2329,7 +2337,7 @@
           3GPP2 document</a>, p. 1-50 provides a comparison of multiparty call
           and 3-way call.
         </p>
-      </section><!-- conference-steps -->
+      </section><!-- split() method -->
       <section id="conference-eventhandlers">
         <!-- conference-eventhandlers -->
         <h3>
