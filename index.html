@@ -1077,7 +1077,7 @@
           </tbody>
         </table>
       </section><!-- event handers -->
-      <!-- - - - - - - - - - - -  Dictionary DialParams - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  DialParams Dictionary - - - - - - - - - - -->
       <section>
         <h3>
           <a>DialParams</a> Dictionary
@@ -1111,9 +1111,10 @@
             The serviceId member represents the <a>telephony service id</a> of
             the <a>telephony service</a> to be used when dialing.
           </p>
-        </section>
-      </section>
-      <!-- - - - - - - - - - - -  Dictionary ToneParams - - - - - - - - - - -->
+        </section><!-- serviceId member -->
+      </section><!-- DialParams Dictionary -->
+
+      <!-- - - - - - - - - - - - ToneParams Dictionary  - - - - - - - - - - -->
       <section>
         <h3>
           <a>ToneParams</a> Dictionary
@@ -1122,28 +1123,46 @@
           <dt>
             unsigned long duration
           </dt>
-          <dd>
-            Represents the duration (mark) in milliseconds of the [[!DTMF]]
-            tones to be sent.
-          </dd>
           <dt>
             unsigned long gap
           </dt>
-          <dd>
-            Represents the duration in milliseconds of the time gap (space)
-            before a [[!DTMF]] tone.
-          </dd>
           <dt>
             DOMString serviceId
           </dt>
-          <dd>
-            Represents the <a>telephony service id</a> of the <a>telephony
-            service</a> to be used when dialing.
-          </dd>
         </dl>
-      </section>
+        <!-- - - - - - - - - - - - duration member  - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>duration</code> member
+          </h3>
+          <p>
+            The <dfn>duration</dfn> member represents the duration (mark) in
+            milliseconds of the [[!DTMF]] tones to be sent.
+          </p>
+        </section>
+        <!-- - - - - - - - - - - - gap member - - - - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>gap</code> member
+          </h3>
+          <p>
+            The <dfn>gap</dfn> member represents the duration in milliseconds
+            of the time gap (space) before a [[!DTMF]] tone.
+          </p>
+        </section>
+        <!-- - - - - - - - - - - - serviceId member - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            The <code>serviceId</code> member
+          </h3>
+          <p>
+            The <dfn>serviceId</dfn> member Represents the <a>telephony service
+            id</a> of the <a>telephony service</a> to be used when dialing.
+          </p>
+        </section><!-- serviceId member -->
+      </section><!-- ToneParams Dictionary -->
     </section><!-- TelephonyManager -->
-    <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
     <section>
       <h2>
         <a>TelephonyEvent</a> Interface
