@@ -303,6 +303,10 @@
           Telephony Calls
         </h3>
         <p>
+          Every telephony call has a <dfn>call id</dfn> that is unique in the
+          system and call history.
+        </p>
+        <p>
           An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
           <a>active</a> state representing a connected call which is bound to
           the media input and output devices (e.g. microphone, speaker, tone
@@ -1105,9 +1109,61 @@
         and <a>ConferenceCall</a>. It serves as an editorial aid in this
         specification, and has no functional utility on its own.
       </p>
-      <p>
-          The <code>hold</code> method when invoked MUST run the following
-          steps:
+      <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
+        <dt>
+          void resume()
+        </dt>
+        <dt>
+          void hold()
+        </dt>
+        <dt>
+          void disconnect()
+        </dt>
+        <dt>
+          readonly attribute DOMString callId
+        </dt>
+        <dt>
+          readonly attribute DOMString serviceId
+        </dt>
+        <dt>
+          readonly attribute CallState state
+        </dt>
+        <dt>
+          attribute EventHandler onerror
+        </dt>
+        <dt>
+          attribute EventHandler onstatechange
+        </dt>
+      </dl>
+      <!-- - - - - - - - - - - -  resume() method - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>resume()</code> method
+        </h3>
+        <p>
+          The <dfn>resume()</dfn> method requests the telephony system to
+          resume resume a held <a>Call</a>. When invoked, the user agent MUST
+          run the following steps:
+        </p>
+        <ol>
+          <li>If <code>state</code> is not equal to <code>"held"</code>, then
+          an <code>InvalidStateError</code> MUST be thrown.
+          </li>
+          <li>Otherwise make a request to the telephony system to resume the
+          call. If the request is acknowledged, then set <code>state</code> to
+          <code>"resuming"</code>.
+          </li>
+        </ol>
+      </section><!-- resume() method -->
+      <!-- - - - - - - - - - - -  hold() method - - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>hold()</code> method
+        </h3>
+        <p>
+          The <code>hold()</code> method requests the telephony system put the
+          <a>Call</a> <a>on hold</a>. When invoked, the user agent MUST run the
+          following steps:
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>active</code>, then
@@ -1122,69 +1178,51 @@
           <code>"holding"</code>.
           </li>
         </ol>
+      </section><!-- hold() method -->
+      <!-- - - - - - - - - - - -  disconnect() method - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>disconnect</code> method
+        </h3>
         <p>
-          The <code>resume</code> method when invoked MUST run the following
-          steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          an <code>InvalidStateError</code> MUST be thrown.
-          </li>
-          <li>Otherwise make a request to the telephony system to resume the
-          call. If the request is acknowledged, then set <code>state</code> to
-          <code>"resuming"</code>.
-          </li>
-        </ol>
-      <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
-        <dt>
-          void resume()
-        </dt>
-        <dd>
-          Initiates resuming a held <a>Call</a>.
-        </dd>
-        <dt>
-          void hold()
-        </dt>
-        <dd>
-          Initiates putting the <a>Call</a> on hold.
-        </dd>
-        <dt>
-          void disconnect()
-        </dt>
-        <dd>
           If invoked on a <a>TelephonyCall</a>, it initiates releasing of the
           telephony call. If invoked on a <a>ConferenceCall</a>, Initiates
           releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
-        </dd>
-        <dt>
-          readonly attribute DOMString callId
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>call id</a> of the
-          <a>Call</a> object, unique in the system and call history.
-        </dd>
-        <dt>
-          readonly attribute DOMString serviceId
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>telephony service
-          id</a> of the <a>telephony service</a> associated with this call.
-        </dd>
-        <dt>
-          readonly attribute CallState state
-        </dt>
-        <dd>
-          When getting, the user agent MUST return the <a>CallState</a> value
-          that represents the state of for the <a>Call</a>.
-        </dd>
-        <dt>
-          attribute EventHandler onerror
-        </dt>
-        <dt>
-          attribute EventHandler onstatechange
-        </dt>
-      </dl>
+        </p>
+      </section><!-- disconnect() method -->
+      <!-- - - - - - - - - - - - callId attribute  - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>callId</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>callId</dfn> attribute, the user agent MUST
+          return the <a>call id</a>.
+        </p>
+      </section><!-- callId attribute -->
+      <!-- - - - - - - - - - - -  serviceId attribute - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>serviceId</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>serviceId</dfn> attribute, the user agent MUST
+          return the <a>telephony service id</a> of the <a>telephony
+          service</a> associated with this call.
+        </p>
+      </section><!-- serviceId attribute -->
+      <!-- - - - - - - - - - - -  state attribute - - - - - - - - - - - - -->
+      <section>
+        <h3>
+          The <code>state</code> attribute
+        </h3>
+        <p>
+          When getting the <dfn>state</dfn> attribute, the user agent MUST
+          return the <a>CallState</a> value that represents the state of for
+          the <a>Call</a>.
+        </p>
+      </section><!-- state attribute -->
       <section id="callhandler-eventhandlers">
         <h3>
           Event handlers
@@ -1241,8 +1279,9 @@
             </tr>
           </tbody>
         </table>
-      </section><!-- CallHandler Interface -->
-      <!-- a short summary on call state management
+      </section><!-- Event Handlers -->
+    </section><!-- CallHandler Interface -->
+    <!-- a short summary on call state management
       =========================================================================
       CDMA states for dialed calls       | Mapping to the API or [modem] state
       _________________________________________________________________________
@@ -1402,7 +1441,6 @@
           * held -> resuming -> active (connected)
           * any state -> [disconnecting]-> disconnected
       -->
-    </section>
     <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - - - -->
     <section>
       <h2>
