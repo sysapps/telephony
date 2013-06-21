@@ -1040,8 +1040,8 @@
           The <code>dial()</code> method
         </h3>
         <p>
-          The <dfn>dial()</dfn> method initiates a new telephony call. When
-          invoked the user agent MUST run the following steps:
+          The <dfn>dial()</dfn> method initiates a new <a>telephony call</a>.
+          When invoked the user agent MUST run the following steps:
         </p>
         <ol id="steps-dial">
           <li>Create a new <a>TelephonyCall</a> object, referred as
@@ -1199,9 +1199,8 @@
           Event handlers
         </h2>
         <p>
-          The following are the <a>event handlers</a> (and their corresponding
-          <a>event types</a>) that MUST be supported as attributes by the
-          <a>TelephonyManager</a> object.
+          The following are the <a>event handlers</a> are implemented by the
+          <a>TelephonyManager</a> interface.
         </p>
         <table class="simple">
           <thead>
@@ -1232,7 +1231,7 @@
                 <a>TelephonyEvent</a>
               </td>
               <td>
-                handles incoming and waiting calls
+                handles incoming and waiting calls.
               </td>
             </tr>
             <tr>
@@ -1246,7 +1245,7 @@
                 <a><code>Event</code></a>
               </td>
               <td>
-                handles change in the <a>calls</a> array
+                handles change in the <a>calls</a> array.
               </td>
             </tr>
             <tr>
@@ -1260,7 +1259,7 @@
                 <a>TelephonyServiceEvent</a>
               </td>
               <td>
-                handles a new enabled telephony service
+                handles a new enabled telephony service.
               </td>
             </tr>
             <tr>
@@ -1274,7 +1273,7 @@
                 <a>TelephonyServiceEvent</a>
               </td>
               <td>
-                handles a disabled telephony service
+                handles a disabled telephony service.
               </td>
             </tr>
             <tr>
@@ -1504,8 +1503,7 @@
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          an <code>InvalidStateError</code> MUST be thrown.
-          </li>
+          throw an <code>InvalidStateError</code> exception. </li>
           <li>Otherwise make a request to the telephony system to resume the
           call. If the request is acknowledged, then set <code>state</code> to
           <code>"resuming"</code>.
@@ -1585,7 +1583,7 @@
           Event handlers
         </h3>
         <p>
-          The following are the <a>event handlers</a> are implemented by the
+          The following are the <a>event handlers</a> are exposed by the
           CallHandler interface. The event type is <a><code>Event</code></a>.
         </p>
         <table class="simple">
@@ -1891,8 +1889,8 @@
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>"incoming"</code> or
-          <code>"waiting"</code>, then throw and <code>InvalidStateError</code>
-          DOMError.
+          <code>"waiting"</code>, then throw an <code>InvalidStateError</code>
+          exception.
           </li>
           <li>Otherwise make a request to the telephony system to accept the
           call. If the request is acknowledged then set <code>state</code> to
@@ -1914,7 +1912,7 @@
         </p>
         <ol>
           <li>If the <a>state</a> is not <a>"incoming"</a> or <a>"waiting"</a>,
-          then throw an <code>InvalidStateError</code> DOMError.
+          then throw an <code>InvalidStateError</code> exception.
           </li>
           <li>Otherwise make a request to the telephony system to redirect the
           call to the number indicated in the <var>remoteParty</var> parameter,
@@ -2420,7 +2418,7 @@
         <ol>
           <li>If the provided <var>participantCall</var> does not identify a
           valid <a>TelephonyCall</a> object which is part of this multiparty
-          call, then an <code>InvalidModificationError</code> MUST be thrown.
+          call, then an throw an <code>InvalidModificationError</code> exception.
           </li>
           <li>Otherwise, set the <code>state</code> of the
           <var>participantCall</var> and that of this <a>ConferenceCall</a>
