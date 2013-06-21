@@ -316,11 +316,13 @@
           call</a>.
         </p>
         <p>
-          In the act of establishing a connection between two parties, a
-          telephony call transitions through various <a>call states</a>. A
-          telephony service observes the call states of a telephony call in the
-          supported telephony backend(s) and networks and reflects those
-          changes through DOM events.
+          A <dfn id="telephony-call-concept2">telephony call</dfn> is always in
+          some call state.
+        </p>
+        <p>
+          Telephony calls initiated by a telephony service of the system is an
+          <dfn>outbound call</dfn>. Conversely, a telephony calls from a remote
+          party is an <dfn>inbound call</dfn>.
         </p>
         <p>
           Every telephony call has a <dfn>call id</dfn>, which is a string that
@@ -348,6 +350,137 @@
             Call states
           </h3>
           <p>
+            In the process of establishing a connection between two parties, a
+            telephony call transitions through various <a>call states</a>. A
+            call state represents the state of interaction between a telephony
+          service, the telephony network, and one or more remote parties.          </p>
+          <p>
+            The call states referenced in this API are:
+          </p>
+          <dl>
+            <dt>
+              <dfn>dialing</dfn>
+            </dt>
+            <dd>
+              An outbound call is being dialed by a telephony service.
+            </dd>
+            <dt>
+              <dfn>connecting</dfn>
+            </dt>
+            <dd>
+              A request to establish the call has been made and it is
+              progressing.
+            </dd>
+            <dt>
+              <dfn>alerting</dfn>
+            </dt>
+            <dd>
+              The destination number has been reached and alerting is taking
+              place.
+            </dd>
+            <dt>
+              <dfn>active</dfn>
+            </dt>
+            <dd>
+              The call is ongoing.
+            </dd>
+            <dt>
+              <dfn>incoming</dfn>
+            </dt>
+            <dd>
+              An incoming call is being received whilst no other call is
+              progressing.
+            </dd>
+            <dt>
+              <dfn>waiting</dfn>
+            </dt>
+            <dd>
+              An incoming call that has been received whilst there was another
+              call progressing, and the call waiting service is active.
+            </dd>
+            <dt>
+              <dfn>accepted</dfn>
+            </dt>
+            <dd>
+              An incoming call has been accepted and is being connected.
+            </dd>
+            <dt>
+              <dfn>holding</dfn>
+            </dt>
+            <dd>
+              The call is being put on hold.
+            </dd>
+            <dt>
+              <dfn>held</dfn>
+            </dt>
+            <dd>
+              The call has been put on hold.
+            </dd>
+            <dt>
+              <dfn>resuming</dfn>
+            </dt>
+            <dd>
+              The call, which was on hold, is being resumed.
+            </dd>
+            <dt>
+              <dfn>redirecting</dfn>
+            </dt>
+            <dd>
+              The call is being redirected to another remote party from the
+              same <a>telephony service</a>.
+            </dd>
+            <dt>
+              <dfn>transferring</dfn>
+            </dt>
+            <dd>
+              The call is being transferred to another remote party from the
+              same <a>telephony service</a>.
+            </dd>
+            <dt>
+              <dfn>disconnecting</dfn>
+            </dt>
+            <dd>
+              A request to disconnect the call has been made and it is
+              progressing.
+            </dd>
+            <dt>
+              <dfn>disconnected</dfn>
+            </dt>
+            <dd>
+              The call has been disconnected and this object is invalid for
+            call control. </dd>
+            <dt>
+              <dfn>joining</dfn>
+            </dt>
+            <dd>
+              The call is being joined with another call to become a multiparty
+              call.
+            </dd>
+            <dt>
+              <dfn>multiparty</dfn>
+            </dt>
+            <dd>
+              The call is locked in a <a>ConferenceCall</a> object and MUST NOT
+              be managed any more using this object. While in this state, the
+              implementation MUST throw an <code>InvalidStateError</code>
+              exception when any method call is attempted.
+            </dd>
+            <dt>
+              <dfn>splitting</dfn>
+            </dt>
+            <dd>
+              The call is being split from a multiparty call.
+            </dd>
+          </dl>
+          <p>&nbsp;
+            
+          </p>
+          <p>
+            A telephony service observes the call states of a telephony call in
+            the supported telephony backend(s) and networks and reflects those
+            changes through DOM events.
+          </p>
+          <p>
             Since call state transitions depend on protocol, network equipment,
             modem, etc., the implementation MUST NOT fire error events on
             assumed erroneous state transitions. MUST always re-synchronize any
@@ -369,124 +502,6 @@
             "https://github.com/sysapps/telephony/issues/127">See issue
             127</a>.
           </p>
-          <dl>
-            <dt>
-              dialing
-            </dt>
-            <dd>
-              An outbound call that has been dialed and is being connected.
-            </dd>
-            <dt>
-              connecting
-            </dt>
-            <dd>
-              A request to establish the call has been made and it is
-              progressing.
-            </dd>
-            <dt>
-              alerting
-            </dt>
-            <dd>
-              The destination number has been reached and alerting is taking
-              place.
-            </dd>
-            <dt>
-              active
-            </dt>
-            <dd>
-              The call is ongoing.
-            </dd>
-            <dt>
-              incoming
-            </dt>
-            <dd>
-              An incoming call is being received whilst no other call is
-              progressing.
-            </dd>
-            <dt>
-              waiting
-            </dt>
-            <dd>
-              An incoming call that has been received whilst there was another
-              call progressing, and the call waiting service is active.
-            </dd>
-            <dt>
-              accepted
-            </dt>
-            <dd>
-              An incoming call has been accepted and is being connected.
-            </dd>
-            <dt>
-              holding
-            </dt>
-            <dd>
-              The call is being put on hold.
-            </dd>
-            <dt>
-              held
-            </dt>
-            <dd>
-              The call has been put on hold.
-            </dd>
-            <dt>
-              resuming
-            </dt>
-            <dd>
-              The call, which was on hold, is being resumed.
-            </dd>
-            <dt>
-              redirecting
-            </dt>
-            <dd>
-              The call is being redirected to another remote party from the
-              same <a>telephony service</a>.
-            </dd>
-            <dt>
-              transferring
-            </dt>
-            <dd>
-              The call is being transferred to another remote party from the
-              same <a>telephony service</a>.
-            </dd>
-            <dt>
-              disconnecting
-            </dt>
-            <dd>
-              A request to disconnect the call has been made and it is
-              progressing.
-            </dd>
-            <dt>
-              disconnected
-            </dt>
-            <dd>
-              The call has been disconnected and this object is invalid for
-              call control. In this final state, the implementation MUST throw
-              an <code>InvalidStateError</code> exception when any method call
-              is attempted.
-            </dd>
-            <dt>
-              joining
-            </dt>
-            <dd>
-              The call is being joined with another call to become a multiparty
-              call.
-            </dd>
-            <dt>
-              multiparty
-            </dt>
-            <dd>
-              The call is locked in a <a>ConferenceCall</a> object and MUST NOT
-              be managed any more using this object. While in this state, the
-              implementation MUST throw an <code>InvalidStateError</code>
-              exception when any method call is attempted.
-            </dd>
-            <dt>
-              splitting
-            </dt>
-            <dd>
-              The call is being split from a multiparty call.
-            </dd>
-          </dl>
         </section>
         <!-- - - - - - - - - - - - - - Call typedef - - - - - - - - - - - - -->
         <section>
@@ -693,91 +708,6 @@
           conference call as a result of the <a>createConference</a> method,
           and the <code>participantadded</code> event is dispatched.
         </p>
-        <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                multiparty call state
-              </th>
-              <th>
-                description
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn id="call-state-joining"><code>joining</code></dfn>
-              </td>
-              <td>
-                The multiparty call is being created, or joined with another
-                call.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-active"><code>active</code></dfn>
-              </td>
-              <td>
-                The multiparty call is ongoing.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-splitting"><code>splitting</code></dfn>
-              </td>
-              <td>
-                A call is being split from a multiparty call.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-holding"><code>holding</code></dfn>
-              </td>
-              <td>
-                The call is being put on hold.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-held"><code>held</code></dfn>
-              </td>
-              <td>
-                The call has been put on hold.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id="call-state-resuming"><code>resuming</code></dfn>
-              </td>
-              <td>
-                The call, which was on hold, is being resumed.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id=
-                "call-state-disconnecting"><code>disconnecting</code></dfn>
-              </td>
-              <td>
-                A request to disconnect the call has been made and it is
-                progressing.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn id=
-                "call-state-disconnected"><code>disconnected</code></dfn>
-              </td>
-              <td>
-                The multiparty call has been disconnected and this object is
-                invalid for call control. In this final state, the
-                implementation MUST throw an <code>InvalidStateError</code>
-                exception when any method call is attempted.
-              </td>
-            </tr>
-          </tbody>
-        </table>
         <p>
           For multiparty calls, the implementation MUST generate a unique
           identifier stored in the <code>callId</code> attribute. In GSM, the
@@ -3004,8 +2934,10 @@ call ID's in the mpty call
         The task <a><var>TCallControl</var></a> MUST listen to any event that
         results in a call disconnection, and upon such events, follow the steps
         described for <a href='#steps-disconnect-system'>handling disconnected
-        calls</a>.
-      </p>
+      calls</a>.</p>
+      <p>In this final state (&quot;disconnected&quot;), the implementation MUST throw
+              an <code>InvalidStateError</code> exception when any method call
+      is attempted. </p>
     </section>
   </body>
 </html>
