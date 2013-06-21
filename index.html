@@ -172,15 +172,15 @@
       </p>
       <p>
         The <dfn><code><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#eventhandler">EventHandler</a></code></dfn>
+        "http://www.whatwg.org/specs/web-apps/current-work/#eventhandler">EventHandler</a></code></dfn>
         interface represents a callback used for <a href=
         "http://www.w3.org/html/wg/drafts/html/master/webappapis.html#event-handlers">
-        event handlers</a> as defined in [[!HTML5]].
+        event handlers</a> as defined in [[!HTML]].
       </p>
       <p>
         The concepts <dfn><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">queue a
-        task</a></dfn> is defined in [[!HTML5]]. The <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">queue
+        a task</a></dfn> is defined in [[!HTML]]. The <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
         source</a> for all <a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">tasks
@@ -189,10 +189,10 @@
       </p>
       <p>
         The terms <dfn><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#event-handlers">event
+        "http://www.whatwg.org/specs/web-apps/current-work/#event-handlers">event
         handler</a></dfn> and <dfn><a href=
-        "http://dev.w3.org/html5/spec/webappapis.html#event-handler-event-type">
-        event handler event types</a></dfn> are defined in [[!HTML5]].
+        "http://www.whatwg.org/specs/web-apps/current-work/#event-handler-event-type">
+        event handler event types</a></dfn> are defined in [[!HTML]].
       </p>
       <p>
         The <dfn><a href=
@@ -211,35 +211,23 @@
         Telephony services
       </h2>
       <p>
-        A <dfn>telephony service</dfn> exposes telephony functionality
+        A <dfn>telephony service</dfn> manages telephony functionality
         associated to a subscriber identity registered with a telephony service
         provider. For example, in cellular telephony, a telephony service is
         associated to a SIM card (Subscriber Identity Module). Each telephony
         service has a <a>telephony service id</a>.
       </p>
       <p>
-        A telephony service can use different protocols for telephony signaling
-        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity.
-      </p>
-      <p class="issue">
-        Since <a>call states</a> can differ depending on the protocol, do we
-        need to expose the service and the protocol used for making the call?
-        <a href="https://github.com/sysapps/telephony/issues/125">See issue
-        125</a>.
-      </p>
-      <p class="issue">
-        Note that compliant implementations may not be reporting such events
-        when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
-        <a href="https://github.com/sysapps/telephony/issues/127">See issue
-        127</a>.
-      </p>
-      <p>
-        A can user agent can access zero or more telephony services of the
+        A user agent can access zero or more <a>telephony services</a> of the
         device. Which telephony services are available to the user agent is
         dictated by policy, or by the user choosing which services are
         available to the user agent. When one or more telephony services is
         available to the user agent, one serves as the <a>default telephony
         service</a>.
+      </p>
+      <p>
+        A telephony service can use different protocols for telephony signaling
+        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity.
       </p>
       <p>
         Telephony services can be added or removed from the system at any time
@@ -327,31 +315,35 @@
           Event handler dispatched when there is an error during the life cycle
           of a call.
         </p>
-        <p>
-          The implementation MUST follow the call state changes in the
-          supported telephony backend(s) and networks, and MUST keep the
-          <a>state</a> attribute updated. Since call state transitions depend
-          on protocol, network equipment, modem, etc., the implementation MUST
-          NOT fire error events on assumed erroneous state transitions.
-          Applications MUST always re-synchronize any eventual internal states
-          to the current call state reported by the telephony system. The
-          implementation MUST NOT set the call state to any other value than
-          specified in the descriptions of the methods of this interface.
-        </p>
-        <!-- - - - - - - - - - - - - - Call typedef - - - - - - - - - - - - -->
         <section>
           <h3>
-            <code>Call</code> typedef
+            Call states
           </h3>
-          <dl title="typedef (TelephonyCall or ConferenceCall) Call" class=
-          "idl"></dl>
-        </section><!-- Call typedef -->
-        <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
-        <section>
-          <h2>
-            <a>CallState</a> enum
-          </h2>
-          <dl class="idl" title="enum CallState">
+          <p>
+            A telephony service observes the changes to states of a call in the
+            supported telephony backend(s) and networks, and updates reflects
+            those changes through the API. Since call state transitions depend
+            on protocol, network equipment, modem, etc., the implementation
+            MUST NOT fire error events on assumed erroneous state transitions.
+            MUST always re-synchronize any eventual internal states to the
+            current call state reported by the telephony system. The
+            implementation MUST NOT set the call state to any other value than
+            specified in the descriptions of the methods of this interface.
+          </p>
+          <p class="issue">
+            Since <a>call states</a> can differ depending on the protocol, do
+            we need to expose the service and the protocol used for making the
+            call? <a href="https://github.com/sysapps/telephony/issues/125">See
+            issue 125</a>.
+          </p>
+          <p class="issue">
+            Note that compliant implementations may not be reporting such
+            events when they occur (e.g. OTA SIM update or hot-swappable SIM
+            cards). <a href=
+            "https://github.com/sysapps/telephony/issues/127">See issue
+            127</a>.
+          </p>
+          <dl>
             <dt>
               dialing
             </dt>
@@ -468,6 +460,73 @@
             <dd>
               The call is being split from a multiparty call.
             </dd>
+          </dl>
+        </section>
+        <!-- - - - - - - - - - - - - - Call typedef - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            <code>Call</code> typedef
+          </h3>
+          <dl title="typedef (TelephonyCall or ConferenceCall) Call" class=
+          "idl"></dl>
+        </section><!-- Call typedef -->
+        <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
+        <section>
+          <h2>
+            <a>CallState</a> enum
+          </h2>
+          <dl class="idl" title="enum CallState">
+            <dt>
+              dialing
+            </dt>
+            <dt>
+              connecting
+            </dt>
+            <dt>
+              alerting
+            </dt>
+            <dt>
+              active
+            </dt>
+            <dt>
+              incoming
+            </dt>
+            <dt>
+              waiting
+            </dt>
+            <dt>
+              accepted
+            </dt>
+            <dt>
+              holding
+            </dt>
+            <dt>
+              held
+            </dt>
+            <dt>
+              resuming
+            </dt>
+            <dt>
+              redirecting
+            </dt>
+            <dt>
+              transferring
+            </dt>
+            <dt>
+              disconnecting
+            </dt>
+            <dt>
+              disconnected
+            </dt>
+            <dt>
+              joining
+            </dt>
+            <dt>
+              multiparty
+            </dt>
+            <dt>
+              splitting
+            </dt>
           </dl>
           <p>
             Some of these states are <dfn>soft states</dfn>, that is,
@@ -2010,7 +2069,7 @@
           expected to set this state in the current version of the
           specification.
         </p>
-        <p class='issue'>
+        <p class='note'>
           CDMA cannot report all these states in the expected sequence. The
           ‘connected’ state (i.e. when the mobile station send the Service
           Connect Completion Message or Connect Order, depending on whether the
@@ -2018,7 +2077,7 @@
           voice media transmission – there is transition to ‘active’ before the
           media arrives. Therefore it should be up to the implementation to
           determine which events to fire and in which order. Dialer
-          applications SHOULD be prepared to handle such cases.
+          applications need to be prepared to handle such cases.
         </p>
         <p>
           For call setup on dialed calls, the following call states MUST be
