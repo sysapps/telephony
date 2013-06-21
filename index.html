@@ -171,13 +171,14 @@
         defined in other specifications.
       </p>
       <p>
-        The following are all defined in [[!HTML]]: <dfn><code><a href=
+        The following are defined in [[!HTML]]: <dfn><code><a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#eventhandler">EventHandler</a></code></dfn>
         interface, <dfn><a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">queue
         a task</a></dfn>, <dfn><a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#event-handlers">event
-        handler</a></dfn> are defined in [[!HTML]].
+        handler</a></dfn>, and <a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#origin">origin</a>.
       </p>
       <p>
         The following are defined in [[!DOM4]]: the <dfn><a href=
@@ -196,72 +197,97 @@
         Telephony services
       </h2>
       <p>
-        A <dfn>telephony service</dfn> manages telephony functionality
-        associated to a subscriber identity registered with a telephony service
-        provider. For example, in cellular telephony, a telephony service is
-        associated to a SIM card (Subscriber Identity Module). Each telephony
-        service has a <a>telephony service id</a>.
+        A <dfn>telephony service</dfn> manages telephony operations associated
+        with a subscriber identity, which is registered with a telephony
+        service provider. For example, in cellular telephony, a telephony
+        service is associated to a <abbr title=
+        "Subscriber Identity Module">SIM</abbr> card (Subscriber Identity
+        Module). A telephony service can use different protocols for telephony
+        signaling and media (e.g. GSM, CDMA, VoLTE, etc.) with the same
+        identity.
+      </p>
+      <p>
+        Each telephony service has a <dfn>telephony service id</dfn>, which
+        uniquely identifies a <a>telephony service</a> together with a user
+        identity in the system. For SIM cards, this can include the ICC-ID as
+        the service identifier. However, the user agent MUST NOT use the MSISDN
+        as the telephony service id.
       </p>
       <p>
         A user agent can access zero or more <a>telephony services</a> of the
-        device. Which telephony services are available to the user agent is
+        system. Which telephony services are available to the user agent is
         dictated by policy, or by the user choosing which services are
         available to the user agent. When one or more telephony services is
-        available to the user agent, one serves as the <a>default telephony
+        available to the user agent, one can serve as the <a>default telephony
         service</a>.
       </p>
       <p>
-        A telephony service can use different protocols for telephony signaling
-        and media (e.g. GSM, CDMA, VoLTE, etc.) with the same identity.
+        In the API, telephony services are represented through DOMStrings that
+        map to a telephony service id for each telephony service available to
+        an <a>origin</a>. Access to telephony services by an origin is
+        generally restricted to an <a>origin</a> by a security policy.
       </p>
-      <p>
-        Telephony services can be added or removed from the system at any time
-        (e.g., the user pops out the SIM card or adds a different SIM card).
-        When a <a>telephony service</a> is either added or removed in the
-        system, the user agent MUST run the steps to change the telephony
-        service:
-      </p>
-      <ol>
-        <li>Let <var>name</var> be <code>serviceremoved</code> if the telephony
-        service was removed, or <code>serviceadded</code> otherwise.
-        </li>
-        <li>Let event be a new <a>TelephonyServiceEvent</a>, with
-        <var>name</var> as the event name, which does not bubble, is not
-        cancelable, has no default action, and whose <a>serviceId</a> attribute
-        is set to the <a>telephony service id</a> of the telephony service that
-        initiated this algorithm.
-        </li>
-        <li>
-          <a>Queue at task</a> to <a>fire an event</a> <var>event</var> at the
-          <a>TelephonyManager</a>.
-        </li>
-      </ol>
-      <p>
-        A <dfn>telephony service id</dfn> uniquely identifies a <a>telephony
-        service</a> together with a user identity in the system. For SIM cards,
-        this can include the ICC-ID as the service identifier. However, the
-        user agent MUST NOT use the MSISDN as the telephony service id.
-      </p>
+      <section>
+        <h3>
+          Changing telephony services
+        </h3>
+        <p>
+          Telephony services can be added or removed from the system at any
+          time (e.g., the user pops out the SIM card or adds a different SIM
+          card; the user tells the system to only allow certain applications to
+          access a particular telephony service, etc.).
+        </p>
+        <p>
+          When a <a>telephony service</a> is either added or removed in the
+          system, the user agent MUST run the steps to change the telephony
+          service:
+        </p>
+        <ol>
+          <li>Let <var>name</var> be <code>serviceremoved</code> if the
+          telephony service was removed, or <code>serviceadded</code>
+          otherwise.
+          </li>
+          <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a>, with
+          <var>name</var> as the event name, which does not bubble, is not
+          cancelable, has no default action, and whose <a>serviceId</a>
+          attribute is set to the <a>telephony service id</a> of the
+          <a>telephony service</a> that initiated this algorithm.
+          </li>
+          <li>If the
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> <var>event</var> at the
+            <a>TelephonyManager</a>.
+          </li>
+        </ol>
+      </section>
       <!-- - - - - - - - - - -  Default Telephony Service - - - - - - - - - -->
       <section>
         <h3>
           Default Telephony Service
         </h3>
         <p>
-          A <dfn>default telephony service</dfn> is the <a>telephony
-          service</a> that is set as default for telephony operations by the
-          implementation. The default telephony service can be change over time
-          by the user or, if supported by the user agent, through the
+          The <dfn>default telephony service</dfn> is the <a>telephony
+          service</a> that serves as default for telephony operations for the
+          <a>origin</a> of the application. The default telephony service can
+          be changed by the user, and if supported, through the
           <a>changeDefaultService</a> method of the <a>TelephonyService</a>
           object.
         </p>
         <p>
-          When the <a>default telephony service</a> changes, the user agent
-          MUST:
+          If there is no <a>default telephony service</a> for the
+          <a>origin</a>, the user agent SHOULD use the system's default
+          telephony service, if available and if allowed by policy. If there
+          are no telephony services available to use as the default for the
+          origin, the default telephony service is null.
+        </p>
+        <p>
+          When the <dfn><a>default telephony service</a> changes</dfn>, the
+          user agent MUST:
         </p>
         <ol>
           <li>Let <var>service id</var> be the <a>telephony service id</a> of
-          the new <a>default telephony service</a>.
+          the new <a>default telephony service, or null otherwise</a>.
           </li>
           <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with
           the event name <code>defaultchanged</code>, which does not bubble, is
@@ -280,8 +306,22 @@
           Telephony Calls
         </h3>
         <p>
-          Every telephony call has a <dfn>call id</dfn> that is unique in the
-          system and call history.
+          A <dfn id="telephony-call-concept">telephony call</dfn> results from
+          a <dfn>telephony service</dfn>'s attempt to establish a connection
+          for communication between two or more parties. Telepony calls
+          involving more than two parties are referred to as a <a>multiparty
+          call</a>.
+        </p>
+        <p>
+          In the act of establishing a connection between two parties, a
+          telephony call transitions through various <a>call states</a>. A
+          telephony service observes the call states of a telephony call in the
+          supported telephony backend(s) and networks and reflects those
+          changes through DOM events.
+        </p>
+        <p>
+          Every telephony call has a <dfn>call id</dfn>, which is a string that
+          uniquely identifies the call and call history.
         </p>
         <p>
           An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
@@ -305,15 +345,13 @@
             Call states
           </h3>
           <p>
-            A telephony service observes the changes to states of a call in the
-            supported telephony backend(s) and networks, and updates reflects
-            those changes through the API. Since call state transitions depend
-            on protocol, network equipment, modem, etc., the implementation
-            MUST NOT fire error events on assumed erroneous state transitions.
-            MUST always re-synchronize any eventual internal states to the
-            current call state reported by the telephony system. The
-            implementation MUST NOT set the call state to any other value than
-            specified in the descriptions of the methods of this interface.
+            Since call state transitions depend on protocol, network equipment,
+            modem, etc., the implementation MUST NOT fire error events on
+            assumed erroneous state transitions. MUST always re-synchronize any
+            eventual internal states to the current call state reported by the
+            telephony system. The implementation MUST NOT set the call state to
+            any other value than specified in the descriptions of the methods
+            of this interface.
           </p>
           <p class="issue">
             Since <a>call states</a> can differ depending on the protocol, do
@@ -625,11 +663,18 @@
         </h3>
         <p>
           A <dfn>multiparty call</dfn> (also referred to as <dfn>conference
-          call</dfn>) is a telephony call with multiple remote party
-          participants, which is controlled as a single call, i.e. can be put
-          on hold, activated, disconnected with all participants. Other calls
-          can be joined with a multiparty call. This version supports GSM
-          multiparty calls and CDMA 3-way calls.
+          call</dfn>) is a <a>telephony call</a> with multiple remote party
+          participants, which is controlled as a single telephony call, i.e. it
+          can be <a>held</a>, <a>activated</a>, <a>disconnected</a> from all
+          participants. Other calls can be joined with a multiparty call.
+        </p>
+        <p>
+          In the API, multiparty calls are represented by objects that
+          implement the <a>ConferenceCall</a> interface.
+        </p>
+        <p>
+          This of the API version supports GSM multiparty calls and CDMA 3-way
+          calls.
         </p>
         <p>
           A <dfn>conference id</dfn> uniquely identifies a <a>multiparty
@@ -1503,7 +1548,8 @@
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          throw an <code>InvalidStateError</code> exception. </li>
+          throw an <code>InvalidStateError</code> exception.
+          </li>
           <li>Otherwise make a request to the telephony system to resume the
           call. If the request is acknowledged, then set <code>state</code> to
           <code>"resuming"</code>.
@@ -1941,8 +1987,8 @@
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>"active"</code> or
-          <code>"held"</code>, then an<code>InvalidStateError</code>MUST be
-          thrown.
+          <code>"held"</code>, then throw an <code>InvalidStateError</code>
+          exception.
           </li>
           <li>Otherwise make a request to the telephony system to transfer the
           call to the number indicated in the <var>thirdParty</var> parameter.
@@ -2418,7 +2464,8 @@
         <ol>
           <li>If the provided <var>participantCall</var> does not identify a
           valid <a>TelephonyCall</a> object which is part of this multiparty
-          call, then an throw an <code>InvalidModificationError</code> exception.
+          call, then an throw an <code>InvalidModificationError</code>
+          exception.
           </li>
           <li>Otherwise, set the <code>state</code> of the
           <var>participantCall</var> and that of this <a>ConferenceCall</a>
