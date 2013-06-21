@@ -68,7 +68,7 @@
     </style>
   </head>
   <body>
-    <!-- - - - - - - - - - - - - - - Abstract - - - - - - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - - - - Abstract - - - - - - - - - - - - - - - -->
     <section id="abstract">
       <p>
         This specification defines an API to manage telephone calls. A typical
@@ -78,7 +78,7 @@
         defined.
       </p>
     </section>
-    <!-- - - - - - - - - - -  Status of this document - - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - -  Status of this document - - - - - - - - - - - -->
     <section id="sotd">
       <p>
         Implementors should be aware that this specification is not stable.
@@ -94,7 +94,7 @@
         documented in the <a href="#Changes">Changes section</a>.
       </p>
     </section>
-    <!-- - - - - - - - - - - - - -  Introduction - - - - - - - - - - - - - - -  -->
+    <!-- - - - - - - - - - - - - -  Introduction  - - - - - - - - - - - - - -->
     <section class="informative">
       <h2>
         Introduction
@@ -147,7 +147,7 @@
         support.
       </p>
     </section>
-    <!-- - - - - - - - - - - - - - Conformance - - - - - - - - - - - - - - - -  -->
+    <!-- - - - - - - - - - - - - - Conformance  - - - - - - - - - - - - - - -->
     <section id="conformance">
       <p>
         This specification defines conformance criteria that apply to a single
@@ -161,11 +161,15 @@
         as this specification uses that specification and terminology.
       </p>
     </section>
-    <!-- - - - - - - - - - - - - -  Terminology - - - - - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - - -  Dependencies  - - - - - - - - - - - - - -->
     <section>
       <h2>
-        Terminology
+        Dependencies
       </h2>
+      <p>
+        This specification depends on the following interfaces and concepts
+        defined in other specifications.
+      </p>
       <p>
         The <dfn><code><a href=
         "http://dev.w3.org/html5/spec/webappapis.html#eventhandler">EventHandler</a></code></dfn>
@@ -1098,7 +1102,7 @@
           to change from the current default telephony service to the one
           identified by <var>service id</var>.
           </li>
-          <li>Possibly wait indefinately.
+          <li>Possibly wait indefinitely.
           </li>
           <li>If it's not possible (for whatever reason: timeout, security,
           etc.) to change the default telephony service, and if
@@ -1559,7 +1563,7 @@
       </section><!-- Event Handlers -->
     </section><!-- CallHandler Interface -->
     <!-- a short summary on call state management
-      =========================================================================
+      _________________________________________________________________________
       CDMA states for dialed calls       | Mapping to the API or [modem] state
       _________________________________________________________________________
           [ DIAL button pressed ]        | dialing
@@ -1598,7 +1602,7 @@
           -> connect                     |
           <- connect ack                 | active (connected)
           <-> dataspeech                 |
-      =========================================================================
+      _________________________________________________________________________
       GSM states for dialed calls        | Mapping to the API or [modem] state
       _________________________________________________________________________
           [ DIAL button pressed ]        | dialing
@@ -1633,7 +1637,7 @@
           -> connect                     |
           <- connect ack                 | active (connected)
           <-> dataspeech                 |
-      =========================================================================
+      _________________________________________________________________________
       SIP/IMS states for dialed calls | Mapping to the API or [SIP stack] state
       _________________________________________________________________________
           [ DIAL button pressed ]        | dialing
@@ -1670,7 +1674,7 @@
           -> SIP 200 OK                  |
           <- ACK                         | active (connected)
           <-> dataspeech                 |
-      =========================================================================
+      _________________________________________________________________________
       XMPP states for dialed calls   | Mapping to the API or [XMPP stack] state
       [ XMPP XEP-0166 Jingle ]       | (may depend on XMPP implementation)
       _________________________________________________________________________
@@ -1697,8 +1701,8 @@
           <- ack                         | disconnected
       _________________________________________________________________________
 
-      Multiparty call sequences and states
-      ====================================
+      ## Multiparty call sequences and states
+
           GSM TS 24.084.
           "There are four auxiliary states associated with the MPTY service:
           - Idle;
@@ -1718,7 +1722,7 @@
           * held -> resuming -> active (connected)
           * any state -> [disconnecting]-> disconnected
       -->
-    <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - -->
     <section>
       <h2>
         <a>TelephonyCall</a> Interface
@@ -2270,7 +2274,7 @@
         </table>
       </section><!-- telephony-eventhandlers -->
     </section><!-- TelephonyCall -->
-    <!-- - - - - - - - - - - -  Interface ConferenceCall - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - -  Interface ConferenceCall  - - - - - - - - - -->
     <section>
       <h2>
         <a>ConferenceCall</a> Interface
@@ -2321,7 +2325,7 @@
           attribute EventHandler ondisconnected
         </dt>
       </dl>
-      <!-- - - - - - - - - - - -  conferenceId attribute - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
       <section>
         <h3>
           The <code>conferenceId</code>attribute
@@ -2332,7 +2336,7 @@
           call history. It MUST NOT be the empty string.
         </p>
       </section><!-- conferenceId attribute -->
-      <!-- - - - - - - - - - - -  calls attribute - - - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  calls attribute - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>calls</code> attribute
@@ -2342,7 +2346,7 @@
           <a>TelephonyCall</a> objects managed by the multiparty call object.
         </p>
       </section><!-- calls attribute -->
-      <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - -->
+      <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>split()</code> method
@@ -2478,7 +2482,7 @@
         </table>
       </section><!-- conference-eventhandlers -->
     </section><!-- ConferenceCall -->
-    <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - -  -->
+    <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - - - -->
     <section>
       <h2>
         <a>DisconnectReason</a> enum
@@ -2566,7 +2570,7 @@
         </dd>
       </dl>
     </section>
-    <!-- - - - - - - - - - -  CallDirection Enum - - - - - - - - - - -  -->
+    <!-- - - - - - - - - - -  CallDirection Enum  - - - - - - - - - - - - - -->
     <section>
       <h2>
         <a>CallDirection</a> enum
