@@ -353,7 +353,8 @@
             In the process of establishing a connection between two parties, a
             telephony call transitions through various <a>call states</a>. A
             call state represents the state of interaction between a telephony
-          service, the telephony network, and one or more remote parties.          </p>
+            service, the telephony network, and one or more remote parties.
+          </p>
           <p>
             The call states referenced in this API are:
           </p>
@@ -448,7 +449,8 @@
             </dt>
             <dd>
               The call has been disconnected and this object is invalid for
-            call control. </dd>
+              call control.
+            </dd>
             <dt>
               <dfn>joining</dfn>
             </dt>
@@ -460,10 +462,7 @@
               <dfn>multiparty</dfn>
             </dt>
             <dd>
-              The call is locked in a <a>ConferenceCall</a> object and MUST NOT
-              be managed any more using this object. While in this state, the
-              implementation MUST throw an <code>InvalidStateError</code>
-              exception when any method call is attempted.
+              The call is a multiparty call.
             </dd>
             <dt>
               <dfn>splitting</dfn>
@@ -472,8 +471,8 @@
               The call is being split from a multiparty call.
             </dd>
           </dl>
-          <p>&nbsp;
-            
+          <p>
+            &nbsp;
           </p>
           <p>
             A telephony service observes the call states of a telephony call in
@@ -2934,10 +2933,20 @@ call ID's in the mpty call
         The task <a><var>TCallControl</var></a> MUST listen to any event that
         results in a call disconnection, and upon such events, follow the steps
         described for <a href='#steps-disconnect-system'>handling disconnected
-      calls</a>.</p>
-      <p>In this final state (&quot;disconnected&quot;), the implementation MUST throw
-              an <code>InvalidStateError</code> exception when any method call
-      is attempted. </p>
+        calls</a>.
+      </p>
+      <p>
+        In this final state ("disconnected"), the implementation MUST throw an
+        <code>InvalidStateError</code> exception when any method call is
+        attempted.
+      </p>
+      <p>
+        "multiparty call" state: The call is locked in a <a>ConferenceCall</a>
+        object and MUST NOT be managed any more using this object. While in
+        this state, the implementation MUST throw an
+        <code>InvalidStateError</code> exception when any method call is
+        attempted.
+      </p>
     </section>
   </body>
 </html>
