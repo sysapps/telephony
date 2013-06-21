@@ -209,9 +209,12 @@
       <p>
         Each telephony service has a <dfn>telephony service id</dfn>, which
         uniquely identifies a <a>telephony service</a> together with a user
-        identity in the system. For SIM cards, this can include the ICC-ID as
-        the service identifier. However, the user agent MUST NOT use the MSISDN
-        as the telephony service id.
+        identity in the system. For telephony services that make use of a SIM
+        card, it is RECOMMEDED that the ICC-ID be used for the service
+        identifier. As the <abbr title=
+        "Mobile Subscriber Integrated Services Digital Network-Number">MSISDN</abbr>
+        cannot guarrentee uniqueness, a user agent MUST NOT use the MSISDN as
+        the telephony service id.
       </p>
       <p>
         A user agent can access zero or more <a>telephony services</a> of the
