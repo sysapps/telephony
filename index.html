@@ -316,8 +316,8 @@
           call</a>.
         </p>
         <p>
-          A <dfn id="telephony-call-concept2">telephony call</dfn> is always in
-          some call state.
+          A <dfn>telephony call</dfn> is always in some call state, which can
+          change over time.
         </p>
         <p>
           Telephony calls initiated by a telephony service of the system is an
@@ -329,12 +329,11 @@
           uniquely identifies the call and call history.
         </p>
         <p>
-          An <dfn>active call</dfn> is a <a>TelephonyCall</a> in the
-          <a>active</a> state representing a connected call which is bound to
-          the media input and output devices (e.g. microphone, speaker, tone
-          generator). Note that a call on <a>hold</a> is also active from a
-          call signaling point of view, but not bound to media input and output
-          devices.
+          An <dfn>active call</dfn> is a <a>Call</a> in the <a>active</a> state
+          representing a connected call which is bound to the media input and
+          output devices (e.g. microphone, speaker, tone generator). Note that
+          a call on <a>hold</a> is also active from a call signaling point of
+          view, but not bound to media input and output devices.
         </p>
         <p class="issue">
           Whenever a call is added to or removed from the <a>calls</a> array,
@@ -342,8 +341,10 @@
           event</a> named <code>callschanged</code>.
         </p>
         <p>
-          Event handler dispatched when there is an error during the life cycle
-          of a call.
+          Within the API, a telephony call is represented by the <a>Call</a>
+          typedef - which encapsulates both objects that implement the
+          <a>TeleponyCall</a> interface and the <a>ConferenceCall</a>
+          interface.
         </p>
         <section>
           <h3>
@@ -471,9 +472,6 @@
               The call is being split from a multiparty call.
             </dd>
           </dl>
-          <p>
-            &nbsp;
-          </p>
           <p>
             A telephony service observes the call states of a telephony call in
             the supported telephony backend(s) and networks and reflects those
