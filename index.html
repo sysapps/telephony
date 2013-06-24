@@ -146,6 +146,12 @@
         <abbr title="Extensible Messaging and Presence Protocol ">XMPP</abbr>
         conference support.
       </p>
+      <p class='issue'>
+        It is under discussion whether a system message should be propagated
+        when a CDMA telephony call is active, since not all CDMA networks
+        support concurrent services. Therefore, many applications will lose
+        their data connection when the end user is in a voice call.
+      </p>
     </section>
     <!-- - - - - - - - - - - - - - Conformance  - - - - - - - - - - - - - - -->
     <section id="conformance">
@@ -548,27 +554,46 @@
             The call is being split from a multiparty call.
           </dd>
         </dl>
-        <p>
-          Since call state transitions depend on protocol, network equipment,
-          modem, etc., the implementation MUST NOT fire error events on assumed
-          erroneous state transitions. MUST always re-synchronize any eventual
-          internal states to the current call state reported by the telephony
-          system. The implementation MUST NOT set the call state to any other
-          value than specified in the descriptions of the methods of this
-          interface.
-        </p>
-        <p class="issue">
-          Since <a title="call state">call states</a> can differ depending on
-          the protocol, do we need to expose the service and the protocol used
-          for making the call? <a href=
-          "https://github.com/sysapps/telephony/issues/125">See issue 125</a>.
-        </p>
-        <p class="issue">
-          Note that compliant implementations may not be reporting such events
-          when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
-          <a href="https://github.com/sysapps/telephony/issues/127">See issue
-          127</a>.
-        </p>
+        <!-- - - - - - - - - - -  State changes - - - - - - - - - - - - - - -->
+        <section>
+          <h3>
+            State changes
+          </h3>
+          <p>
+            Whenever there is a change in the <a>state</a> attribute the
+            <a>user agent</a> MUST:
+          </p>
+          <ol>
+            <li>
+              <a>Queue a task</a> to <a>fire an event</a> named
+              <code>statechange</code> with the new value of the state
+              attribute.
+            </li>
+          </ol>
+          <p>
+            Since call state transitions depend on protocol, network equipment,
+            modem, etc., the implementation MUST NOT fire error events on
+            assumed erroneous state transitions. MUST always re-synchronize any
+            eventual internal states to the current call state reported by the
+            telephony system. The implementation MUST NOT set the call state to
+            any other value than specified in the descriptions of the methods
+            of this interface.
+          </p>
+          <p class="issue">
+            Since <a title="call state">call states</a> can differ depending on
+            the protocol, do we need to expose the service and the protocol
+            used for making the call? <a href=
+            "https://github.com/sysapps/telephony/issues/125">See issue
+            125</a>.
+          </p>
+          <p class="issue">
+            Note that compliant implementations may not be reporting such
+            events when they occur (e.g. OTA SIM update or hot-swappable SIM
+            cards). <a href=
+            "https://github.com/sysapps/telephony/issues/127">See issue
+            127</a>.
+          </p>
+        </section><!-- state changes -->
         <!-- - - - - - - - - - -  CallState Enum  - - - - - - - - - - - - - -->
         <section>
           <h3>
@@ -663,7 +688,7 @@
           calls either by a policy, or by the user by choosing which call to
           accept.
         </p>
-         <p>
+        <p>
           For call setup on received calls, the following call states MUST be
           supported in this order:
         </p>
@@ -749,6 +774,29 @@
           user agent relying on the <a>default telephony service</a> of the
           implementation.
         </p>
+        <p>
+          For call setup on dialed calls, the following call states MUST be
+          supported in this order:
+        </p>
+        <ol>
+          <li>
+            <code>"dialing"</code>.
+          </li>
+          <li>
+            <code>"alerting"</code>.
+          </li>
+          <li>
+            <code>"active"</code>.
+          </li>
+        </ol>
+        <p class="note">
+          On the telephony services which support the <code>"connecting"</code>
+          call state (e.g. GSM and CDMA, for call routing, forwarding,
+          voicemail handling etc), implementations SHOULD support this state
+          too, between the <code>"dialing"</code> and <code>"alerting"</code>
+          states. Dialer applications can associate the protocol with the
+          <a>telephony service</a> used for the call.
+        </p>
         <figure>
           <img src="images/outbound_call_state_diagram.gif" alt="">
           <figcaption>
@@ -762,6 +810,35 @@
         <h2>
           Disconnecting calls
         </h2>
+        <p>
+          When <a><var>TCallControl</var></a> is notified of actual call
+          disconnection of the <a>Call</a> object <var>telCall</var>, it MUST
+          follow the next steps:
+        </p>
+        <ol>
+          <li>Set the <code>state</code> of <var>telCall</var> to
+          <code>"disconnected"</code>.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>statechange</code> at the <var>telCall</var> object.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>disconnected</code> at the <var>telCall</var> object.
+          </li>
+          <li>Remove the <var>telCall</var> object from the <a>calls</a> array.
+          </li>
+        </ol>
+        <p>
+          The <code>param</code> attribute of the <code>disconnected</code>
+          event MUST be set to the <a>DisconnectReason</a>, if available, or
+          otherwise it MUST be set to <code>null</code>. At least the following
+          values MUST be supported for the disconnect reason:
+          <code>"local"</code>, <code>"remote"</code> and
+          <code>"network"</code>. The rest of the <a>DisconnectReason</a>
+          values SHOULD be supported.
+        </p>
       </section>
     </section>
     <!-- - - - - - - - - - -  Task Source - - - - - - - - - - - - - - - - - -->
@@ -1566,6 +1643,18 @@
           releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
         </p>
+        <p>
+          If the telephony service is CDMA, throw "NotSupported" DOMError.
+        </p>
+        <p class="note">
+          Depending on the protocol, there may be restrictions on methods. For
+          instance, GSM does not permit disconnecting a held call. Also,
+          disconnecting a participant in a held multiparty call is not
+          supported. Also, if the controlling party disconnects in IS-41 3-way
+          call in CDMA, then all parties are disconnected, and it is not
+          possible for the controlling party to disconnect only one participant
+          (that participant must choose to hang up).
+        </p>
       </section><!-- disconnect() method -->
       <!-- - - - - - - - - - - - callId attribute  - - - - - - - - - - - - -->
       <section>
@@ -1924,6 +2013,11 @@
         <h3>
           The <code>redirect()</code> method
         </h3>
+        <p class="note">
+          The telephony service in use needs to have the call deflection
+          feature enabled in order for this method to succeed. For instance, in
+          GSM, the Call Deflection supplementary service needs to be active.
+        </p>
         <p>
           The <dfn>redirect()</dfn> method initiates deflecting an incoming or
           waiting telephone call to a remote party. The method takes one
@@ -1953,6 +2047,11 @@
         <h3>
           The <code>transfer()</code> method
         </h3>
+        <p class="note">
+          The <a>telephony service</a> needs to have the call transfer feature
+          enabled in order for this method to succeed. For instance, in GSM,
+          the Call Transfer supplementary service needs to be active.
+        </p>
         <p>
           The <dfn>transfer()</dfn> method Initiates transferring the call to a
           new call between the remote party of this call and another remote
@@ -2806,139 +2905,9 @@ call ID's in the mpty call
         Temp space for text
       </h2>
       <p>
-        The <a>TelephonyManager</a> object MUST <a>queue a task</a>
-        <dfn><var>TCallControl</var></dfn> for each <a>TelephonyCall</a> or
-        <a>ConferenceCall</a> object it manages, which MUST listen to any event
-        that results in changing the call, and upon such events, follow the
-        steps described in this specification.
-      </p>
-      <p>
         Represents the [[!DTMF]] tone. Its value can be any of the following
         characters: 0-9; A-D; *; #.
       </p>
-      <p>
-        The task <a><var>TCallControl</var></a> MUST listen to any event that
-        results in a call disconnection, and upon such events, follow the steps
-        described for <a href='#steps-disconnect-system'>handling disconnected
-        calls</a>.
-      </p>
-      <p>
-        In this final state ("disconnected"), the implementation MUST throw an
-        <code>InvalidStateError</code> exception when any method call is
-        attempted.
-      </p>
-      <p>
-        "multiparty call" state: The call is locked in a <a>ConferenceCall</a>
-        object and MUST NOT be managed any more using this object. While in
-        this state, the implementation MUST throw an
-        <code>InvalidStateError</code> exception when any method call is
-        attempted.
-      </p>
     </section>
-     <section id="telephony-steps">
-        <p>
-          Whenever there is a change in the <a>state</a> attribute the <a>user
-          agent</a> MUST:
-        </p>
-        <ol>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> with the new value of the state attribute.
-          </li>
-        </ol>
-        <p>
-          For call setup on dialed calls, the following call states MUST be
-          supported in this order:
-        </p>
-        <ol>
-          <li>
-            <code>"dialing"</code>.
-          </li>
-          <li>
-            <code>"alerting"</code>.
-          </li>
-          <li>
-            <code>"active"</code>.
-          </li>
-        </ol>
-        <p class="note">
-          On the telephony services which support the <code>"connecting"</code>
-          call state (e.g. GSM and CDMA, for call routing, forwarding,
-          voicemail handling etc), implementations SHOULD support this state
-          too, between the <code>"dialing"</code> and <code>"alerting"</code>
-          states. Dialer applications can associate the protocol with the
-          <a>telephony service</a> used for the call.
-        </p>
-        <p class='note'>
-          It is under discussion whether a system message should be propagated
-          when a CDMA telephony call is active, since not all CDMA networks
-          support concurrent services. Therefore, many applications will lose
-          their data connection when the end user is in a voice call.
-        </p>
-        <p>
-          Depending on the protocol, there may be restrictions on methods. For
-          instance, GSM does not permit disconnecting a held call. Also,
-          disconnecting a participant in a held multiparty call is not
-          supported. In such case, the <a>error steps</a> MUST be executed.
-          Also, if the controlling party disconnects in IS-41 3-way call in
-          CDMA, then all parties are disconnected, and it is not possible for
-          the controlling party to disconnect only one participant (that
-          participant must choose to hang up). Therefore if the telephony
-          service is CDMA, when invoking the <code>disconnect()</code> method
-          of a <a>TelephonyCall</a> object participating in a
-          <a>ConferenceCall</a> the <a href="#error-steps">error steps</a> MUST
-          be executed.
-        </p>
-        <p>
-          When <a><var>TCallControl</var></a> is notified of actual call
-          disconnection of the <a>Call</a> object <var>telCall</var>, it MUST
-          follow the next steps:
-        </p>
-        <ol id="steps-disconnect-system">
-          <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"disconnected"</code>.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> at the <var>telCall</var> object.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>disconnected</code> at the <var>telCall</var> object.
-          </li>
-          <li>Remove the <var>telCall</var> object from the <a>calls</a> array.
-          </li>
-        </ol>
-        <p>
-          The <code>param</code> attribute of the <code>disconnected</code>
-          event MUST be set to the <a>DisconnectReason</a>, if available, or
-          otherwise it MUST be set to <code>null</code>. At least the following
-          values MUST be supported for the disconnect reason:
-          <code>"local"</code>, <code>"remote"</code> and
-          <code>"network"</code>. The rest of the <a>DisconnectReason</a>
-          values SHOULD be supported.
-        </p>
-        <p>
-          When <a><var>TCallControl</var></a> is notified that the call has
-          been put on hold it MUST set <code>state</code> to
-          <code>"held"</code>.
-        </p>
-        <p>
-          When <a><var>TCallControl</var></a> detects that the call has being
-          actually resumed it MUST set <code>state</code> to
-          <code>"active"</code>.
-        </p>
-        <p class="note">
-          The telephony service in use must have the call deflection feature
-          enabled in order that this method could succeed. For instance, in
-          GSM, the Call Deflection supplementary service must be active.
-        </p>
-        <p class="note">
-          The <a>telephony service</a> in use must have the call transfer
-          feature enabled in order that this method could succeed. For
-          instance, in GSM, the Call Transfer supplementary service must be
-          active.
-        </p>
-      </section><!-- telephony-steps -->
   </body>
 </html>
