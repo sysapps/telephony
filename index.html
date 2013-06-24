@@ -681,28 +681,29 @@
           Multiparty calls
         </h3>
         <p>
-          A <dfn>multiparty call</dfn> (also referred to as <dfn>conference
-          call</dfn>) is a <a>telephony call</a> with multiple remote party
-          participants, which is controlled as a single telephony call, i.e. it
-          can be <a>held</a>, <a>activated</a>, <a>disconnected</a> from all
-          participants. Other calls can be joined with a multiparty call.
+          A <dfn>multiparty call</dfn> (also commonly referred to as a
+          <dfn>conference call</dfn>) is a <a>telephony call</a> with multiple
+          remote party participants, which is controlled as a single telephony
+          call, i.e. it can be <a>held</a>, <a>activated</a>,
+          <a>disconnected</a> from all participants. Other calls can be joined
+          with a multiparty call.
         </p>
         <p>
-          In the API, multiparty calls are represented by objects that
-          implement the <a>ConferenceCall</a> interface.
-        </p>
-        <p>
-          This of the API version supports GSM multiparty calls and CDMA 3-way
-          calls.
-        </p>
-        <p>
-          A <dfn>conference id</dfn> uniquely identifies a <a>multiparty
-          call</a> in the system and in call history.
+          Every multiparty call has a unique <dfn>conference id</dfn> that
+          identifies a <a>multiparty call</a> in the system.
         </p>
         <p>
           A <dfn>remote party id</dfn> uniquely identifies a participant
           (a.k.a. remote party) in a telephony call in the given <a>telephony
           service</a>, such as a phone number.
+        </p>
+        <p class="note">
+          This of the API version supports GSM multiparty calls and CDMA 3-way
+          calls.
+        </p>
+        <p>
+          In the API, a multiparty call is represented by any object that
+          implements the <a>ConferenceCall</a> interface.
         </p>
         <p class="issue">
           The following needs to be described in an algorithm: For multiparty
