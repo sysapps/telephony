@@ -704,19 +704,20 @@
           (a.k.a. remote party) in a telephony call in the given <a>telephony
           service</a>, such as a phone number.
         </p>
-        <p>
-          For multiparty calls, the implementation MUST generate a unique
-          identifier stored in the <code>callId</code> attribute. In GSM, the
-          <code>callId</code> of any participating call could be used in a
-          multiparty operation, and the telephony network will reply with using
-          the same value. But for forward compatibility reasons, the
-          implementation MUST generate a separate <code>callId</code> value for
-          the multiparty call, which MUST be unique in the system and the local
-          call history. For GSM multiparty functionality, The implementation
-          MUST map this to an appropriate transaction identifier accepted by
-          the telephony service. Also, the transaction identifiers received
-          from the network MUST be mapped back by the implementation to the
-          unique conference call identifier of the multiparty call.
+        <p class="issue">
+          The following needs to be described in an algorithm: For multiparty
+          calls, the implementation MUST generate a unique identifier stored in
+          the <code>callId</code> attribute. In GSM, the <code>callId</code> of
+          any participating call could be used in a multiparty operation, and
+          the telephony network will reply with using the same value. But for
+          forward compatibility reasons, the implementation MUST generate a
+          separate <code>callId</code> value for the multiparty call, which
+          MUST be unique in the system and the local call history. For GSM
+          multiparty functionality, The implementation MUST map this to an
+          appropriate transaction identifier accepted by the telephony service.
+          Also, the transaction identifiers received from the network MUST be
+          mapped back by the implementation to the unique conference call
+          identifier of the multiparty call.
         </p>
       </section><!-- Multiparty calls -->
     </section>
