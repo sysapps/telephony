@@ -273,7 +273,7 @@
           <a>telephony service</a> that initiated this algorithm.
           </li>
           <li>If the service has been removed and it's the default telephony
-          service for the origin, then change default telephony service.
+          service for the <a>origin</a>, then change default telephony service.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire an event</a> <var>event</var> at the
@@ -315,9 +315,10 @@
           not cancelable, has no default action, and whose <a>serviceId</a>
           attribute to <var>service id</var>.
           </li>
-          <li>Queue a task to change the <a>defaultServiceId</a> attribute of
-          the <a>TelephonyManager</a> object to <var>sercive id</var>, and fire
-          <var>event</var> at the <a>TelephonyManager</a>.
+          <li>
+            <a>Queue a task</a> to change the <a>defaultServiceId</a> attribute
+            of the <a>TelephonyManager</a> object to <var>sercive id</var>, and
+            fire <var>event</var> at the <a>TelephonyManager</a>.
           </li>
         </ol>
       </section>
@@ -379,11 +380,11 @@
           Call states
         </h2>
         <p>
-          In the process of establishing a connection between two parties, a
-          telephony call transitions through various <a title="call state">call
-          states</a>. A call state represents the state of interaction between
-          a telephony service, the telephony network, and one or more remote
-          parties.
+          A <dfn>call state</dfn> represents the state of interaction between a
+          telephony service, the telephony network, and one or more remote
+          parties. In the process of establishing a connection between multiple
+          parties, a telephony call transitions through various <a title=
+          "call state">call states</a>.
         </p>
         <p>
           The call states referenced in this API are:
