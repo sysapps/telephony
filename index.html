@@ -128,22 +128,23 @@
         page</a> of this API.
       </p>
       <p>
-        The following specifications have been used for designing the <cite>Web
+        The following specifications informed the design of the <cite>Web
         Telephony API</cite>: for <abbr title=
         "Global System for Mobile Communications">GSM</abbr> the [[!GSM-CALL]]
         suite, for IMS/SIP the [[!IMS]] suite, for <abbr title=
         "Extensible Messaging and Presence Protocol ">XMPP</abbr> the
-        [[!JINGLE]] specification. The same API would work also for
-        <abbr title="Session Initiation Protocol">SIP</abbr> and <abbr title=
-        "Extensible Messaging and Presence Protocol ">XMPP</abbr> calls, except
-        multiparty call handling, which is modeled after the cellular
-        multiparty calls.
+        [[!JINGLE]] specification. Note, however, that IMS/SIP and XMPP are not
+        supported in this version.
       </p>
       <p>
-        Future versions of this specification may add <abbr title=
+        It is likely that the same API would work also for <abbr title=
         "Session Initiation Protocol">SIP</abbr> and <abbr title=
-        "Extensible Messaging and Presence Protocol ">XMPP</abbr> conference
-        support.
+        "Extensible Messaging and Presence Protocol ">XMPP</abbr> calls with
+        the exception of multiparty call handling, which is modeled after the
+        cellular multiparty calls. Future versions of this specification will
+        probably add <abbr title="Session Initiation Protocol">SIP</abbr> and
+        <abbr title="Extensible Messaging and Presence Protocol ">XMPP</abbr>
+        conference support.
       </p>
     </section>
     <!-- - - - - - - - - - - - - - Conformance  - - - - - - - - - - - - - - -->
@@ -170,17 +171,20 @@
         defined in other specifications.
       </p>
       <p>
-        The following are defined in [[!HTML]]: <dfn><code><a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#eventhandler">EventHandler</a></code></dfn>
-        interface, <dfn><a href=
+        The following dependencies are defined in [[!HTML]]:
+        <dfn><code><a href="http://www.whatwg.org/specs/web-apps/current-work/#eventhandler">
+        EventHandler</a></code></dfn> interface, <dfn><a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">queue
         a task</a></dfn>, <dfn><a href=
         "http://www.whatwg.org/specs/web-apps/current-work/#event-handlers">event
-        handler</a></dfn>, and <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#origin">origin</a>.
+        handler</a></dfn>, <dfn><a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#origin">origin</a></dfn>,
+        <dfn><a href=
+        "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
+        source</a></dfn>.
       </p>
       <p>
-        The following are defined in [[!DOM4]]: the <dfn><a href=
+        The following dependencies are defined in [[!DOM4]]: the <dfn><a href=
         "http://dom.spec.whatwg.org/#event"><code>Event</code></a></dfn> and
         the <dfn><a href=
         "http://dom.spec.whatwg.org/#promise"><code>Promise</code></a></dfn>
@@ -199,36 +203,49 @@
         A <dfn>telephony service</dfn> manages telephony operations associated
         with a subscriber identity, which is registered with a telephony
         service provider. For example, in cellular telephony, a telephony
-        service is associated to a <abbr title=
+        service is associated with <abbr title=
         "Subscriber Identity Module">SIM</abbr> card (Subscriber Identity
         Module). A telephony service can use different protocols for telephony
         signaling and media (e.g. GSM, CDMA, VoLTE, etc.) with the same
         identity.
       </p>
       <p>
-        Each telephony service has a <dfn>telephony service id</dfn>, which
-        uniquely identifies a <a>telephony service</a> together with a user
+        Each telephony service has a unique <dfn>telephony service id</dfn>,
+        which identifies a <a>telephony service</a> together with a user
         identity in the system. For telephony services that make use of a SIM
         card, it is RECOMMEDED that the ICC-ID be used for the service
-        identifier. As the <abbr title=
+        identifier.
+      </p>
+      <p>
+        It is strongly RECOMMENDED a implementations <strong>do not</strong>
+        use use the MSISDN as the telephony service id. The <abbr title=
         "Mobile Subscriber Integrated Services Digital Network-Number">MSISDN</abbr>
-        cannot guarrentee uniqueness, a user agent MUST NOT use the MSISDN as
-        the telephony service id.
+        cannot guarantee uniqueness.
       </p>
       <p>
-        A user agent can access zero or more <a>telephony services</a> of the
-        system. Which telephony services are available to the user agent is
-        dictated by policy, or by the user choosing which services are
-        available to the user agent. When one or more telephony services is
-        available to the user agent, one can serve as the <a>default telephony
-        service</a>.
+        A user agent can access zero or more <a>telephony services</a>. Which
+        telephony services are available to the user agent is dictated by
+        policy, or by the user choosing which services are available to the
+        user agent. When one or more telephony services is available to the
+        user agent, one serves as the <a>default telephony service</a>.
       </p>
       <p>
-        In the API, telephony services are represented through DOMStrings that
-        map to a telephony service id for each telephony service available to
-        an <a>origin</a>. Access to telephony services by an origin is
-        generally restricted to an <a>origin</a> by a security policy.
+        In the API, telephony services are represented by a DOMString that maps
+        to a <a>telephony service id</a> for each <a>telephony service</a>
+        available to an <a>origin</a>.
       </p>
+      <p>
+        Access to a telephony service by any <a>origin</a> is restricted by a
+        security policy. See the <a>security and privacy considerations</a>
+        section for more details.
+      </p>
+      <p>
+        A telephony service observes the <a title="call state">call states</a>
+        of a <a>telephony call</a> in the supported telephony backend(s) and
+        networks and reflects those changes in the API through [[!DOM4]]
+        events.
+      </p>
+      <!-- - - - - - - - -  Changing telephony services - - - - - - - - - - -->
       <section>
         <h3>
           Changing telephony services
@@ -255,7 +272,8 @@
           attribute is set to the <a>telephony service id</a> of the
           <a>telephony service</a> that initiated this algorithm.
           </li>
-          <li>If the
+          <li>If the service has been removed and it's the default telephony
+          service for the origin, then change default telephony service.
           </li>
           <li>
             <a>Queue a task</a> to <a>fire an event</a> <var>event</var> at the
@@ -271,9 +289,9 @@
         <p>
           The <dfn>default telephony service</dfn> is the <a>telephony
           service</a> that serves as default for telephony operations for the
-          <a>origin</a> of the application. The default telephony service can
-          be changed by the user, and if supported, through the
-          <a>changeDefaultService</a> method of the <a>TelephonyService</a>
+          <a>origin</a> of an application. The default telephony service can be
+          changed by the user, and if supported, through the
+          <a>changeDefaultService()</a> method of the <a>TelephonyManager</a>
           object.
         </p>
         <p>
@@ -284,12 +302,13 @@
           origin, the default telephony service is null.
         </p>
         <p>
-          When the <dfn><a>default telephony service</a> changes</dfn>, the
-          user agent MUST:
+          When there is a need to <dfn>changes default telephony service</dfn>,
+          the user agent MUST:
         </p>
         <ol>
           <li>Let <var>service id</var> be the <a>telephony service id</a> of
-          the new <a>default telephony service, or null otherwise</a>.
+          the new <a>default telephony service, or <code>null</code>
+          otherwise</a>.
           </li>
           <li>Let <var>event</var> be a new <a>TelephonyServiceEvent</a> with
           the event name <code>defaultchanged</code>, which does not bubble, is
@@ -345,160 +364,6 @@
           <a>TeleponyCall</a> interface and the <a>ConferenceCall</a>
           interface.
         </p>
-        <section>
-          <h3>
-            Call states
-          </h3>
-          <p>
-            In the process of establishing a connection between two parties, a
-            telephony call transitions through various <a>call states</a>. A
-            call state represents the state of interaction between a telephony
-            service, the telephony network, and one or more remote parties.
-          </p>
-          <p>
-            The call states referenced in this API are:
-          </p>
-          <dl>
-            <dt>
-              <dfn>dialing</dfn>
-            </dt>
-            <dd>
-              An outbound call is being dialed by a telephony service.
-            </dd>
-            <dt>
-              <dfn>connecting</dfn>
-            </dt>
-            <dd>
-              A request to establish the call has been made and it is
-              progressing.
-            </dd>
-            <dt>
-              <dfn>alerting</dfn>
-            </dt>
-            <dd>
-              The destination number has been reached and alerting is taking
-              place.
-            </dd>
-            <dt>
-              <dfn>active</dfn>
-            </dt>
-            <dd>
-              The call is ongoing.
-            </dd>
-            <dt>
-              <dfn>incoming</dfn>
-            </dt>
-            <dd>
-              An incoming call is being received whilst no other call is
-              progressing.
-            </dd>
-            <dt>
-              <dfn>waiting</dfn>
-            </dt>
-            <dd>
-              An incoming call that has been received whilst there was another
-              call progressing, and the call waiting service is active.
-            </dd>
-            <dt>
-              <dfn>accepted</dfn>
-            </dt>
-            <dd>
-              An incoming call has been accepted and is being connected.
-            </dd>
-            <dt>
-              <dfn>holding</dfn>
-            </dt>
-            <dd>
-              The call is being put on hold.
-            </dd>
-            <dt>
-              <dfn>held</dfn>
-            </dt>
-            <dd>
-              The call has been put on hold.
-            </dd>
-            <dt>
-              <dfn>resuming</dfn>
-            </dt>
-            <dd>
-              The call, which was on hold, is being resumed.
-            </dd>
-            <dt>
-              <dfn>redirecting</dfn>
-            </dt>
-            <dd>
-              The call is being redirected to another remote party from the
-              same <a>telephony service</a>.
-            </dd>
-            <dt>
-              <dfn>transferring</dfn>
-            </dt>
-            <dd>
-              The call is being transferred to another remote party from the
-              same <a>telephony service</a>.
-            </dd>
-            <dt>
-              <dfn>disconnecting</dfn>
-            </dt>
-            <dd>
-              A request to disconnect the call has been made and it is
-              progressing.
-            </dd>
-            <dt>
-              <dfn>disconnected</dfn>
-            </dt>
-            <dd>
-              The call has been disconnected and this object is invalid for
-              call control.
-            </dd>
-            <dt>
-              <dfn>joining</dfn>
-            </dt>
-            <dd>
-              The call is being joined with another call to become a multiparty
-              call.
-            </dd>
-            <dt>
-              <dfn>multiparty</dfn>
-            </dt>
-            <dd>
-              The call is a multiparty call.
-            </dd>
-            <dt>
-              <dfn>splitting</dfn>
-            </dt>
-            <dd>
-              The call is being split from a multiparty call.
-            </dd>
-          </dl>
-          <p>
-            A telephony service observes the call states of a telephony call in
-            the supported telephony backend(s) and networks and reflects those
-            changes through DOM events.
-          </p>
-          <p>
-            Since call state transitions depend on protocol, network equipment,
-            modem, etc., the implementation MUST NOT fire error events on
-            assumed erroneous state transitions. MUST always re-synchronize any
-            eventual internal states to the current call state reported by the
-            telephony system. The implementation MUST NOT set the call state to
-            any other value than specified in the descriptions of the methods
-            of this interface.
-          </p>
-          <p class="issue">
-            Since <a>call states</a> can differ depending on the protocol, do
-            we need to expose the service and the protocol used for making the
-            call? <a href="https://github.com/sysapps/telephony/issues/125">See
-            issue 125</a>.
-          </p>
-          <p class="issue">
-            Note that compliant implementations may not be reporting such
-            events when they occur (e.g. OTA SIM update or hot-swappable SIM
-            cards). <a href=
-            "https://github.com/sysapps/telephony/issues/127">See issue
-            127</a>.
-          </p>
-        </section>
         <!-- - - - - - - - - - - - - - Call typedef - - - - - - - - - - - - -->
         <section>
           <h3>
@@ -507,11 +372,161 @@
           <dl title="typedef (TelephonyCall or ConferenceCall) Call" class=
           "idl"></dl>
         </section><!-- Call typedef -->
-        <!-- - - - - - - - - - -  CallState Enum - - - - - - - - - - -  -->
+      </section><!-- Telephony Calls -->
+      <!-- - - - - - - - - - - - - - Call states  - - - - - - - - - - - - -->
+      <section>
+        <h2>
+          Call states
+        </h2>
+        <p>
+          In the process of establishing a connection between two parties, a
+          telephony call transitions through various <a title="call state">call
+          states</a>. A call state represents the state of interaction between
+          a telephony service, the telephony network, and one or more remote
+          parties.
+        </p>
+        <p>
+          The call states referenced in this API are:
+        </p>
+        <dl>
+          <dt>
+            <dfn>dialing</dfn>
+          </dt>
+          <dd>
+            An outbound call is being dialed by a telephony service.
+          </dd>
+          <dt>
+            <dfn>connecting</dfn>
+          </dt>
+          <dd>
+            A request to establish the call has been made and it is
+            progressing.
+          </dd>
+          <dt>
+            <dfn>alerting</dfn>
+          </dt>
+          <dd>
+            The destination number has been reached and alerting is taking
+            place.
+          </dd>
+          <dt>
+            <dfn>active</dfn>
+          </dt>
+          <dd>
+            The call is ongoing.
+          </dd>
+          <dt>
+            <dfn>incoming</dfn>
+          </dt>
+          <dd>
+            An incoming call is being received whilst no other call is
+            progressing.
+          </dd>
+          <dt>
+            <dfn>waiting</dfn>
+          </dt>
+          <dd>
+            An incoming call that has been received whilst there was another
+            call progressing, and the call waiting service is active.
+          </dd>
+          <dt>
+            <dfn>accepted</dfn>
+          </dt>
+          <dd>
+            An incoming call has been accepted and is being connected.
+          </dd>
+          <dt>
+            <dfn>holding</dfn>
+          </dt>
+          <dd>
+            The call is being put on hold.
+          </dd>
+          <dt>
+            <dfn>held</dfn>
+          </dt>
+          <dd>
+            The call has been put on hold.
+          </dd>
+          <dt>
+            <dfn>resuming</dfn>
+          </dt>
+          <dd>
+            The call, which was on hold, is being resumed.
+          </dd>
+          <dt>
+            <dfn>redirecting</dfn>
+          </dt>
+          <dd>
+            The call is being redirected to another remote party from the same
+            <a>telephony service</a>.
+          </dd>
+          <dt>
+            <dfn>transferring</dfn>
+          </dt>
+          <dd>
+            The call is being transferred to another remote party from the same
+            <a>telephony service</a>.
+          </dd>
+          <dt>
+            <dfn>disconnecting</dfn>
+          </dt>
+          <dd>
+            A request to disconnect the call has been made and it is
+            progressing.
+          </dd>
+          <dt>
+            <dfn>disconnected</dfn>
+          </dt>
+          <dd>
+            The call has been disconnected and this object is invalid for call
+            control.
+          </dd>
+          <dt>
+            <dfn>joining</dfn>
+          </dt>
+          <dd>
+            The call is being joined with another call to become a multiparty
+            call.
+          </dd>
+          <dt>
+            <dfn>multiparty</dfn>
+          </dt>
+          <dd>
+            The call is a multiparty call.
+          </dd>
+          <dt>
+            <dfn>splitting</dfn>
+          </dt>
+          <dd>
+            The call is being split from a multiparty call.
+          </dd>
+        </dl>
+        <p>
+          Since call state transitions depend on protocol, network equipment,
+          modem, etc., the implementation MUST NOT fire error events on assumed
+          erroneous state transitions. MUST always re-synchronize any eventual
+          internal states to the current call state reported by the telephony
+          system. The implementation MUST NOT set the call state to any other
+          value than specified in the descriptions of the methods of this
+          interface.
+        </p>
+        <p class="issue">
+          Since <a title="call state">call states</a> can differ depending on
+          the protocol, do we need to expose the service and the protocol used
+          for making the call? <a href=
+          "https://github.com/sysapps/telephony/issues/125">See issue 125</a>.
+        </p>
+        <p class="issue">
+          Note that compliant implementations may not be reporting such events
+          when they occur (e.g. OTA SIM update or hot-swappable SIM cards).
+          <a href="https://github.com/sysapps/telephony/issues/127">See issue
+          127</a>.
+        </p>
+        <!-- - - - - - - - - - -  CallState Enum  - - - - - - - - - - - - - -->
         <section>
-          <h2>
+          <h3>
             <a>CallState</a> enum
-          </h2>
+          </h3>
           <dl class="idl" title="enum CallState">
             <dt>
               dialing
@@ -589,7 +604,7 @@
             additional <code>"transferring"</code> state MUST be supported.
           </p>
         </section><!-- CallState Enum -->
-      </section><!-- Telephony Calls -->
+      </section><!-- call states -->
       <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
       <section>
         <h3>
@@ -600,13 +615,6 @@
           even simultaneously, in which case the user agent arbitrates the
           calls either by a policy, or by the user by choosing which call to
           accept.
-        </p>
-        <p>
-          Whenever there is a new call in <a>incoming</a> or <a>waiting</a>
-          state, the <a>user agent</a> MUST <a>queue a task</a> to fire an
-          event named <a>incoming</a> of type <a>TelephonyEvent</a>. The
-          <a>call</a> attribute of the event MUST be set to the
-          <a>TelephonyCall</a> object controlling the incoming call.
         </p>
         <p>
           Upon a new incoming or waiting call, the <a>user agent</a> MUST
@@ -726,12 +734,8 @@
         Task Source
       </h2>
       <p>
-        The <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#task-source">task
-        source</a> for all <a href=
-        "http://www.whatwg.org/specs/web-apps/current-work/#queue-a-task">tasks
-        queued</a> in this specification is the <dfn>telephony task
-        source</dfn>.
+        <a>The task source</a> for all <a title="queue a task">tasks queued</a>
+        in this specification is the <dfn>telephony task source</dfn>.
       </p>
     </section>
     <!-- - - - - - - - - - - Extended interface Navigator - - - - - - - - - -->
@@ -761,7 +765,7 @@
         </p>
       </section><!-- telephony attribute -->
     </section>
-    <!-- - - - - - - - - - - - Interface TelephonyManager - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - Interface TelephonyManager - - - - - - - - - -->
     <section>
       <h2>
         <a>TelephonyManager</a> Interface
@@ -828,7 +832,7 @@
           If there is no active <a>Call</a> return <code>null</code>.
         </p>
       </section>
-      <!-- - - - - - - - - - - - - calls attribute - - - - - - - - - - - - -->
+      <!-- - - - - - - - - - - - - calls attribute  - - - - - - - - - - - - -->
       <section>
         <h3>
           The <code>calls</code> attribute
