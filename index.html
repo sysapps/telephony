@@ -337,14 +337,13 @@
           Telephony Calls
         </h3>
         <p>
-          A <dfn id="telephony-call-concept">telephony call</dfn> results from
-          a <dfn>telephony service</dfn>'s attempt to establish a connection
-          for communication between two or more parties. Telepony calls
-          involving more than two parties are referred to as a <a>multiparty
-          call</a>.
+          A <dfn>telephony call</dfn> results from a <a>telephony service</a>'s
+          attempt to establish a connection for communication between two or
+          more parties. Telepony calls involving more than two parties are
+          referred to as a <a>multiparty call</a>.
         </p>
         <p>
-          A <dfn>telephony call</dfn> is always in some call state, which can
+          A <a>telephony call</a> is always in some call state, which can
           change over time.
         </p>
         <p>
@@ -1048,7 +1047,9 @@
           <p>
             Tone value can be any of the following characters: 0-9; A-D; *; #.
           </p>
-          <p class="issue">The above needs to be converted to ABNF</p>
+          <p class="issue">
+            The above needs to be converted to ABNF
+          </p>
         </section><!-- tones -->
       </section><!-- sendTones() method -->
       <!-- - - - - - - - - - - stopTone() method - - - - - - - - - - - - - -->
@@ -1313,94 +1314,90 @@
           <a>TelephonyManager</a> interface.
         </p>
         <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                event handler
-              </th>
-              <th>
-                event name
-              </th>
-              <th>
-                event type
-              </th>
-              <th>
-                short description
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn><code>onincoming</code></dfn>
-              </td>
-              <td>
-                <dfn><code>incoming</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyEvent</a>
-              </td>
-              <td>
-                handles incoming and waiting calls.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>oncallschanged</code></dfn>
-              </td>
-              <td>
-                <dfn><code>callschanged</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles change in the <a>calls</a> array.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onserviceadded</code></dfn>
-              </td>
-              <td>
-                <dfn><code>serviceadded</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles a new enabled telephony service.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onserviceremoved</code></dfn>
-              </td>
-              <td>
-                <dfn><code>serviceremoved</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles a disabled telephony service.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondefaultchanged</code></dfn>
-              </td>
-              <td>
-                <dfn><code>defaultchanged</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles the change of default telephony service.
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th>
+              event handler
+            </th>
+            <th>
+              event name
+            </th>
+            <th>
+              event type
+            </th>
+            <th>
+              short description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <a>onincoming</a>
+            </td>
+            <td>
+              <a>incoming</a>
+            </td>
+            <td>
+              <a>TelephonyEvent</a>
+            </td>
+            <td>
+              handles incoming and waiting calls.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn><code>oncallschanged</code></dfn>
+            </td>
+            <td>
+              <dfn><code>callschanged</code></dfn>
+            </td>
+            <td>
+              <a><code>Event</code></a>
+            </td>
+            <td>
+              handles change in the <a>calls</a> array.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn><code>onserviceadded</code></dfn>
+            </td>
+            <td>
+              <dfn><code>serviceadded</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles a new enabled telephony service.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn><code>onserviceremoved</code></dfn>
+            </td>
+            <td>
+              <dfn><code>serviceremoved</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles a disabled telephony service.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn><code>ondefaultchanged</code></dfn>
+            </td>
+            <td>
+              <dfn><code>defaultchanged</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles the change of default telephony service.
+            </td>
+          </tr>
         </table>
       </section><!-- event handers -->
       <!-- - - - - - - - - - - -  DialParams Dictionary - - - - - - - - - - -->
@@ -1461,8 +1458,9 @@
             The <code>duration</code> member
           </h3>
           <p>
-            The <dfn>duration</dfn> member represents the duration (mark) in
-            milliseconds of the [[!DTMF]] tones to be sent.
+            The <dfn id="widl-ToneParams-duration">duration</dfn> member
+            represents the duration (mark) in milliseconds of the [[!DTMF]]
+            tones to be sent.
           </p>
         </section>
         <!-- - - - - - - - - - - - gap member - - - - - - - - - - - - - - - -->
@@ -1481,8 +1479,9 @@
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn>serviceId</dfn> member Represents the <a>telephony service
-            id</a> of the <a>telephony service</a> to be used when dialing.
+            The <dfn id="widl-ToneParams-serviceId">serviceId</dfn> member
+            Represents the <a>telephony service id</a> of the <a>telephony
+            service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
       </section><!-- ToneParams Dictionary -->
@@ -1534,9 +1533,10 @@
           The <code>serviceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>serviceId</dfn>, the user agent MUST return the
-          <a>telephony service id</a> of the <a>telephony service</a> that
-          triggered the event.
+          When getting the <dfn id=
+          "widl-TelephonyServiceEvent-serviceId">serviceId</dfn>, the user
+          agent MUST return the <a>telephony service id</a> of the <a>telephony
+          service</a> that triggered the event.
         </p>
       </section>
       <!-- - - - - - - - - - TelephonyServiceEventInit dictionary - - - - - -->
@@ -1556,8 +1556,10 @@
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn>serviceId</dfn> member represents the <a>telephony service
-            id</a> of a <a>telephony service</a>.
+            The <dfn id=
+            "widl-TelephonyServiceEventInit-serviceId">serviceId</dfn> member
+            represents the <a>telephony service id</a> of a <a>telephony
+            service</a>.
           </p>
         </section><!-- serviceId member -->
       </section><!-- TelephonyServiceEventInit interface -->
@@ -1685,9 +1687,9 @@
           The <code>serviceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>serviceId</dfn> attribute, the user agent MUST
-          return the <a>telephony service id</a> of the <a>telephony
-          service</a> associated with this call.
+          When getting the <dfn id="widl-CallHandler-serviceId">serviceId</dfn>
+          attribute, the user agent MUST return the <a>telephony service id</a>
+          of the <a>telephony service</a> associated with this call.
         </p>
       </section><!-- serviceId attribute -->
       <!-- - - - - - - - - - - -  state attribute - - - - - - - - - - - - -->
@@ -1981,10 +1983,11 @@
           The <code>remoteParty</code> attribute
         </h3>
         <p>
-          When getting the <dfn>remoteParty</dfn> attribute, the user agent
-          MUST return the remote party identifier (e.g. telephone number) of
-          the call participant. If not available (e.g. callerId has been
-          hidden), return <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyCall-remoteParty">remoteParty</dfn> attribute, the
+          user agent MUST return the remote party identifier (e.g. telephone
+          number) of the call participant. If not available (e.g. callerId has
+          been hidden), return <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - - conferenceId attribute - - - - - - - - - - -->
@@ -1993,11 +1996,12 @@
           The <code>conferenceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>conferenceId</dfn> attribute, if this call is
-          managed as a part of a multiparty call then the user agent MUST
-          return the value of the <code>conferenceId</code> attribute of the
-          <a>ConferenceCall</a> multiparty call to which this call is part of.
-          Otherwise, return <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyCall-conferenceId">conferenceId</dfn> attribute, if
+          this call is managed as a part of a multiparty call then the user
+          agent MUST return the value of the <code>conferenceId</code>
+          attribute of the <a>ConferenceCall</a> multiparty call to which this
+          call is part of. Otherwise, return <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - - accept() method  - - - - - - - - - - - - - -->
@@ -2006,9 +2010,9 @@
           The <code>accept()</code> method
         </h3>
         <p>
-          The <dfn>accept()</dfn> method accepts an incoming or waiting
-          <a>telephony call</a>. When invoked, the user agent MUST run the
-          following steps:
+          The <dfn id="widl-TelephonyCall-accept-void">accept()</dfn> method
+          accepts an incoming or waiting <a>telephony call</a>. When invoked,
+          the user agent MUST run the following steps:
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>"incoming"</code> or
@@ -2032,11 +2036,12 @@
           GSM, the Call Deflection supplementary service needs to be active.
         </p>
         <p>
-          The <dfn>redirect()</dfn> method initiates deflecting an incoming or
-          waiting telephone call to a remote party. The method takes one
-          argument, which represents the remote party to which the call is
-          redirected. When invoked, the user agent MUST run the following
-          steps:
+          The <dfn id=
+          "widl-TelephonyCall-redirect-void-DOMString-remoteParty">redirect()</dfn>
+          method initiates deflecting an incoming or waiting telephone call to
+          a remote party. The method takes one argument, which represents the
+          remote party to which the call is redirected. When invoked, the user
+          agent MUST run the following steps:
         </p>
         <ol>
           <li>If the <a>state</a> is not <a>"incoming"</a> or <a>"waiting"</a>,
@@ -2185,7 +2190,7 @@
           <tbody>
             <tr>
               <td>
-                <dfn><code>ondialing</code></dfn>
+                <a>ondialing</a>
               </td>
               <td>
                 <a>dialing</a>
@@ -2193,7 +2198,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onalerting</code></dfn>
+                <a>onalerting</a>
               </td>
               <td>
                 <a>alerting</a>
@@ -2201,7 +2206,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onaccepted</code></dfn>
+                <a>onaccepted</a>
               </td>
               <td>
                 <a>accepted</a>
@@ -2209,7 +2214,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onconnecting</code></dfn>
+                <a>onconnecting</a>
               </td>
               <td>
                 <a>connecting</a>
@@ -2217,7 +2222,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onactive</code></dfn>
+                <a>onactive</a>
               </td>
               <td>
                 <a>active</a>
@@ -2225,7 +2230,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>ondisconnecting</code></dfn>
+                <a>ondisconnecting</a>
               </td>
               <td>
                 <a>disconnecting</a>
@@ -2233,7 +2238,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>ondisconnected</code></dfn>
+                <a>ondisconnected</a>
               </td>
               <td>
                 <a>disconnected</a>
@@ -2241,7 +2246,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onholding</code></dfn>
+                <a>onholding</a>
               </td>
               <td>
                 <a>holding</a>
@@ -2249,7 +2254,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onheld</code></dfn>
+                <a>onheld</a>
               </td>
               <td>
                 <a>held</a>
@@ -2257,7 +2262,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onresuming</code></dfn>
+                <a>onresuming</a>
               </td>
               <td>
                 <a>resuming</a>
@@ -2265,7 +2270,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onredirecting</code></dfn>
+                <a>onredirecting</a>
               </td>
               <td>
                 <a>redirecting</a>
@@ -2273,7 +2278,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>ontransferring</code></dfn>
+                <a>ontransferring</a>
               </td>
               <td>
                 <a>transferring</a>
@@ -2281,7 +2286,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onjoining</code></dfn>
+                <a>onjoining</a>
               </td>
               <td>
                 <a>joining</a>
@@ -2289,7 +2294,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onsplitting</code></dfn>
+                <a>onsplitting</a>
               </td>
               <td>
                 <a>splitting</a>
@@ -2297,7 +2302,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onmultiparty</code></dfn>
+                <a>onmultiparty</a>
               </td>
               <td>
                 <a>multiparty</a>
@@ -2450,7 +2455,7 @@
           <tbody>
             <tr>
               <td>
-                <dfn><code>onactive</code></dfn>
+                <a>onactive</a>
               </td>
               <td>
                 <a>active</a>
@@ -2458,7 +2463,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>ondisconnecting</code></dfn>
+                <a>ondisconnecting</a>
               </td>
               <td>
                 <a>disconnecting</a>
@@ -2466,7 +2471,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>ondisconnected</code></dfn>
+                <a>ondisconnected</a>
               </td>
               <td>
                 <a>disconnected</a>
@@ -2474,7 +2479,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onholding</code></dfn>
+                <a>onholding</a>
               </td>
               <td>
                 <a>holding</a>
@@ -2482,7 +2487,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onheld</code></dfn>
+                <a>onheld</a>
               </td>
               <td>
                 <a>held</a>
@@ -2490,7 +2495,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onresuming</code></dfn>
+                <a>onresuming</a>
               </td>
               <td>
                 <a>resuming</a>
@@ -2498,7 +2503,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onjoining</code></dfn>
+                <a>onjoining</a>
               </td>
               <td>
                 <a>joining</a>
@@ -2506,7 +2511,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onsplitting</code></dfn>
+                <a>onsplitting</a>
               </td>
               <td>
                 <a>splitting</a>
@@ -2655,7 +2660,7 @@
         </li>
       </ol>
     </section>
-        <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
     <section>
       <h2>
         Security and privacy considerations
@@ -2878,9 +2883,10 @@
             The <code>remoteParty</code> attribute
           </h3>
           <p>
-            When getting the <dfn>remoteParty</dfn> attribute, the user agent
-            MUST return the <a>remote party id</a> (e.g. telephone number) of
-            the call participant.
+            When getting the <dfn id=
+            "CallHistoryEntry-remoteParty">remoteParty</dfn> attribute, the
+            user agent MUST return the <a>remote party id</a> (e.g. telephone
+            number) of the call participant.
           </p>
         </section><!-- remoteParty attribute -->
         <!-- - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
@@ -2889,9 +2895,10 @@
             The <code>serviceId</code> attribute
           </h3>
           <p>
-            When getting the <dfn>serviceId</dfn> attribute, the user agent
-            MUST return the <a>telephony service id</a> of the <a>telephony
-            service</a> used for the call.
+            When getting the <dfn id=
+            "CallHistoryEntry-serviceId">serviceId</dfn> attribute, the user
+            agent MUST return the <a>telephony service id</a> of the
+            <a>telephony service</a> used for the call.
           </p>
         </section><!-- serviceId attribute -->
         <!-- - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
@@ -2900,9 +2907,11 @@
             The <code>conferenceId</code> attribute
           </h3>
           <p>
-            When getting, the user agent MUST return the <a>conference id</a>
-            of the call, if the call has participated in a multiparty call.
-            Otherwise, return <code>null</code>. string.
+            When getting the <dfn id=
+            "CallHistoryEntry-conferenceId">conferenceId</dfn> attribute, the
+            user agent MUST return the <a>conference id</a> of the call, if the
+            call has participated in a multiparty call. Otherwise, return
+            <code>null</code>. string.
           </p>
         </section><!-- conferenceId attribute -->
         <!-- - - - - - - - - - - startTime attribute  - - - - - - - - - - - -->
@@ -2911,9 +2920,10 @@
             The <code>startTime</code> attribute
           </h3>
           <p>
-            When getting startTime, the user agent MUST return the starting
-            time of the call, measured from when the call is in
-            <code>"active"</code> state.
+            When getting the <dfn id=
+            "CallHistoryEntry-startTime">startTime</dfn> attribute, the user
+            agent MUST return the starting time of the call, measured from when
+            the call is in <a>active</a> state.
           </p>
         </section><!-- startTime attribute -->
         <!-- - - - - - - - - - -  duration attribute  - - - - - - - - - - - -->
@@ -2922,18 +2932,20 @@
             The <code>duration</code> attribute
           </h3>
           <p>
-            When getting the <dfn>duration</dfn>, the user agent MUST return
-            the duration of the call expressed in milliseconds.
+            When getting the <dfn id="CallHistoryEntry-duration">duration</dfn>
+            attribute, the user agent MUST return the duration of the call
+            expressed in milliseconds.
           </p>
         </section><!-- duration attribute -->
         <!-- - - - - - - - - - -  CallDirection attribute - - - - - - - - - -->
         <section>
           <h3>
-            The <code>CallDirection</code> attribute
+            The <code>direction</code> attribute
           </h3>
           <p>
-            When getting the <dfn>CallDirection</dfn> attribute, the user agent
-            MUST return the <a>CallDirection</a>.
+            When getting the <dfn id=
+            "CallHistoryEntry-direction">direction</dfn> attribute, the user
+            agent MUST return the <a>CallDirection</a>.
           </p>
         </section><!-- CallDirection attribute -->
         <!-- - - - - - - - - - - disconnectReason attribute  - - - -  - - - -->
@@ -2942,9 +2954,10 @@
             The <code>disconnectReason</code> attribute
           </h3>
           <p>
-            When getting the <dfn>disconnectReason</dfn> attribute, the user
-            agent MUST return the <a>DisconnectReason</a> if available, or
-            return <code>null</code> otherwise.
+            When getting the <dfn id=
+            "CallHistoryEntry-disconnectReason">disconnectReason</dfn>
+            attribute, the user agent MUST return the <a>DisconnectReason</a>
+            if available, or return <code>null</code> otherwise.
           </p>
         </section><!-- disconnectReason attribute -->
         <!-- - - - - - - - - - -   emergency attribute  - - - - - - - - - - -->
@@ -2953,9 +2966,10 @@
             The <code>emergency</code> attribute
           </h3>
           <p>
-            When getting the <dfn>emergency</dfn> attribute, the user agent
-            MUST return <code>true</code> if the call was an emergency call, or
-            <code>false</code> otherwise.
+            When getting the <dfn id=
+            "CallHistoryEntry-emergency">emergency</dfn> attribute, the user
+            agent MUST return <code>true</code> if the call was an emergency
+            call, or <code>false</code> otherwise.
           </p>
         </section><!-- emergency attribute -->
       </section><!-- CallHistoryEntry Interface-->
