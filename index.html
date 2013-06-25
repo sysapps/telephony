@@ -2548,94 +2548,6 @@ enum <dfn>CallState</dfn> {
         </table>
       </section><!-- event handlers -->
     </section><!-- ConferenceCall -->
-    <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - - - -->
-    <section>
-      <h2>
-        <a>DisconnectReason</a> enum
-      </h2>
-      <dl class="idl" title="enum DisconnectReason">
-        <dt>
-          local
-        </dt>
-        <dd>
-          The call was disconnected by the user, or the device, and no more
-          specific reason is known.
-        </dd>
-        <dt>
-          remote
-        </dt>
-        <dd>
-          The call was disconnected by the remote party, and no more specific
-          reason is known.
-        </dd>
-        <dt>
-          network
-        </dt>
-        <dd>
-          The call was disconnected by the network, and no more specific reason
-          is known.
-        </dd>
-        <dt>
-          busy
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was busy.
-        </dd>
-        <dt>
-          rejected
-        </dt>
-        <dd>
-          The call was disconnected because the remote party rejected the call.
-        </dd>
-        <dt>
-          redirected
-        </dt>
-        <dd>
-          The call has been redirected to another subscriber.
-        </dd>
-        <dt>
-          unreachable
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was unreachable by the network.
-        </dd>
-        <dt>
-          no-answer
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          has not answered and the call has timed out.
-        </dd>
-        <dt>
-          network-unreachable
-        </dt>
-        <dd>
-          The call was disconnected because the network was unreachable.
-        </dd>
-        <dt>
-          barred
-        </dt>
-        <dd>
-          The call was disconnected because it was barred.
-        </dd>
-        <dt>
-          no-service
-        </dt>
-        <dd>
-          The call was not made because there is no telephony service set up
-          and enabled (e.g. no SIM card).
-        </dd>
-        <dt>
-          invalid-number
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          identifier was invalid.
-        </dd>
-      </dl>
-    </section>
     <section id="error-steps">
       <h2>
         Error Steps
@@ -3000,6 +2912,95 @@ enum <dfn>CallState</dfn> {
           </dd>
         </dl>
       </section><!-- CallDirection Enum -->
+      <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - - - -->
+      <section>
+        <h2>
+          <a>DisconnectReason</a> enum
+        </h2>
+        <dl class="idl" title="enum DisconnectReason">
+          <dt>
+            local
+          </dt>
+          <dd>
+            The call was disconnected by the user, or the device, and no more
+            specific reason is known.
+          </dd>
+          <dt>
+            remote
+          </dt>
+          <dd>
+            The call was disconnected by the remote party, and no more specific
+            reason is known.
+          </dd>
+          <dt>
+            network
+          </dt>
+          <dd>
+            The call was disconnected by the network, and no more specific
+            reason is known.
+          </dd>
+          <dt>
+            busy
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            was busy.
+          </dd>
+          <dt>
+            rejected
+          </dt>
+          <dd>
+            The call was disconnected because the remote party rejected the
+            call.
+          </dd>
+          <dt>
+            redirected
+          </dt>
+          <dd>
+            The call has been redirected to another subscriber.
+          </dd>
+          <dt>
+            unreachable
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            was unreachable by the network.
+          </dd>
+          <dt>
+            no-answer
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            has not answered and the call has timed out.
+          </dd>
+          <dt>
+            network-unreachable
+          </dt>
+          <dd>
+            The call was disconnected because the network was unreachable.
+          </dd>
+          <dt>
+            barred
+          </dt>
+          <dd>
+            The call was disconnected because it was barred.
+          </dd>
+          <dt>
+            no-service
+          </dt>
+          <dd>
+            The call was not made because there is no telephony service set up
+            and enabled (e.g. no SIM card).
+          </dd>
+          <dt>
+            invalid-number
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            identifier was invalid.
+          </dd>
+        </dl>
+      </section><!-- DisconnectReason Enum -->
     </section><!-- Managing Call History -->
     <!-- - - - - - - - - - - - - -  Changes - - - - - - - - - - - - - - - - -->
     <section class="appendix" id="Changes">
