@@ -658,24 +658,22 @@
             Some of these states are <dfn>soft states</dfn>, that is,
             transitory states in which the application is placed after making a
             request to the telephony system and until it is completed. For
-            instance the application remains in <code>"holding"</code> state
-            since it invokes the hold() method and until the telephony system
-            actually holds the call. In some implementations these soft states
-            can be skipped. The following are the soft states defined by this
-            specification: <code>"accepted"</code>,
-            <code>"disconnecting"</code>, <code>"holding"</code>,
-            <code>"resuming"</code>.
+            instance the application remains in "<a>holding</a>" state since it
+            invokes the hold() method and until the telephony system actually
+            holds the call. In some implementations these soft states can be
+            skipped. The following are the soft states defined by this
+            specification: "<a>accepted</a>", "<a>disconnecting</a>",
+            "<a>holding</a>", "<a>resuming</a>".
           </p>
           <p>
             On the contrary, <dfn>hard states</dfn> MUST be supported by the
-            implementation: <code>"dialing"</code>, <code>"alerting"</code>,
-            <code>"active"</code>, <code>"disconnected"</code>,
-            <code>"incoming"</code>, <code>"waiting"</code>,
-            <code>"held"</code>. For calls participating in multiparty calls,
-            the following additional call states MUST be supported:
-            <code>"joining"</code>, <code>"splitting"</code>,
-            <code>"multiparty"</code>. For call transfer functionality, the
-            additional <code>"transferring"</code> state MUST be supported.
+            implementation: "<a>dialing</a>", "<a>alerting</a>",
+            "<a>active</a>", "<a>disconnected</a>", "<a>incoming</a>",
+            "<a>waiting</a>", "<a>held</a>". For calls participating in
+            multiparty calls, the following additional call states MUST be
+            supported: "<a>joining</a>", "<a>splitting</a>",
+            "<a>multiparty</a>". For call transfer functionality, the
+            additional "<a>transferring</a>" state MUST be supported.
           </p>
         </section><!-- CallState Enum -->
       </section><!-- call states -->
@@ -695,26 +693,22 @@
           supported in this order:
         </p>
         <ol>
-          <li>
-            <code>"incoming"</code>/<code>"waiting"</code>.
+          <li>"<a>incoming</a>"/"<a>waiting</a>".
           </li>
-          <li>
-            <code>"accepted"</code>.
+          <li>"<a>accepted</a>".
           </li>
-          <li>
-            <code>"active"</code>.
+          <li>"<a>active</a>".
           </li>
         </ol>
         <p class="note">
-          On received calls, telephony protocols also use a
-          <code>"ringing"</code> state, set by the mobile terminal when local
-          call alerting starts, in order to notify the remote party about the
-          ongoing alerting (ringing can actually be e.g. a beep, ring tone, or
-          vibration pattern). This is considered to be responsibility of
-          implementations: if the modem expects this state to be set,
-          implementations MUST make sure to set it. Dialer applications are not
-          expected to set this state in the current version of the
-          specification.
+          On received calls, telephony protocols also use a "<a>ringing</a>"
+          state, set by the mobile terminal when local call alerting starts, in
+          order to notify the remote party about the ongoing alerting (ringing
+          can actually be e.g. a beep, ring tone, or vibration pattern). This
+          is considered to be responsibility of implementations: if the modem
+          expects this state to be set, implementations MUST make sure to set
+          it. Dialer applications are not expected to set this state in the
+          current version of the specification.
         </p>
         <p class='note'>
           CDMA cannot report all these states in the expected sequence. The
@@ -735,9 +729,9 @@
           <a>TelephonyCall</a>.
           </li>
           <li>Set the <code>state</code> of <var>incomingCall</var> to
-          <code>"incoming"</code> in case there is no other call in <a href=
+          "<a>incoming</a>" in case there is no other call in <a href=
           "#call-state-active"><code>active</code></a> state, or otherwise set
-          it to <code>"waiting"</code>.
+          it to "<a>waiting</a>".
           </li>
           <li>Add <var>incomingCall</var> to the <a>calls</a> array.
           </li>
@@ -781,23 +775,20 @@
           supported in this order:
         </p>
         <ol>
-          <li>
-            <code>"dialing"</code>.
+          <li>"<a>dialing</a>".
           </li>
-          <li>
-            <code>"alerting"</code>.
+          <li>"<a>alerting</a>".
           </li>
-          <li>
-            <code>"active"</code>.
+          <li>"<a>active</a>".
           </li>
         </ol>
         <p class="note">
-          On the telephony services which support the <code>"connecting"</code>
-          call state (e.g. GSM and CDMA, for call routing, forwarding,
-          voicemail handling etc), implementations SHOULD support this state
-          too, between the <code>"dialing"</code> and <code>"alerting"</code>
-          states. Dialer applications can associate the protocol with the
-          <a>telephony service</a> used for the call.
+          On the telephony services which support the "<a>connecting</a>" call
+          state (e.g. GSM and CDMA, for call routing, forwarding, voicemail
+          handling etc), implementations SHOULD support this state too, between
+          the "<a>dialing</a>" and "<a>alerting</a>" states. Dialer
+          applications can associate the protocol with the <a>telephony
+          service</a> used for the call.
         </p>
         <figure>
           <img src="images/outbound_call_state_diagram.gif" alt="">
@@ -819,7 +810,7 @@
         </p>
         <ol>
           <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"disconnected"</code>.
+          "<a>disconnected</a>".
           </li>
           <li>
             <a>Queue a task</a> to <a>fire an event</a> named
@@ -836,10 +827,9 @@
           The <code>param</code> attribute of the <code>disconnected</code>
           event MUST be set to the <a>DisconnectReason</a>, if available, or
           otherwise it MUST be set to <code>null</code>. At least the following
-          values MUST be supported for the disconnect reason:
-          <code>"local"</code>, <code>"remote"</code> and
-          <code>"network"</code>. The rest of the <a>DisconnectReason</a>
-          values SHOULD be supported.
+          values MUST be supported for the disconnect reason: "<a>local</a>",
+          "<a>remote</a>" and "<a>network</a>". The rest of the
+          <a>DisconnectReason</a> values SHOULD be supported.
         </p>
       </section>
     </section>
@@ -1190,7 +1180,7 @@
           <li>If the request is successful, then
             <ol>
               <li>Set the <code>state</code> of <var>telCall</var> to
-              <code>"dialing"</code> value.
+              "<a>dialing</a>" value.
               </li>
               <li>Add <var>telCall</var> to the <a>calls</a> array.
               </li>
@@ -1614,12 +1604,12 @@
           run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          throw an <code>InvalidStateError</code> exception.
+          <li>If <code>state</code> is not equal to "<a>held</a>", then throw
+          an <code>InvalidStateError</code> exception.
           </li>
           <li>Otherwise make a request to the telephony system to resume the
           call. If the request is acknowledged, then set <code>state</code> to
-          <code>"resuming"</code>.
+          "<a>resuming</a>".
           </li>
         </ol>
       </section><!-- resume() method -->
@@ -1643,7 +1633,7 @@
           <li>Return, and continue these steps asynchronously.
           </li>
           <li>If the request is acknowledged then set <code>state</code> to
-          <code>"holding"</code>.
+          "<a>holding</a>".
           </li>
         </ol>
       </section><!-- hold() method -->
@@ -2015,13 +2005,13 @@
           the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"incoming"</code> or
-          <code>"waiting"</code>, then throw an <code>InvalidStateError</code>
+          <li>If <code>state</code> is not equal to "<a>incoming</a>" or
+          "<a>waiting</a>", then throw an <code>InvalidStateError</code>
           exception.
           </li>
           <li>Otherwise make a request to the telephony system to accept the
           call. If the request is acknowledged then set <code>state</code> to
-          <code>"accepted"</code>.
+          "<a>accepted</a>".
           </li>
         </ol>
       </section><!-- accept() method -->
@@ -2052,11 +2042,11 @@
           return, and continue these steps asynchronously.
           </li>
           <li>If the request is acknowledged, then set <code>state</code> to
-          <code>"redirecting"</code>.
+          "<a>redirecting</a>".
           </li>
           <li>When <a><var>TCallControl</var></a> is notified that the call has
-          been successfully redirected it MUST set <code>state</code> to <code>
-            "disconnected"</code>.
+          been successfully redirected it MUST set <code>state</code> to
+          "<a>disconnected</a>".
           </li>
         </ol>
       </section><!-- redirect() method -->
@@ -2078,8 +2068,8 @@
           When invoked, the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"active"</code> or
-          <code>"held"</code>, then throw an <code>InvalidStateError</code>
+          <li>If <code>state</code> is not equal to "<a>active</a>" or
+          "<a>held</a>", then throw an <code>InvalidStateError</code>
           exception.
           </li>
           <li>Otherwise make a request to the telephony system to transfer the
@@ -2089,11 +2079,11 @@
           transfer procedure. If there is an error, the original call MUST be
           resumed and the <a>error steps</a> MUST be executed without modifying
           the call state. If the request is acknowledged, then set
-          <code>state</code> to <code>"transferring"</code>.
+          <code>state</code> to "<a>transferring</a>".
           </li>
           <li>When <a><var>TCallControl</var></a> is notified that the call has
           been successfully transferred and the original call is disconnected,
-          it MUST set <code>state</code> to <code>"disconnected"</code>.
+          it MUST set <code>state</code> to "<a>disconnected</a>".
           </li>
         </ol>
       </section><!-- transfer() method -->
@@ -2115,7 +2105,7 @@
           method was invoked.
           </li>
           <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"joining"</code>.
+          "<a>joining</a>".
           </li>
           <li>Then, in cellular telephony services, make a request to the
           telephony system to join the active and held calls into a multiparty
@@ -2128,7 +2118,7 @@
           conference id, named <var>confCall</var>.
           </li>
           <li>Set the <code>state</code> of <var>confCall</var> to
-          <code>"joining"</code>.
+          "<a>joining</a>".
           </li>
           <li>Return the <var>confCall</var> object, and continue these steps
           asynchronously.
@@ -2149,7 +2139,7 @@
               of the <a>TelephonyManager</a> object.
               </li>
               <li>Set the <code>state</code> of <var>confCall</var> to
-              <code>"active"</code>.
+              "<a>active</a>".
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire an event</a> named
@@ -2405,7 +2395,7 @@
           </li>
           <li>Otherwise, set the <code>state</code> of the
           <var>participantCall</var> and that of this <a>ConferenceCall</a>
-          object to <code>"splitting"</code>.
+          object to "<a>splitting</a>".
           </li>
           <li>Make a request to the telephony system to split the call
           participant from the multiparty call.
