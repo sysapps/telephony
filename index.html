@@ -777,23 +777,29 @@ enum <dfn>CallState</dfn> {
           Disconnecting calls
         </h2>
         <p>
-          When <a><var>TCallControl</var></a> is notified of actual call
-          disconnection of the <a>Call</a> object <var>telCall</var>, it MUST
-          follow the next steps:
+          When a <a>telephony service</a> is notified of call disconnection of
+          the <a>Call</a> object <var>telCall</var>, it MUST run the steps to
+          disconnect:
         </p>
         <ol>
-          <li>Set the <code>state</code> of <var>telCall</var> to
-          "<a>disconnected</a>".
-          </li>
           <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> at the <var>telCall</var> object.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>disconnected</code> at the <var>telCall</var> object.
-          </li>
-          <li>Remove the <var>telCall</var> object from the <a>calls</a> array.
+            <a>Queue a task</a> to:
+            <ol>
+              <li>Remove the <var>telCall</var> object from the <a>calls</a>
+              array.
+              </li>
+              <li>set the <code>state</code> of <var>telCall</var> to
+              "<a>disconnected</a>".
+              </li>
+              <li>
+                <a>fire an event</a> named <code>statechange</code> at the
+                <var>telCall</var> object.
+              </li>
+              <li>
+                <a>fire an event</a> named <code>disconnected</code> at the
+                <var>telCall</var> object.
+              </li>
+            </ol>
           </li>
         </ol>
         <p>
