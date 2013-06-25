@@ -1183,9 +1183,6 @@ enum <dfn>CallState</dfn> {
               </li>
             </ol>
           </li>
-          <li>If during further steps for call connection there is an error,
-          execute the <a>error steps</a> for <var>telCall</var>.
-          </li>
         </ol>
       </section><!--dial() method-->
       <!-- - - - - - - - - - - changeDefaultService() method  - - - - - - - -->
@@ -2079,9 +2076,9 @@ enum <dfn>CallState</dfn> {
           Note that in GSM this requires putting the current call on hold,
           dialing a new call to the third party, then initiating the call
           transfer procedure. If there is an error, the original call MUST be
-          resumed and the <a>error steps</a> MUST be executed without modifying
-          the call state. If the request is acknowledged, then set
-          <code>state</code> to "<a>transferring</a>".
+          resumed and then queue a task to fire a simple event named "error"
+          without modifying the call state. If the request is acknowledged,
+          then set <code>state</code> to "<a>transferring</a>".
           </li>
           <li>When <a><var>TCallControl</var></a> is notified that the call has
           been successfully transferred and the original call is disconnected,
@@ -2151,10 +2148,6 @@ enum <dfn>CallState</dfn> {
               </li>
               <li>Follow the state changes of <var>confCall</var> through the
               state change events.
-              </li>
-              <li>If there is any error during the method call, then the
-              <a>error steps</a> MUST be executed on the <var>telCall</var>
-              object.
               </li>
             </ol>
           </li>
@@ -2548,25 +2541,6 @@ enum <dfn>CallState</dfn> {
         </table>
       </section><!-- event handlers -->
     </section><!-- ConferenceCall -->
-    <section id="error-steps">
-      <h2>
-        Error Steps
-      </h2>
-      <p>
-        If there is any error during the method calls which is not handled by
-        exceptions, the following steps MUST be run:
-      </p>
-      <ol>
-        <li>Set the <code>error</code> attribute of the
-        <a><code>CallHandler</code></a> object appropriately
-        </li>
-        <li>
-          <a>Queue a task</a> to <a>fire an event</a> named
-          <a><code>error</code></a> at the <a><code>CallHandler</code></a>
-          object.
-        </li>
-      </ol>
-    </section>
     <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
     <section>
       <h2>
