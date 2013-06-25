@@ -337,14 +337,13 @@
           Telephony Calls
         </h3>
         <p>
-          A <dfn id="telephony-call-concept">telephony call</dfn> results from
-          a <dfn>telephony service</dfn>'s attempt to establish a connection
-          for communication between two or more parties. Telepony calls
-          involving more than two parties are referred to as a <a>multiparty
-          call</a>.
+          A <dfn>telephony call</dfn> results from a <a>telephony service</a>'s
+          attempt to establish a connection for communication between two or
+          more parties. Telepony calls involving more than two parties are
+          referred to as a <a>multiparty call</a>.
         </p>
         <p>
-          A <dfn>telephony call</dfn> is always in some call state, which can
+          A <a>telephony call</a> is always in some call state, which can
           change over time.
         </p>
         <p>
@@ -440,6 +439,10 @@
           parties. In the process of establishing a connection between multiple
           parties, a telephony call transitions through various <a title=
           "call state">call states</a>.
+        </p>
+        <p>
+          Within the API, the call states are represented by the
+          <code><a>CallState</a></code> enum.
         </p>
         <p>
           The call states referenced in this API are:
@@ -600,83 +603,50 @@
         <!-- - - - - - - - - - -  CallState Enum  - - - - - - - - - - - - - -->
         <section>
           <h3>
-            <a>CallState</a> enum
+            <code>CallState</code> enum
           </h3>
-          <dl class="idl" title="enum CallState">
-            <dt>
-              dialing
-            </dt>
-            <dt>
-              connecting
-            </dt>
-            <dt>
-              alerting
-            </dt>
-            <dt>
-              active
-            </dt>
-            <dt>
-              incoming
-            </dt>
-            <dt>
-              waiting
-            </dt>
-            <dt>
-              accepted
-            </dt>
-            <dt>
-              holding
-            </dt>
-            <dt>
-              held
-            </dt>
-            <dt>
-              resuming
-            </dt>
-            <dt>
-              redirecting
-            </dt>
-            <dt>
-              transferring
-            </dt>
-            <dt>
-              disconnecting
-            </dt>
-            <dt>
-              disconnected
-            </dt>
-            <dt>
-              joining
-            </dt>
-            <dt>
-              multiparty
-            </dt>
-            <dt>
-              splitting
-            </dt>
-          </dl>
+          <pre class="webidl">
+enum <dfn>CallState</dfn> {
+    "<a>dialing</a>",
+    "<a>connecting</a>",
+    "<a>alerting</a>",
+    "<a>active</a>",
+    "<a>incoming</a>",
+    "<a>waiting</a>",
+    "<a>accepted</a>",
+    "<a>holding</a>",
+    "<a>held</a>",
+    "<a>resuming</a>",
+    "<a>redirecting</a>",
+    "<a>transferring</a>",
+    "<a>disconnecting</a>",
+    "<a>disconnected</a>",
+    "<a>joining</a>",
+    "<a>multiparty</a>",
+    "<a>splitting</a>"
+};
+          
+</pre>
           <p>
             Some of these states are <dfn>soft states</dfn>, that is,
             transitory states in which the application is placed after making a
             request to the telephony system and until it is completed. For
-            instance the application remains in <code>"holding"</code> state
-            since it invokes the hold() method and until the telephony system
-            actually holds the call. In some implementations these soft states
-            can be skipped. The following are the soft states defined by this
-            specification: <code>"accepted"</code>,
-            <code>"disconnecting"</code>, <code>"holding"</code>,
-            <code>"resuming"</code>.
+            instance the application remains in "<a>holding</a>" state since it
+            invokes the hold() method and until the telephony system actually
+            holds the call. In some implementations these soft states can be
+            skipped. The following are the soft states defined by this
+            specification: "<a>accepted</a>", "<a>disconnecting</a>",
+            "<a>holding</a>", "<a>resuming</a>".
           </p>
           <p>
             On the contrary, <dfn>hard states</dfn> MUST be supported by the
-            implementation: <code>"dialing"</code>, <code>"alerting"</code>,
-            <code>"active"</code>, <code>"disconnected"</code>,
-            <code>"incoming"</code>, <code>"waiting"</code>,
-            <code>"held"</code>. For calls participating in multiparty calls,
-            the following additional call states MUST be supported:
-            <code>"joining"</code>, <code>"splitting"</code>,
-            <code>"multiparty"</code>. For call transfer functionality, the
-            additional <code>"transferring"</code> state MUST be supported.
+            implementation: "<a>dialing</a>", "<a>alerting</a>",
+            "<a>active</a>", "<a>disconnected</a>", "<a>incoming</a>",
+            "<a>waiting</a>", "<a>held</a>". For calls participating in
+            multiparty calls, the following additional call states MUST be
+            supported: "<a>joining</a>", "<a>splitting</a>",
+            "<a>multiparty</a>". For call transfer functionality, the
+            additional "<a>transferring</a>" state MUST be supported.
           </p>
         </section><!-- CallState Enum -->
       </section><!-- call states -->
@@ -696,26 +666,22 @@
           supported in this order:
         </p>
         <ol>
-          <li>
-            <code>"incoming"</code>/<code>"waiting"</code>.
+          <li>"<a>incoming</a>"/"<a>waiting</a>".
           </li>
-          <li>
-            <code>"accepted"</code>.
+          <li>"<a>accepted</a>".
           </li>
-          <li>
-            <code>"active"</code>.
+          <li>"<a>active</a>".
           </li>
         </ol>
         <p class="note">
-          On received calls, telephony protocols also use a
-          <code>"ringing"</code> state, set by the mobile terminal when local
-          call alerting starts, in order to notify the remote party about the
-          ongoing alerting (ringing can actually be e.g. a beep, ring tone, or
-          vibration pattern). This is considered to be responsibility of
-          implementations: if the modem expects this state to be set,
-          implementations MUST make sure to set it. Dialer applications are not
-          expected to set this state in the current version of the
-          specification.
+          On received calls, telephony protocols also use a "<a>ringing</a>"
+          state, set by the mobile terminal when local call alerting starts, in
+          order to notify the remote party about the ongoing alerting (ringing
+          can actually be e.g. a beep, ring tone, or vibration pattern). This
+          is considered to be responsibility of implementations: if the modem
+          expects this state to be set, implementations MUST make sure to set
+          it. Dialer applications are not expected to set this state in the
+          current version of the specification.
         </p>
         <p class='note'>
           CDMA cannot report all these states in the expected sequence. The
@@ -736,9 +702,9 @@
           <a>TelephonyCall</a>.
           </li>
           <li>Set the <code>state</code> of <var>incomingCall</var> to
-          <code>"incoming"</code> in case there is no other call in <a href=
+          "<a>incoming</a>" in case there is no other call in <a href=
           "#call-state-active"><code>active</code></a> state, or otherwise set
-          it to <code>"waiting"</code>.
+          it to "<a>waiting</a>".
           </li>
           <li>Add <var>incomingCall</var> to the <a>calls</a> array.
           </li>
@@ -782,23 +748,20 @@
           supported in this order:
         </p>
         <ol>
-          <li>
-            <code>"dialing"</code>.
+          <li>"<a>dialing</a>".
           </li>
-          <li>
-            <code>"alerting"</code>.
+          <li>"<a>alerting</a>".
           </li>
-          <li>
-            <code>"active"</code>.
+          <li>"<a>active</a>".
           </li>
         </ol>
         <p class="note">
-          On the telephony services which support the <code>"connecting"</code>
-          call state (e.g. GSM and CDMA, for call routing, forwarding,
-          voicemail handling etc), implementations SHOULD support this state
-          too, between the <code>"dialing"</code> and <code>"alerting"</code>
-          states. Dialer applications can associate the protocol with the
-          <a>telephony service</a> used for the call.
+          On the telephony services which support the "<a>connecting</a>" call
+          state (e.g. GSM and CDMA, for call routing, forwarding, voicemail
+          handling etc), implementations SHOULD support this state too, between
+          the "<a>dialing</a>" and "<a>alerting</a>" states. Dialer
+          applications can associate the protocol with the <a>telephony
+          service</a> used for the call.
         </p>
         <figure>
           <img src="images/outbound_call_state_diagram.gif" alt="">
@@ -820,7 +783,7 @@
         </p>
         <ol>
           <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"disconnected"</code>.
+          "<a>disconnected</a>".
           </li>
           <li>
             <a>Queue a task</a> to <a>fire an event</a> named
@@ -837,10 +800,9 @@
           The <code>param</code> attribute of the <code>disconnected</code>
           event MUST be set to the <a>DisconnectReason</a>, if available, or
           otherwise it MUST be set to <code>null</code>. At least the following
-          values MUST be supported for the disconnect reason:
-          <code>"local"</code>, <code>"remote"</code> and
-          <code>"network"</code>. The rest of the <a>DisconnectReason</a>
-          values SHOULD be supported.
+          values MUST be supported for the disconnect reason: "<a>local</a>",
+          "<a>remote</a>" and "<a>network</a>". The rest of the
+          <a>DisconnectReason</a> values SHOULD be supported.
         </p>
       </section>
     </section>
@@ -875,7 +837,8 @@
           The <code>telephony</code> attribute
         </h3>
         <p>
-          When getting, the user agent MUST return the <a>TelephonyManager</a>
+          When getting the <dfn id="widl-Navigator-telephony">telephony</dfn>
+          attribute, the user agent MUST return the <a>TelephonyManager</a>
           object, which provides the ability to interface with the <a>telephony
           service</a> of the device.
         </p>
@@ -943,9 +906,11 @@
           The <code>activeCall</code> attribute
         </h3>
         <p>
-          When getting the <a>activeCall</a> attribute, the user agent MUST
-          return the <a>Call</a> object that represents the <a>active call</a>.
-          If there is no active <a>Call</a> return <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyManager-activeCall">activeCall</dfn> attribute, the
+          user agent MUST return the <a>Call</a> object that represents the
+          <a>active call</a>. If there is no active <a>Call</a> return
+          <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - - - calls attribute  - - - - - - - - - - - - -->
@@ -954,9 +919,9 @@
           The <code>calls</code> attribute
         </h3>
         <p>
-          When getting the <a>calls</a> attribute, the user agent MUST return
-          an array, which can be empty, of <a>Call</a> objects managed by this
-          objects.
+          When getting the <dfn id="widl-TelephonyManager-calls">calls</dfn>
+          attribute, the user agent MUST return an array, which can be empty,
+          of <a>Call</a> objects managed by this objects.
         </p>
         <p class="Note">
           <a>TelephonyCall</a> objects belonging to a multiparty call are
@@ -970,9 +935,11 @@
           The <code>emergencyNumbers</code> attribute
         </h3>
         <p>
-          When getting the <a>emergencyNumbers</a> attribute, the user agent
-          MUST return an array, which can be empty, of telephone numbers for
-          the emergency services in the current geographical area.
+          When getting the <dfn id=
+          "widl-TelephonyManager-emergencyNumbers">emergencyNumbers</dfn>
+          attribute, the user agent MUST return an array, which can be empty,
+          of telephone numbers for the emergency services in the current
+          geographical area.
         </p>
       </section>
       <!-- - - - - - - - - - - serviceIds attribute - - - - - - - - - - - - -->
@@ -981,9 +948,10 @@
           The <code>serviceIds</code> attribute
         </h3>
         <p>
-          When getting the <a>serviceIds</a> attribute, the user agent MUST
-          return an array, which can be empty, of <a>telephony service
-          id</a>'s.
+          When getting the <dfn id=
+          "widl-TelephonyManager-serviceIds">serviceIds</dfn> attribute, the
+          user agent MUST return an array, which can be empty, of <a>telephony
+          service id</a>'s.
         </p>
       </section>
       <!-- - - - - - - - - - - defaultServiceId attribute - - - - - - - - - -->
@@ -992,10 +960,11 @@
           The <code>defaultServiceId</code> attribute
         </h3>
         <p>
-          When getting the <a>defaultServiceId</a> attribute, the user agent
-          MUST return the <a>DOMString</a> that represents the id of the
-          <a>default telephony service</a> (if any). Otherwise, it returns
-          <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyManager-defaultServiceId">defaultServiceId</dfn>
+          attribute, the user agent MUST return the <a>DOMString</a> that
+          represents the id of the <a>default telephony service</a> (if any).
+          Otherwise, it returns <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - sendTones() method - - - - - - - - - - - - - -->
@@ -1004,9 +973,10 @@
           The <code>sendTones()</code> method
         </h3>
         <p>
-          The <dfn>sendTones()</dfn> method requests a telephony service emit
-          one or more [[!DTMF]] tones. When invoked, the user agent MUST run
-          the following steps:
+          The <dfn id=
+          "widl-TelephonyManager-sendTones-Promise">sendTones()</dfn> method
+          requests a telephony service emit one or more [[!DTMF]] tones. When
+          invoked, the user agent MUST run the following steps:
         </p>
         <ol id="steps-sendtones">
           <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
@@ -1048,7 +1018,9 @@
           <p>
             Tone value can be any of the following characters: 0-9; A-D; *; #.
           </p>
-          <p class="issue">The above needs to be converted to ABNF</p>
+          <p class="issue">
+            The above needs to be converted to ABNF
+          </p>
         </section><!-- tones -->
       </section><!-- sendTones() method -->
       <!-- - - - - - - - - - - stopTone() method - - - - - - - - - - - - - -->
@@ -1057,9 +1029,11 @@
           The <code>stopTone()</code> method
         </h3>
         <p>
-          The <a>stopTone()</a> method stops emitting a [[!DTMF]] tone in the
-          default or the specified telephony service. When invoked, the user
-          agent MUST run the following steps:
+          The <dfn id=
+          "widl-TelephonyManager-stopTone-Promise-DOMString-serviceId">stopTone()</dfn>
+          method stops emitting a [[!DTMF]] tone in the default or the
+          specified telephony service. When invoked, the user agent MUST run
+          the following steps:
         </p>
         <ol id="steps-stoptone">
           <li>If the platform does not support long press [[!DTMF]] tones,
@@ -1096,10 +1070,12 @@
           The <code>startTone()</code> method
         </h3>
         <p>
-          The <dfn>startTone()</dfn> method starts emitting a [[!DTMF]] tone
-          with the platform default or specified delay, in the platform default
-          or the specified telephony service. A <a><code>Promise</code></a>
-          object will be returned in order to notify the result of the request.
+          The <dfn id=
+          "widl-TelephonyManager-startTone-Promise">startTone()</dfn> method
+          starts emitting a [[!DTMF]] tone with the platform default or
+          specified delay, in the platform default or the specified telephony
+          service. A <a><code>Promise</code></a> object will be returned in
+          order to notify the result of the request.
         </p>
         <p>
           When the <code>startTone</code> method is invoked, the user agent
@@ -1150,8 +1126,9 @@
           The <code>dial()</code> method
         </h3>
         <p>
-          The <dfn>dial()</dfn> method initiates a new <a>telephony call</a>.
-          When invoked the user agent MUST run the following steps:
+          The <dfn id="widl-TelephonyManager-dial-TelephonyCall">dial()</dfn>
+          method initiates a new <a>telephony call</a>. When invoked the user
+          agent MUST run the following steps:
         </p>
         <ol id="steps-dial">
           <li>Create a new <a>TelephonyCall</a> object, referred as
@@ -1189,7 +1166,7 @@
           <li>If the request is successful, then
             <ol>
               <li>Set the <code>state</code> of <var>telCall</var> to
-              <code>"dialing"</code> value.
+              "<a>dialing</a>" value.
               </li>
               <li>Add <var>telCall</var> to the <a>calls</a> array.
               </li>
@@ -1217,9 +1194,11 @@
           The <code>changeDefaultService()</code> method
         </h3>
         <p>
-          The <dfn>changeDefaultService()</dfn> method provides a means to
-          change the <a>default telephony service</a> used by the user agent.
-          When invoked, the user agent runs the the following steps:
+          The <dfn id=
+          "widl-TelephonyManager-changeDefaultService-Promise-DOMString-serviceId">
+          changeDefaultService()</dfn> method provides a means to change the
+          <a>default telephony service</a> used by the user agent. When
+          invoked, the user agent runs the the following steps:
         </p>
         <ol>
           <li>Let <var>potential service</var> be the first argument passed to
@@ -1313,94 +1292,95 @@
           <a>TelephonyManager</a> interface.
         </p>
         <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                event handler
-              </th>
-              <th>
-                event name
-              </th>
-              <th>
-                event type
-              </th>
-              <th>
-                short description
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn><code>onincoming</code></dfn>
-              </td>
-              <td>
-                <dfn><code>incoming</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyEvent</a>
-              </td>
-              <td>
-                handles incoming and waiting calls.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>oncallschanged</code></dfn>
-              </td>
-              <td>
-                <dfn><code>callschanged</code></dfn>
-              </td>
-              <td>
-                <a><code>Event</code></a>
-              </td>
-              <td>
-                handles change in the <a>calls</a> array.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onserviceadded</code></dfn>
-              </td>
-              <td>
-                <dfn><code>serviceadded</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles a new enabled telephony service.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onserviceremoved</code></dfn>
-              </td>
-              <td>
-                <dfn><code>serviceremoved</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles a disabled telephony service.
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondefaultchanged</code></dfn>
-              </td>
-              <td>
-                <dfn><code>defaultchanged</code></dfn>
-              </td>
-              <td>
-                <a>TelephonyServiceEvent</a>
-              </td>
-              <td>
-                handles the change of default telephony service.
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th>
+              event handler
+            </th>
+            <th>
+              event name
+            </th>
+            <th>
+              event type
+            </th>
+            <th>
+              short description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <dfn id=
+              "widl-TelephonyManager-onincoming"><code>onincoming</code></dfn>
+            </td>
+            <td>
+              <code>incoming</code>
+            </td>
+            <td>
+              <a>TelephonyEvent</a>
+            </td>
+            <td>
+              handles incoming and waiting calls.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn id=
+              "widl-TelephonyManager-oncallschanged"><code>oncallschanged</code></dfn>
+            </td>
+            <td>
+              <dfn><code>callschanged</code></dfn>
+            </td>
+            <td>
+              <a><code>Event</code></a>
+            </td>
+            <td>
+              handles change in the <a>calls</a> array.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn id=
+              "widl-TelephonyManager-onserviceadded"><code>onserviceadded</code></dfn>
+            </td>
+            <td>
+              <dfn><code>serviceadded</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles a new enabled telephony service.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn id=
+              "widl-TelephonyManager-onserviceremoved"><code>onserviceremoved</code></dfn>
+            </td>
+            <td>
+              <dfn><code>serviceremoved</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles a disabled telephony service.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <dfn id=
+              "widl-TelephonyManager-ondefaultchanged"><code>ondefaultchanged</code></dfn>
+            </td>
+            <td>
+              <dfn><code>defaultchanged</code></dfn>
+            </td>
+            <td>
+              <a>TelephonyServiceEvent</a>
+            </td>
+            <td>
+              handles the change of default telephony service.
+            </td>
+          </tr>
         </table>
       </section><!-- event handers -->
       <!-- - - - - - - - - - - -  DialParams Dictionary - - - - - - - - - - -->
@@ -1422,10 +1402,11 @@
             The <code>hideCallerId</code> member
           </h3>
           <p>
-            The <dfn>hideCallerId</dfn> member represents whether the own
-            number is to be hidden or displayed to the remote party being
-            called. If missing, the user agent uses the default configuration
-            for the <a>telephony service</a> that initiated the call.
+            The <dfn id="widl-DialParams-hideCallerId">hideCallerId</dfn>
+            member represents whether the own number is to be hidden or
+            displayed to the remote party being called. If missing, the user
+            agent uses the default configuration for the <a>telephony
+            service</a> that initiated the call.
           </p>
         </section>
         <!-- - - - - - - - - - - -  serviceId member - - - - - - - - - - -->
@@ -1434,8 +1415,9 @@
             The <code>serviceId</code> member
           </h3>
           <p>
-            The serviceId member represents the <a>telephony service id</a> of
-            the <a>telephony service</a> to be used when dialing.
+            The <dfn id="widl-DialParams-serviceId">serviceId</dfn> member
+            represents the <a>telephony service id</a> of the <a>telephony
+            service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
       </section><!-- DialParams Dictionary -->
@@ -1461,8 +1443,9 @@
             The <code>duration</code> member
           </h3>
           <p>
-            The <dfn>duration</dfn> member represents the duration (mark) in
-            milliseconds of the [[!DTMF]] tones to be sent.
+            The <dfn id="widl-ToneParams-duration">duration</dfn> member
+            represents the duration (mark) in milliseconds of the [[!DTMF]]
+            tones to be sent.
           </p>
         </section>
         <!-- - - - - - - - - - - - gap member - - - - - - - - - - - - - - - -->
@@ -1471,8 +1454,9 @@
             The <code>gap</code> member
           </h3>
           <p>
-            The <dfn>gap</dfn> member represents the duration in milliseconds
-            of the time gap (space) before a [[!DTMF]] tone.
+            The <dfn id="widl-ToneParams-gap">gap</dfn> member represents the
+            duration in milliseconds of the time gap (space) before a [[!DTMF]]
+            tone.
           </p>
         </section>
         <!-- - - - - - - - - - - - serviceId member - - - - - - - - - - - - -->
@@ -1481,8 +1465,9 @@
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn>serviceId</dfn> member Represents the <a>telephony service
-            id</a> of the <a>telephony service</a> to be used when dialing.
+            The <dfn id="widl-ToneParams-serviceId">serviceId</dfn> member
+            Represents the <a>telephony service id</a> of the <a>telephony
+            service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
       </section><!-- ToneParams Dictionary -->
@@ -1507,8 +1492,9 @@
           The <code>call</code> attribute
         </h3>
         <p>
-          When getting the <dfn>call</dfn> attribute, the user agent MUST
-          return the <a>TelephonyCall</a> that triggered the event.
+          When getting the <dfn id="widl-TelephonyEvent-call">call</dfn>
+          attribute, the user agent MUST return the <a>TelephonyCall</a> that
+          triggered the event.
         </p>
       </section>
     </section><!-- interface TelephonyEvent -->
@@ -1534,9 +1520,10 @@
           The <code>serviceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>serviceId</dfn>, the user agent MUST return the
-          <a>telephony service id</a> of the <a>telephony service</a> that
-          triggered the event.
+          When getting the <dfn id=
+          "widl-TelephonyServiceEvent-serviceId">serviceId</dfn>, the user
+          agent MUST return the <a>telephony service id</a> of the <a>telephony
+          service</a> that triggered the event.
         </p>
       </section>
       <!-- - - - - - - - - - TelephonyServiceEventInit dictionary - - - - - -->
@@ -1556,8 +1543,10 @@
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn>serviceId</dfn> member represents the <a>telephony service
-            id</a> of a <a>telephony service</a>.
+            The <dfn id=
+            "widl-TelephonyServiceEventInit-serviceId">serviceId</dfn> member
+            represents the <a>telephony service id</a> of a <a>telephony
+            service</a>.
           </p>
         </section><!-- serviceId member -->
       </section><!-- TelephonyServiceEventInit interface -->
@@ -1607,17 +1596,17 @@
           The <code>resume()</code> method
         </h3>
         <p>
-          The <dfn>resume()</dfn> method requests the telephony system to
-          resume resume a held <a>Call</a>. When invoked, the user agent MUST
-          run the following steps:
+          The <dfn id="widl-CallHandler-resume-void">resume()</dfn> method
+          requests the telephony system to resume resume a held <a>Call</a>.
+          When invoked, the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"held"</code>, then
-          throw an <code>InvalidStateError</code> exception.
+          <li>If <code>state</code> is not equal to "<a>held</a>", then throw
+          an <code>InvalidStateError</code> exception.
           </li>
           <li>Otherwise make a request to the telephony system to resume the
           call. If the request is acknowledged, then set <code>state</code> to
-          <code>"resuming"</code>.
+          "<a>resuming</a>".
           </li>
         </ol>
       </section><!-- resume() method -->
@@ -1627,9 +1616,9 @@
           The <code>hold()</code> method
         </h3>
         <p>
-          The <code>hold()</code> method requests the telephony system put the
-          <a>Call</a> <a>on hold</a>. When invoked, the user agent MUST run the
-          following steps:
+          The <dfn id="widl-CallHandler-hold-void">hold()</dfn> method requests
+          the telephony system put the <a>Call</a> <a>on hold</a>. When
+          invoked, the user agent MUST run the following steps:
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>active</code>, then
@@ -1641,7 +1630,7 @@
           <li>Return, and continue these steps asynchronously.
           </li>
           <li>If the request is acknowledged then set <code>state</code> to
-          <code>"holding"</code>.
+          "<a>holding</a>".
           </li>
         </ol>
       </section><!-- hold() method -->
@@ -1651,13 +1640,15 @@
           The <code>disconnect</code> method
         </h3>
         <p>
-          If invoked on a <a>TelephonyCall</a>, it initiates releasing of the
-          telephony call. If invoked on a <a>ConferenceCall</a>, Initiates
-          releasing the multiparty call, and each participating
+          The <dfn id="widl-CallHandler-disconnect-void">disconnect</dfn>
+          method, if invoked on a <a>TelephonyCall</a>, it initiates releasing
+          of the telephony call. If invoked on a <a>ConferenceCall</a>, it
+          initiates releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
         </p>
         <p>
-          If the telephony service is CDMA, throw "NotSupported" DOMError.
+          If the telephony service is CDMA, throw "<code>NotSupported</code>"
+          DOMError.
         </p>
         <p class="note">
           Depending on the protocol, there may be restrictions on methods. For
@@ -1675,8 +1666,8 @@
           The <code>callId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>callId</dfn> attribute, the user agent MUST
-          return the <a>call id</a>.
+          When getting the <dfn id="widl-CallHandler-callId">callId</dfn>
+          attribute, the user agent MUST return the <a>call id</a>.
         </p>
       </section><!-- callId attribute -->
       <!-- - - - - - - - - - - -  serviceId attribute - - - - - - - - - - -->
@@ -1685,9 +1676,9 @@
           The <code>serviceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>serviceId</dfn> attribute, the user agent MUST
-          return the <a>telephony service id</a> of the <a>telephony
-          service</a> associated with this call.
+          When getting the <dfn id="widl-CallHandler-serviceId">serviceId</dfn>
+          attribute, the user agent MUST return the <a>telephony service id</a>
+          of the <a>telephony service</a> associated with this call.
         </p>
       </section><!-- serviceId attribute -->
       <!-- - - - - - - - - - - -  state attribute - - - - - - - - - - - - -->
@@ -1696,9 +1687,9 @@
           The <code>state</code> attribute
         </h3>
         <p>
-          When getting the <dfn>state</dfn> attribute, the user agent MUST
-          return the <a>CallState</a> value that represents the state of for
-          the <a>Call</a>.
+          When getting the <dfn id="widl-CallHandler-state">state</dfn>
+          attribute, the user agent MUST return the <a>CallState</a> value that
+          represents the state of for the <a>Call</a>.
         </p>
       </section><!-- state attribute -->
       <section id="callhandler-eventhandlers">
@@ -1723,7 +1714,8 @@
           <tbody>
             <tr>
               <td>
-                <dfn><code>onstatechange</code></dfn>
+                <dfn id=
+                "widl-CallHandler-onstatechange"><code>onstatechange</code></dfn>
               </td>
               <td>
                 <dfn><code>statechange</code></dfn>
@@ -1731,7 +1723,7 @@
             </tr>
             <tr>
               <td>
-                <dfn><code>onerror</code></dfn>
+                <dfn id="widl-CallHandler-onerror"><code>onerror</code></dfn>
               </td>
               <td>
                 <dfn><code>error</code></dfn>
@@ -1981,10 +1973,11 @@
           The <code>remoteParty</code> attribute
         </h3>
         <p>
-          When getting the <dfn>remoteParty</dfn> attribute, the user agent
-          MUST return the remote party identifier (e.g. telephone number) of
-          the call participant. If not available (e.g. callerId has been
-          hidden), return <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyCall-remoteParty">remoteParty</dfn> attribute, the
+          user agent MUST return the remote party identifier (e.g. telephone
+          number) of the call participant. If not available (e.g. callerId has
+          been hidden), return <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - - conferenceId attribute - - - - - - - - - - -->
@@ -1993,11 +1986,12 @@
           The <code>conferenceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>conferenceId</dfn> attribute, if this call is
-          managed as a part of a multiparty call then the user agent MUST
-          return the value of the <code>conferenceId</code> attribute of the
-          <a>ConferenceCall</a> multiparty call to which this call is part of.
-          Otherwise, return <code>null</code>.
+          When getting the <dfn id=
+          "widl-TelephonyCall-conferenceId">conferenceId</dfn> attribute, if
+          this call is managed as a part of a multiparty call then the user
+          agent MUST return the value of the <code>conferenceId</code>
+          attribute of the <a>ConferenceCall</a> multiparty call to which this
+          call is part of. Otherwise, return <code>null</code>.
         </p>
       </section>
       <!-- - - - - - - - - - - - accept() method  - - - - - - - - - - - - - -->
@@ -2006,18 +2000,18 @@
           The <code>accept()</code> method
         </h3>
         <p>
-          The <dfn>accept()</dfn> method accepts an incoming or waiting
-          <a>telephony call</a>. When invoked, the user agent MUST run the
-          following steps:
+          The <dfn id="widl-TelephonyCall-accept-void">accept()</dfn> method
+          accepts an incoming or waiting <a>telephony call</a>. When invoked,
+          the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"incoming"</code> or
-          <code>"waiting"</code>, then throw an <code>InvalidStateError</code>
+          <li>If <code>state</code> is not equal to "<a>incoming</a>" or
+          "<a>waiting</a>", then throw an <code>InvalidStateError</code>
           exception.
           </li>
           <li>Otherwise make a request to the telephony system to accept the
           call. If the request is acknowledged then set <code>state</code> to
-          <code>"accepted"</code>.
+          "<a>accepted</a>".
           </li>
         </ol>
       </section><!-- accept() method -->
@@ -2032,11 +2026,12 @@
           GSM, the Call Deflection supplementary service needs to be active.
         </p>
         <p>
-          The <dfn>redirect()</dfn> method initiates deflecting an incoming or
-          waiting telephone call to a remote party. The method takes one
-          argument, which represents the remote party to which the call is
-          redirected. When invoked, the user agent MUST run the following
-          steps:
+          The <dfn id=
+          "widl-TelephonyCall-redirect-void-DOMString-remoteParty">redirect()</dfn>
+          method initiates deflecting an incoming or waiting telephone call to
+          a remote party. The method takes one argument, which represents the
+          remote party to which the call is redirected. When invoked, the user
+          agent MUST run the following steps:
         </p>
         <ol>
           <li>If the <a>state</a> is not <a>"incoming"</a> or <a>"waiting"</a>,
@@ -2047,11 +2042,11 @@
           return, and continue these steps asynchronously.
           </li>
           <li>If the request is acknowledged, then set <code>state</code> to
-          <code>"redirecting"</code>.
+          "<a>redirecting</a>".
           </li>
           <li>When <a><var>TCallControl</var></a> is notified that the call has
-          been successfully redirected it MUST set <code>state</code> to <code>
-            "disconnected"</code>.
+          been successfully redirected it MUST set <code>state</code> to
+          "<a>disconnected</a>".
           </li>
         </ol>
       </section><!-- redirect() method -->
@@ -2066,15 +2061,17 @@
           the Call Transfer supplementary service needs to be active.
         </p>
         <p>
-          The <dfn>transfer()</dfn> method Initiates transferring the call to a
-          new call between the remote party of this call and another remote
-          party, then disconnects the call. The method takes one argument,
-          which represents the remote party to which the call is transferred.
-          When invoked, the user agent MUST run the following steps:
+          The <dfn id=
+          "widl-TelephonyCall-transfer-void-DOMString-thirdParty">transfer()</dfn>
+          method Initiates transferring the call to a new call between the
+          remote party of this call and another remote party, then disconnects
+          the call. The method takes one argument, which represents the remote
+          party to which the call is transferred. When invoked, the user agent
+          MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to <code>"active"</code> or
-          <code>"held"</code>, then throw an <code>InvalidStateError</code>
+          <li>If <code>state</code> is not equal to "<a>active</a>" or
+          "<a>held</a>", then throw an <code>InvalidStateError</code>
           exception.
           </li>
           <li>Otherwise make a request to the telephony system to transfer the
@@ -2084,11 +2081,11 @@
           transfer procedure. If there is an error, the original call MUST be
           resumed and the <a>error steps</a> MUST be executed without modifying
           the call state. If the request is acknowledged, then set
-          <code>state</code> to <code>"transferring"</code>.
+          <code>state</code> to "<a>transferring</a>".
           </li>
           <li>When <a><var>TCallControl</var></a> is notified that the call has
           been successfully transferred and the original call is disconnected,
-          it MUST set <code>state</code> to <code>"disconnected"</code>.
+          it MUST set <code>state</code> to "<a>disconnected</a>".
           </li>
         </ol>
       </section><!-- transfer() method -->
@@ -2098,19 +2095,20 @@
           The <code>createConference()</code> method
         </h3>
         <p>
-          The <dfn>createConference()</dfn> method Creates a multiparty call
-          from the current call. On cellular telephony services, this happens
-          by initiating merging the active and held calls into a multiparty
-          call. Using this method MUST be the only way to create a
-          <a>ConferenceCall</a> object. When invoked, the user agent MUST run
-          the following steps:
+          The <dfn id=
+          "widl-TelephonyCall-createConference-ConferenceCall">createConference()</dfn>
+          method Creates a multiparty call from the current call. On cellular
+          telephony services, this happens by initiating merging the active and
+          held calls into a multiparty call. Using this method MUST be the only
+          way to create a <a>ConferenceCall</a> object. When invoked, the user
+          agent MUST run the following steps:
         </p>
         <ol id="steps-createConference">
           <li>Let <var>telCall</var> be the <a>telephony call</a> on which this
           method was invoked.
           </li>
           <li>Set the <code>state</code> of <var>telCall</var> to
-          <code>"joining"</code>.
+          "<a>joining</a>".
           </li>
           <li>Then, in cellular telephony services, make a request to the
           telephony system to join the active and held calls into a multiparty
@@ -2123,7 +2121,7 @@
           conference id, named <var>confCall</var>.
           </li>
           <li>Set the <code>state</code> of <var>confCall</var> to
-          <code>"joining"</code>.
+          "<a>joining</a>".
           </li>
           <li>Return the <var>confCall</var> object, and continue these steps
           asynchronously.
@@ -2144,7 +2142,7 @@
               of the <a>TelephonyManager</a> object.
               </li>
               <li>Set the <code>state</code> of <var>confCall</var> to
-              <code>"active"</code>.
+              "<a>active</a>".
               </li>
               <li>
                 <a>Queue a task</a> to <a>fire an event</a> named
@@ -2172,138 +2170,147 @@
           type for the events is <a><code>Event</code></a>.
         </p>
         <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                event handler
-              </th>
-              <th>
-                event name / telephony state
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn><code>ondialing</code></dfn>
-              </td>
-              <td>
-                <a>dialing</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onalerting</code></dfn>
-              </td>
-              <td>
-                <a>alerting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onaccepted</code></dfn>
-              </td>
-              <td>
-                <a>accepted</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onconnecting</code></dfn>
-              </td>
-              <td>
-                <a>connecting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onactive</code></dfn>
-              </td>
-              <td>
-                <a>active</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondisconnecting</code></dfn>
-              </td>
-              <td>
-                <a>disconnecting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondisconnected</code></dfn>
-              </td>
-              <td>
-                <a>disconnected</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onholding</code></dfn>
-              </td>
-              <td>
-                <a>holding</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onheld</code></dfn>
-              </td>
-              <td>
-                <a>held</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onresuming</code></dfn>
-              </td>
-              <td>
-                <a>resuming</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onredirecting</code></dfn>
-              </td>
-              <td>
-                <a>redirecting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ontransferring</code></dfn>
-              </td>
-              <td>
-                <a>transferring</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onjoining</code></dfn>
-              </td>
-              <td>
-                <a>joining</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onsplitting</code></dfn>
-              </td>
-              <td>
-                <a>splitting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onmultiparty</code></dfn>
-              </td>
-              <td>
-                <a>multiparty</a>
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th>
+              event handler
+            </th>
+            <th>
+              event name / telephony state
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-ondialing">ondialing</dfn></code>
+            </td>
+            <td>
+              <a>dialing</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onalerting">onalerting</dfn></code>
+            </td>
+            <td>
+              <a>alerting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onaccepted">onaccepted</dfn></code>
+            </td>
+            <td>
+              <a>accepted</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onconnecting">onconnecting</dfn></code>
+            </td>
+            <td>
+              <a>connecting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id="widl-TelephonyCall-onactive">onactive</dfn></code>
+            </td>
+            <td>
+              <a>active</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-ondisconnecting">ondisconnecting</dfn></code>
+            </td>
+            <td>
+              <a>disconnecting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-ondisconnected">ondisconnected</dfn></code>
+            </td>
+            <td>
+              <a>disconnected</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onholding">onholding</dfn></code>
+            </td>
+            <td>
+              <a>holding</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id="widl-TelephonyCall-onheld">onheld</dfn></code>
+            </td>
+            <td>
+              <a>held</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onresuming">onresuming</dfn></code>
+            </td>
+            <td>
+              <a>resuming</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onredirecting">onredirecting</dfn></code>
+            </td>
+            <td>
+              <a>redirecting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-ontransferring">ontransferring</dfn></code>
+            </td>
+            <td>
+              <a>transferring</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onjoining">onjoining</dfn></code>
+            </td>
+            <td>
+              <a>joining</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onmultiparty">onmultiparty</dfn></code>
+            </td>
+            <td>
+              <a>multiparty</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-TelephonyCall-onsplitting">onsplitting</dfn></code>
+            </td>
+            <td>
+              <a>splitting</a>
+            </td>
+          </tr>
         </table>
       </section><!-- telephony-eventhandlers -->
     </section><!-- TelephonyCall -->
@@ -2361,12 +2368,13 @@
       <!-- - - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
       <section>
         <h3>
-          The <code>conferenceId</code>attribute
+          The <code>conferenceId</code> attribute
         </h3>
         <p>
-          When getting the <dfn>conferenceId</dfn> attribute, the user agent
-          MUST return the conference identifier unique in the system and in
-          call history. It MUST NOT be the empty string.
+          When getting the <dfn id=
+          "widl-ConferenceCall-conferenceId">conferenceId</dfn> attribute, the
+          user agent MUST return the conference identifier unique in the system
+          and in call history. It MUST NOT be the empty string.
         </p>
       </section><!-- conferenceId attribute -->
       <!-- - - - - - - - - - - -  calls attribute - - - - - - - - - - - - - -->
@@ -2375,8 +2383,9 @@
           The <code>calls</code> attribute
         </h3>
         <p>
-          When getting, the user agent MUST return the array of
-          <a>TelephonyCall</a> objects managed by the multiparty call object.
+          When getting the <dfn id="widl-ConferenceCall-calls">calls</dfn>, the
+          user agent MUST return the array of <a>TelephonyCall</a> objects
+          managed by the multiparty call object.
         </p>
       </section><!-- calls attribute -->
       <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - - -->
@@ -2385,12 +2394,14 @@
           The <code>split()</code> method
         </h3>
         <p>
-          The <dfn>split()</dfn> method requests the telephony system split the
-          specified participant <a>TelephonyCall</a> object, activate it and
-          put this multiparty call on hold. The method takes one argument,
-          which represents the <a>TelephonyCall</a> object of the call
-          participant to be split from the multiparty call. When invoked, the
-          user agent MUST run the following steps:
+          The <dfn id=
+          "widl-ConferenceCall-split-void-TelephonyCall-participantCall">split()</dfn>
+          method requests the telephony system split the specified participant
+          <a>TelephonyCall</a> object, activate it and put this multiparty call
+          on hold. The method takes one argument, which represents the
+          <a>TelephonyCall</a> object of the call participant to be split from
+          the multiparty call. When invoked, the user agent MUST run the
+          following steps:
         </p>
         <ol>
           <li>If the provided <var>participantCall</var> does not identify a
@@ -2400,7 +2411,7 @@
           </li>
           <li>Otherwise, set the <code>state</code> of the
           <var>participantCall</var> and that of this <a>ConferenceCall</a>
-          object to <code>"splitting"</code>.
+          object to "<a>splitting</a>".
           </li>
           <li>Make a request to the telephony system to split the call
           participant from the multiparty call.
@@ -2437,205 +2448,106 @@
           <a><code>Event</code></a>.
         </p>
         <table class="simple">
-          <thead>
-            <tr>
-              <th>
-                event handler
-              </th>
-              <th>
-                event name/telephony state
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <dfn><code>onactive</code></dfn>
-              </td>
-              <td>
-                <a>active</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondisconnecting</code></dfn>
-              </td>
-              <td>
-                <a>disconnecting</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>ondisconnected</code></dfn>
-              </td>
-              <td>
-                <a>disconnected</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onholding</code></dfn>
-              </td>
-              <td>
-                <a>holding</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onheld</code></dfn>
-              </td>
-              <td>
-                <a>held</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onresuming</code></dfn>
-              </td>
-              <td>
-                <a>resuming</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onjoining</code></dfn>
-              </td>
-              <td>
-                <a>joining</a>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <dfn><code>onsplitting</code></dfn>
-              </td>
-              <td>
-                <a>splitting</a>
-              </td>
-            </tr>
-          </tbody>
+          <tr>
+            <th>
+              event handler
+            </th>
+            <th>
+              event name/telephony state
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onparticipantadded">onparticipantadded</dfn></code>
+            </td>
+            <td>
+              <a>participantadded</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onparticipantremoved">onparticipantremoved</dfn></code>
+            </td>
+            <td>
+              <a>participantremoved</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onjoining">onjoining</dfn></code>
+            </td>
+            <td>
+              <a>joining</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onactive">onactive</dfn></code>
+            </td>
+            <td>
+              <a>active</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onsplitting">onsplitting</dfn></code>
+            </td>
+            <td>
+              <a>splitting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onholding">onholding</dfn></code>
+            </td>
+            <td>
+              <a>holding</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id="widl-ConferenceCall-onheld">onheld</dfn></code>
+            </td>
+            <td>
+              <a>held</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-onresuming">onresuming</dfn></code>
+            </td>
+            <td>
+              <a>resuming</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-ondisconnecting">ondisconnecting</dfn></code>
+            </td>
+            <td>
+              <a>disconnecting</a>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <code><dfn id=
+              "widl-ConferenceCall-ondisconnected">ondisconnected</dfn></code>
+            </td>
+            <td>
+              <a>disconnected</a>
+            </td>
+          </tr>
         </table>
       </section><!-- event handlers -->
     </section><!-- ConferenceCall -->
-    <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - - - -->
-    <section>
-      <h2>
-        <a>DisconnectReason</a> enum
-      </h2>
-      <dl class="idl" title="enum DisconnectReason">
-        <dt>
-          local
-        </dt>
-        <dd>
-          The call was disconnected by the user, or the device, and no more
-          specific reason is known.
-        </dd>
-        <dt>
-          remote
-        </dt>
-        <dd>
-          The call was disconnected by the remote party, and no more specific
-          reason is known.
-        </dd>
-        <dt>
-          network
-        </dt>
-        <dd>
-          The call was disconnected by the network, and no more specific reason
-          is known.
-        </dd>
-        <dt>
-          busy
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was busy.
-        </dd>
-        <dt>
-          rejected
-        </dt>
-        <dd>
-          The call was disconnected because the remote party rejected the call.
-        </dd>
-        <dt>
-          redirected
-        </dt>
-        <dd>
-          The call has been redirected to another subscriber.
-        </dd>
-        <dt>
-          unreachable
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          was unreachable by the network.
-        </dd>
-        <dt>
-          no-answer
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          has not answered and the call has timed out.
-        </dd>
-        <dt>
-          network-unreachable
-        </dt>
-        <dd>
-          The call was disconnected because the network was unreachable.
-        </dd>
-        <dt>
-          barred
-        </dt>
-        <dd>
-          The call was disconnected because it was barred.
-        </dd>
-        <dt>
-          no-service
-        </dt>
-        <dd>
-          The call was not made because there is no telephony service set up
-          and enabled (e.g. no SIM card).
-        </dd>
-        <dt>
-          invalid-number
-        </dt>
-        <dd>
-          The call was disconnected by the network, because the remote party
-          identifier was invalid.
-        </dd>
-      </dl>
-    </section>
-    <!-- - - - - - - - - - -  CallDirection Enum  - - - - - - - - - - - - - -->
-    <section>
-      <h2>
-        <a>CallDirection</a> enum
-      </h2>
-      <dl class="idl" title="enum CallDirection">
-        <dt>
-          dialed
-        </dt>
-        <dd>
-          The call has been dialed.
-        </dd>
-        <dt>
-          received
-        </dt>
-        <dd>
-          The call has been received.
-        </dd>
-        <dt>
-          missed
-        </dt>
-        <dd>
-          The call has been missed.
-        </dd>
-        <dt>
-          missed-new
-        </dt>
-        <dd>
-          The call was a missed call not seen yet by the user.
-        </dd>
-      </dl>
-    </section>
     <section id="error-steps">
       <h2>
         Error Steps
@@ -2655,7 +2567,7 @@
         </li>
       </ol>
     </section>
-        <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
+    <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - - - -->
     <section>
       <h2>
         Security and privacy considerations
@@ -2878,9 +2790,10 @@
             The <code>remoteParty</code> attribute
           </h3>
           <p>
-            When getting the <dfn>remoteParty</dfn> attribute, the user agent
-            MUST return the <a>remote party id</a> (e.g. telephone number) of
-            the call participant.
+            When getting the <dfn id=
+            "CallHistoryEntry-remoteParty">remoteParty</dfn> attribute, the
+            user agent MUST return the <a>remote party id</a> (e.g. telephone
+            number) of the call participant.
           </p>
         </section><!-- remoteParty attribute -->
         <!-- - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
@@ -2889,9 +2802,10 @@
             The <code>serviceId</code> attribute
           </h3>
           <p>
-            When getting the <dfn>serviceId</dfn> attribute, the user agent
-            MUST return the <a>telephony service id</a> of the <a>telephony
-            service</a> used for the call.
+            When getting the <dfn id=
+            "CallHistoryEntry-serviceId">serviceId</dfn> attribute, the user
+            agent MUST return the <a>telephony service id</a> of the
+            <a>telephony service</a> used for the call.
           </p>
         </section><!-- serviceId attribute -->
         <!-- - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
@@ -2900,9 +2814,11 @@
             The <code>conferenceId</code> attribute
           </h3>
           <p>
-            When getting, the user agent MUST return the <a>conference id</a>
-            of the call, if the call has participated in a multiparty call.
-            Otherwise, return <code>null</code>. string.
+            When getting the <dfn id=
+            "CallHistoryEntry-conferenceId">conferenceId</dfn> attribute, the
+            user agent MUST return the <a>conference id</a> of the call, if the
+            call has participated in a multiparty call. Otherwise, return
+            <code>null</code>. string.
           </p>
         </section><!-- conferenceId attribute -->
         <!-- - - - - - - - - - - startTime attribute  - - - - - - - - - - - -->
@@ -2911,9 +2827,10 @@
             The <code>startTime</code> attribute
           </h3>
           <p>
-            When getting startTime, the user agent MUST return the starting
-            time of the call, measured from when the call is in
-            <code>"active"</code> state.
+            When getting the <dfn id=
+            "CallHistoryEntry-startTime">startTime</dfn> attribute, the user
+            agent MUST return the starting time of the call, measured from when
+            the call is in <a>active</a> state.
           </p>
         </section><!-- startTime attribute -->
         <!-- - - - - - - - - - -  duration attribute  - - - - - - - - - - - -->
@@ -2922,18 +2839,20 @@
             The <code>duration</code> attribute
           </h3>
           <p>
-            When getting the <dfn>duration</dfn>, the user agent MUST return
-            the duration of the call expressed in milliseconds.
+            When getting the <dfn id="CallHistoryEntry-duration">duration</dfn>
+            attribute, the user agent MUST return the duration of the call
+            expressed in milliseconds.
           </p>
         </section><!-- duration attribute -->
         <!-- - - - - - - - - - -  CallDirection attribute - - - - - - - - - -->
         <section>
           <h3>
-            The <code>CallDirection</code> attribute
+            The <code>direction</code> attribute
           </h3>
           <p>
-            When getting the <dfn>CallDirection</dfn> attribute, the user agent
-            MUST return the <a>CallDirection</a>.
+            When getting the <dfn id=
+            "CallHistoryEntry-direction">direction</dfn> attribute, the user
+            agent MUST return the <a>CallDirection</a>.
           </p>
         </section><!-- CallDirection attribute -->
         <!-- - - - - - - - - - - disconnectReason attribute  - - - -  - - - -->
@@ -2942,9 +2861,10 @@
             The <code>disconnectReason</code> attribute
           </h3>
           <p>
-            When getting the <dfn>disconnectReason</dfn> attribute, the user
-            agent MUST return the <a>DisconnectReason</a> if available, or
-            return <code>null</code> otherwise.
+            When getting the <dfn id=
+            "CallHistoryEntry-disconnectReason">disconnectReason</dfn>
+            attribute, the user agent MUST return the <a>DisconnectReason</a>
+            if available, or return <code>null</code> otherwise.
           </p>
         </section><!-- disconnectReason attribute -->
         <!-- - - - - - - - - - -   emergency attribute  - - - - - - - - - - -->
@@ -2953,12 +2873,134 @@
             The <code>emergency</code> attribute
           </h3>
           <p>
-            When getting the <dfn>emergency</dfn> attribute, the user agent
-            MUST return <code>true</code> if the call was an emergency call, or
-            <code>false</code> otherwise.
+            When getting the <dfn id=
+            "CallHistoryEntry-emergency">emergency</dfn> attribute, the user
+            agent MUST return <code>true</code> if the call was an emergency
+            call, or <code>false</code> otherwise.
           </p>
         </section><!-- emergency attribute -->
       </section><!-- CallHistoryEntry Interface-->
+      <!-- - - - - - - - - - -  CallDirection Enum  - - - - - - - - - - - - - -->
+      <section>
+        <h2>
+          <a>CallDirection</a> enum
+        </h2>
+        <dl class="idl" title="enum CallDirection">
+          <dt>
+            dialed
+          </dt>
+          <dd>
+            The call has been dialed.
+          </dd>
+          <dt>
+            received
+          </dt>
+          <dd>
+            The call has been received.
+          </dd>
+          <dt>
+            missed
+          </dt>
+          <dd>
+            The call has been missed.
+          </dd>
+          <dt>
+            missed-new
+          </dt>
+          <dd>
+            The call was a missed call not seen yet by the user.
+          </dd>
+        </dl>
+      </section><!-- CallDirection Enum -->
+      <!-- - - - - - - - - - -  DisconnectReason Enum - - - - - - - - - - - - -->
+      <section>
+        <h2>
+          <a>DisconnectReason</a> enum
+        </h2>
+        <dl class="idl" title="enum DisconnectReason">
+          <dt>
+            local
+          </dt>
+          <dd>
+            The call was disconnected by the user, or the device, and no more
+            specific reason is known.
+          </dd>
+          <dt>
+            remote
+          </dt>
+          <dd>
+            The call was disconnected by the remote party, and no more specific
+            reason is known.
+          </dd>
+          <dt>
+            network
+          </dt>
+          <dd>
+            The call was disconnected by the network, and no more specific
+            reason is known.
+          </dd>
+          <dt>
+            busy
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            was busy.
+          </dd>
+          <dt>
+            rejected
+          </dt>
+          <dd>
+            The call was disconnected because the remote party rejected the
+            call.
+          </dd>
+          <dt>
+            redirected
+          </dt>
+          <dd>
+            The call has been redirected to another subscriber.
+          </dd>
+          <dt>
+            unreachable
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            was unreachable by the network.
+          </dd>
+          <dt>
+            no-answer
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            has not answered and the call has timed out.
+          </dd>
+          <dt>
+            network-unreachable
+          </dt>
+          <dd>
+            The call was disconnected because the network was unreachable.
+          </dd>
+          <dt>
+            barred
+          </dt>
+          <dd>
+            The call was disconnected because it was barred.
+          </dd>
+          <dt>
+            no-service
+          </dt>
+          <dd>
+            The call was not made because there is no telephony service set up
+            and enabled (e.g. no SIM card).
+          </dd>
+          <dt>
+            invalid-number
+          </dt>
+          <dd>
+            The call was disconnected by the network, because the remote party
+            identifier was invalid.
+          </dd>
+        </dl>
+      </section><!-- DisconnectReason Enum -->
     </section><!-- Managing Call History -->
     <!-- - - - - - - - - - - - - -  Changes - - - - - - - - - - - - - - - - -->
     <section class="appendix" id="Changes">
