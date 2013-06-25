@@ -1294,9 +1294,6 @@ enum <dfn>DisconnectReason</dfn> {
                 <a>Queue a task</a> to <a>fire an event</a> named
                 <code>dialing</code> at the <var>telCall</var> object.
               </li>
-              <li>and finally return to the caller and <a>queue a task</a> <a>
-                <var>TCallControl</var></a> to monitor call flow progress.
-              </li>
             </ol>
           </li>
         </ol>
@@ -2157,7 +2154,7 @@ enum <dfn>DisconnectReason</dfn> {
           <li>If the request is acknowledged, then set <code>state</code> to
           "<a>redirecting</a>".
           </li>
-          <li>When <a><var>TCallControl</var></a> is notified that the call has
+          <li>When the <a>telephony service</a> is notified that the call has
           been successfully redirected it MUST set <code>state</code> to
           "<a>disconnected</a>".
           </li>
@@ -2196,7 +2193,7 @@ enum <dfn>DisconnectReason</dfn> {
           without modifying the call state. If the request is acknowledged,
           then set <code>state</code> to "<a>transferring</a>".
           </li>
-          <li>When <a><var>TCallControl</var></a> is notified that the call has
+          <li>When the <a>telephony service</a> is notified that the call has
           been successfully transferred and the original call is disconnected,
           it MUST set <code>state</code> to "<a>disconnected</a>".
           </li>
