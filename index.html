@@ -783,7 +783,7 @@ enum <dfn>CallState</dfn> {
         </p>
         <dl>
           <dt>
-            <dfn>local</dfn>
+            <dfn id="disconnect-local">local</dfn>
           </dt>
           <dd>
             The call was disconnected by the user, or the device, and no more
@@ -989,13 +989,14 @@ enum <dfn>DisconnectReason</dfn> {
           Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dt>
-          TelephonyCall dial ()
+          TelephonyCall dial (DOMString remoteParty, optional DialParams
+          params)
         </dt>
         <dt>
-          Promise sendTones()
+          Promise sendTones(DOMString tones, optional ToneParams params)
         </dt>
         <dt>
-          Promise startTone()
+          Promise startTone(DOMString tone, optional ToneParams params)
         </dt>
         <dt>
           Promise stopTone(optional DOMString serviceId)
@@ -1255,7 +1256,7 @@ enum <dfn>DisconnectReason</dfn> {
           </li>
           <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
           object with identical <a>remoteParty</a> attribute, then an
-          <code>InvalidModificationError</code> MUST be thrown.
+          <code>InvalidModificationError</code> exception.
           </li>
           <li>Otherwise, make a request to the telephony system to dial in the
           <a>remote party id</a> passed in the <var>remoteParty</var>
@@ -1732,7 +1733,7 @@ enum <dfn>DisconnectReason</dfn> {
         </p>
         <ol>
           <li>If <code>state</code> is not equal to <code>active</code>, then
-          an <code>InvalidStateError</code> MUST be thrown.
+          an throw and <code>InvalidStateError</code> exception.
           </li>
           <li>Otherwise make a request to the telephony system to hold the
           call.
