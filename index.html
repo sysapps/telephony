@@ -989,13 +989,13 @@ enum <dfn>DisconnectReason</dfn> {
           Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dt>
-          TelephonyCall dial ()
+          TelephonyCall dial (DOMString remoteParty, optional DialParams params)
         </dt>
         <dt>
-          Promise sendTones()
+          Promise sendTones(DOMString tones, optional ToneParams params)
         </dt>
         <dt>
-          Promise startTone()
+          Promise startTone(DOMString tone, optional ToneParams params)
         </dt>
         <dt>
           Promise stopTone(optional DOMString serviceId)
