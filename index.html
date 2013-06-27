@@ -251,8 +251,8 @@
       <p>
         A telephony service observes the <a title="call state">call states</a>
         of a <a>telephony call</a> in the supported telephony backend(s) and
-        networks and reflects those changes in the API through [[!DOM4]]
-        events.
+        networks and reflects those changes in the API through [[!DOM4]] events
+        and promises.
       </p>
       <!-- - - - - - - - -  Changing telephony services - - - - - - - - - - -->
       <section>
@@ -343,8 +343,10 @@
           referred to as a <a>multiparty call</a>.
         </p>
         <p>
-          A <a>telephony call</a> is always in some call state, which can
-          change over time.
+          In the process of establishing and maintaining a connection between
+          multiple parties, a telephony call transitions through various
+          <a title="call state">call states</a>. A <a>telephony call</a> is
+          always in some <a>call state</a>, which can change over time.
         </p>
         <p>
           Telephony calls initiated by a telephony service of the system is an
@@ -435,10 +437,8 @@
         </h2>
         <p>
           A <dfn>call state</dfn> represents the state of interaction between a
-          telephony service, the telephony network, and one or more remote
-          parties. In the process of establishing a connection between multiple
-          parties, a telephony call transitions through various <a title=
-          "call state">call states</a>.
+          <a>telephony service</a>, the <a>telephony network</a>, the API, and
+          one or more remote parties.
         </p>
         <p>
           Within the API, the call states are represented by the
@@ -744,15 +744,19 @@ enum <dfn>CallState</dfn> {
           implementation.
         </p>
         <p>
-          For call setup on dialed calls, the following call states MUST be
-          supported in this order:
+          For making a call, the <a>telephony service</a> transitions through
+          the following states in order. Errors can occur at each state, which
+          can result in the call becoming <a>disconnected</a>:
         </p>
         <ol>
-          <li>"<a>dialing</a>".
+          <li>
+            <a>dialing</a>
           </li>
-          <li>"<a>alerting</a>".
+          <li>
+            <a>alerting</a>
           </li>
-          <li>"<a>active</a>".
+          <li>
+            <a>active</a>
           </li>
         </ol>
         <p class="note">
@@ -1247,19 +1251,27 @@ enum <dfn>DisconnectReason</dfn> {
           method initiates a new <a>telephony call</a>. When invoked the user
           agent MUST run the following steps:
         </p>
+        <p class="note">
+          Note that verification of the format of the <var>remoteParty</var>
+          argument is left to the <a>telephony service</a>. Providing an
+          <var>remoteParty</var> in the invalid format will generally result in
+          the call disconnecting because the <a>telephony service</a> or
+          <a>telephony network</a> will deem it an <a>invalid number</a>.
+        </p>
         <ol id="steps-dial">
-          <li>Create a new <a>TelephonyCall</a> object, referred as
-          <var>telCall</var> in these steps.
-          </li>
-          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
-          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
+          <li>Let <var>service</var> be one of the following:
           </li>
           <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> attribute, then an
+          object with identical <a>remoteParty</a> attribute, then throw an
           <code>InvalidModificationError</code> exception.
           </li>
-          <li>Otherwise, make a request to the telephony system to dial in the
-          <a>remote party id</a> passed in the <var>remoteParty</var>
+          <li>Let <var>telCall</var> be a new <a>TelephonyCall</a> object.
+          </li>
+          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
+          <a>remote party id</a> specified in the <a>remoteParty</a> argument.
+          </li>
+          <li>Otherwise, make a request to the <a>telephony system</a> to dial
+          the <a>remote party id</a> passed in the <var>remoteParty</var>
           parameter. Note that the value can be also an emergency number.
           According to the value of the <code>hideCallerId</code> in the <code>
             params</code> parameter, the own number is requested to be either
@@ -1577,7 +1589,7 @@ enum <dfn>DisconnectReason</dfn> {
           </h3>
           <p>
             The <dfn id="widl-ToneParams-serviceId">serviceId</dfn> member
-            Represents the <a>telephony service id</a> of the <a>telephony
+            represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
@@ -2086,7 +2098,7 @@ enum <dfn>DisconnectReason</dfn> {
         <p>
           When getting the <dfn id=
           "widl-TelephonyCall-remoteParty">remoteParty</dfn> attribute, the
-          user agent MUST return the remote party identifier (e.g. telephone
+          user agent MUST return the <a>remote party id</a> (e.g. telephone
           number) of the call participant. If not available (e.g. callerId has
           been hidden), return <code>null</code>.
         </p>
