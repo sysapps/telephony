@@ -1263,7 +1263,7 @@ enum <dfn>DisconnectReason</dfn> {
           </li>
           <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
           object with identical <a>remoteParty</a> attribute, then throw an
-          <code>InvalidModificationError</code> exception.
+          <code>AbortError</code> exception.
           </li>
           <li>Let <var>telCall</var> be a new <a>TelephonyCall</a> object.
           </li>
