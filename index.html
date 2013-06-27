@@ -993,14 +993,14 @@ enum <dfn>DisconnectReason</dfn> {
           Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dt>
-          TelephonyCall dial (DOMString remoteParty, optional DialParams
-          params)
+          TelephonyCall dial (DOMString remoteParty, optional DialOptions
+          options)
         </dt>
         <dt>
-          Promise sendTones(DOMString tones, optional ToneParams params)
+          Promise sendTones(DOMString tones, optional ToneOptions options)
         </dt>
         <dt>
-          Promise startTone(DOMString tone, optional ToneParams params)
+          Promise startTone(DOMString tone, optional ToneOptions options)
         </dt>
         <dt>
           Promise stopTone(optional DOMString serviceId)
@@ -1100,15 +1100,15 @@ enum <dfn>DisconnectReason</dfn> {
           invoked, the user agent MUST run the following steps:
         </p>
         <ol id="steps-sendtones">
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
+          <li>If the <a>ToneOptions</a> parameter specifies the <a>serviceId</a>
           to be used, then validate and use that value, otherwise use the
           <a>default telephony service</a> for sending the tones.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then validate and use that value, otherwise
           use a default value.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>gap</code>, then validate and use that value, otherwise use a
           default value.
           </li>
@@ -1208,14 +1208,14 @@ enum <dfn>DisconnectReason</dfn> {
           this case applications may then use the <code>sendTones</code> method
           for sending [[!DTMF]].
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
+          <li>If the <a>ToneOptions</a> parameter specifies the <a>serviceId</a>
           to be used, then validate and use that value, otherwise use the
           <a>default telephony service</a> for sending the tones.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then ignore that value.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>gap</code>, meaning the delay before sending the tone, then
           validate and use that value, otherwise use a default value.
           </li>
@@ -1274,11 +1274,11 @@ enum <dfn>DisconnectReason</dfn> {
           the <a>remote party id</a> passed in the <var>remoteParty</var>
           parameter. Note that the value can be also an emergency number.
           According to the value of the <code>hideCallerId</code> in the <code>
-            params</code> parameter, the own number is requested to be either
+            options</code> parameter, the own number is requested to be either
             displayed, hidden or otherwise the default system configuration to
             this regard is requested to be followed. The call MUST be made
             using the <a>telephony service</a> specified in the
-            <code>service</code> member of the <code>params</code> arguement.
+            <code>service</code> member of the <code>options</code> arguement.
             If not specified, then the implementation MUST use the <a>default
             telephony service</a>. Even if there is no SIM card and no other
             telephony services are available, but emergency calls are known to
@@ -1506,12 +1506,12 @@ enum <dfn>DisconnectReason</dfn> {
           </tr>
         </table>
       </section><!-- event handers -->
-      <!-- - - - - - - - - - - -  DialParams Dictionary - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  DialOptions Dictionary - - - - - - - - - - -->
       <section>
         <h3>
-          <a>DialParams</a> Dictionary
+          <a>DialOptions</a> Dictionary
         </h3>
-        <dl title="dictionary DialParams" class="idl">
+        <dl title="dictionary DialOptions" class="idl">
           <dt>
             boolean hideCallerId
           </dt>
@@ -1525,7 +1525,7 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>hideCallerId</code> member
           </h3>
           <p>
-            The <dfn id="widl-DialParams-hideCallerId">hideCallerId</dfn>
+            The <dfn id="widl-DialOptions-hideCallerId">hideCallerId</dfn>
             member represents whether the own number is to be hidden or
             displayed to the remote party being called. If missing, the user
             agent uses the default configuration for the <a>telephony
@@ -1538,18 +1538,18 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn id="widl-DialParams-serviceId">serviceId</dfn> member
+            The <dfn id="widl-DialOptions-serviceId">serviceId</dfn> member
             represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
-      </section><!-- DialParams Dictionary -->
-      <!-- - - - - - - - - - - - ToneParams Dictionary  - - - - - - - - - - -->
+      </section><!-- DialOptions Dictionary -->
+      <!-- - - - - - - - - - - - ToneOptions Dictionary  - - - - - - - - - - -->
       <section>
         <h3>
-          <a>ToneParams</a> Dictionary
+          <a>ToneOptions</a> Dictionary
         </h3>
-        <dl title="dictionary ToneParams" class="idl">
+        <dl title="dictionary ToneOptions" class="idl">
           <dt>
             unsigned long duration
           </dt>
@@ -1566,7 +1566,7 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>duration</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-duration">duration</dfn> member
+            The <dfn id="widl-ToneOptions-duration">duration</dfn> member
             represents the duration (mark) in milliseconds of the [[!DTMF]]
             tones to be sent.
           </p>
@@ -1577,7 +1577,7 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>gap</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-gap">gap</dfn> member represents the
+            The <dfn id="widl-ToneOptions-gap">gap</dfn> member represents the
             duration in milliseconds of the time gap (space) before a [[!DTMF]]
             tone.
           </p>
@@ -1588,12 +1588,12 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-serviceId">serviceId</dfn> member
+            The <dfn id="widl-ToneOptions-serviceId">serviceId</dfn> member
             represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
-      </section><!-- ToneParams Dictionary -->
+      </section><!-- ToneOptions Dictionary -->
     </section><!-- TelephonyManager -->
     <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
     <section>
