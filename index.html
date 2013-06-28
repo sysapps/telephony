@@ -1299,11 +1299,9 @@ enum <dfn>DisconnectReason</dfn> {
                 telephony service that matches that value.
               </li>
               <li>If the serviceId member is not an empty string and that does
-              not match any telephony service id available to the origin:
-                <ol>
-                  <li>?? Throw.
-                  </li>
-                </ol>
+              not match any telephony service id available to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>,
+              throw a "NotFoundError" exception and terminate these steps.
               </li>
             </ol>
           </li>
