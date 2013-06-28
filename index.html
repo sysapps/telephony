@@ -251,8 +251,8 @@
       <p>
         A telephony service observes the <a title="call state">call states</a>
         of a <a>telephony call</a> in the supported telephony backend(s) and
-        networks and reflects those changes in the API through [[!DOM4]]
-        events.
+        networks and reflects those changes in the API through [[!DOM4]] events
+        and promises.
       </p>
       <!-- - - - - - - - -  Changing telephony services - - - - - - - - - - -->
       <section>
@@ -343,8 +343,10 @@
           referred to as a <a>multiparty call</a>.
         </p>
         <p>
-          A <a>telephony call</a> is always in some call state, which can
-          change over time.
+          In the process of establishing and maintaining a connection between
+          multiple parties, a telephony call transitions through various
+          <a title="call state">call states</a>. A <a>telephony call</a> is
+          always in some <a>call state</a>, which can change over time.
         </p>
         <p>
           Telephony calls initiated by a telephony service of the system is an
@@ -435,10 +437,8 @@
         </h2>
         <p>
           A <dfn>call state</dfn> represents the state of interaction between a
-          telephony service, the telephony network, and one or more remote
-          parties. In the process of establishing a connection between multiple
-          parties, a telephony call transitions through various <a title=
-          "call state">call states</a>.
+          <a>telephony service</a>, the <a>telephony network</a>, the API, and
+          one or more remote parties.
         </p>
         <p>
           Within the API, the call states are represented by the
@@ -736,23 +736,43 @@ enum <dfn>CallState</dfn> {
         <h3>
           Making calls (outbound states)
         </h3>
+        <div class="issue">
+          <p>
+            The following needs to be redefined algorithmically in terms of the
+            telephony service.
+          </p>
+          <p>
+            To <dfn>make a call</dfn> with a <a><var>remote party
+            identifier</var></a>, optionally a <var>telephony service</var>,
+            and optionally a <var>hide caller id</var>, the user agent MUST ...
+          </p>
+        </div>
         <p>
-          When making a call, the identity (e.g. SIM card, associated to an
-          Integrated Circuit Card Identifier, ICC-ID) is always provided,
-          either explicitly by the developer when calling a function, or by the
-          user agent relying on the <a>default telephony service</a> of the
-          implementation.
+          Even if there is no SIM card and no other telephony services are
+          available, but emergency calls are known to be possible (e.g. because
+          a cellular modem is present), it is considered as a default service
+          with only emergency call capability, and the implementation MUST
+          define a <a>telephony service id</a> for it. When not even emergency
+          calls are possible (e.g. it is a purely IP based implementation and
+          there is no cellular modem), the implementation MAY use empty string
+          for default <a>telephony service id</a>, but it is encouraged that a
+          default service is created, with the methods throwing a
+          <code>NotSupported</code> error.
         </p>
         <p>
-          For call setup on dialed calls, the following call states MUST be
-          supported in this order:
+          For making a call, the <a>telephony service</a> transitions through
+          the following states in order. Errors can occur at each state, which
+          can result in the call becoming <a>disconnected</a>:
         </p>
         <ol>
-          <li>"<a>dialing</a>".
+          <li>
+            <a>dialing</a>
           </li>
-          <li>"<a>alerting</a>".
+          <li>
+            <a>alerting</a>
           </li>
-          <li>"<a>active</a>".
+          <li>
+            <a>active</a>
           </li>
         </ol>
         <p class="note">
@@ -777,9 +797,9 @@ enum <dfn>CallState</dfn> {
           Disconnecting calls
         </h2>
         <p>
-          The reasons why a call can become disconnected are as follows. Within
-          the API the following disconnection reasons are represented by the
-          the <code><a>DisconnectReason</a></code> enum.
+          The reasons why a call can become <a>disconnected</a> are as follows.
+          Within the API the following disconnection reasons are represented by
+          the the <code><a>DisconnectReason</a></code> enum.
         </p>
         <dl>
           <dt>
@@ -989,14 +1009,14 @@ enum <dfn>DisconnectReason</dfn> {
           Promise changeDefaultService(DOMString serviceId)
         </dt>
         <dt>
-          TelephonyCall dial (DOMString remoteParty, optional DialParams
-          params)
+          TelephonyCall dial (DOMString remoteParty, optional DialOptions
+          options)
         </dt>
         <dt>
-          Promise sendTones(DOMString tones, optional ToneParams params)
+          Promise sendTones(DOMString tones, optional ToneOptions options)
         </dt>
         <dt>
-          Promise startTone(DOMString tone, optional ToneParams params)
+          Promise startTone(DOMString tone, optional ToneOptions options)
         </dt>
         <dt>
           Promise stopTone(optional DOMString serviceId)
@@ -1096,15 +1116,16 @@ enum <dfn>DisconnectReason</dfn> {
           invoked, the user agent MUST run the following steps:
         </p>
         <ol id="steps-sendtones">
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
+          <li>If the <a>ToneOptions</a> parameter specifies the
+          <a>serviceId</a> to be used, then validate and use that value,
+          otherwise use the <a>default telephony service</a> for sending the
+          tones.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then validate and use that value, otherwise
           use a default value.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>gap</code>, then validate and use that value, otherwise use a
           default value.
           </li>
@@ -1204,14 +1225,15 @@ enum <dfn>DisconnectReason</dfn> {
           this case applications may then use the <code>sendTones</code> method
           for sending [[!DTMF]].
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
+          <li>If the <a>ToneOptions</a> parameter specifies the
+          <a>serviceId</a> to be used, then validate and use that value,
+          otherwise use the <a>default telephony service</a> for sending the
+          tones.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then ignore that value.
           </li>
-          <li>If the <a>ToneParams</a> parameter specifies the tone
+          <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>gap</code>, meaning the delay before sending the tone, then
           validate and use that value, otherwise use a default value.
           </li>
@@ -1243,59 +1265,61 @@ enum <dfn>DisconnectReason</dfn> {
           The <code>dial()</code> method
         </h3>
         <p>
-          The <dfn id="widl-TelephonyManager-dial-TelephonyCall">dial()</dfn>
-          method initiates a new <a>telephony call</a>. When invoked the user
-          agent MUST run the following steps:
+          The <dfn id=
+          "widl-TelephonyManager-dial-TelephonyCall">dial(remoteParty,
+          options)</dfn> method initiates a new <a>telephony call</a>. When
+          invoked the user agent MUST run the following steps:
+        </p>
+        <p class="note">
+          Note that verification of the format of the <var>remoteParty</var>
+          argument is left to the <a>telephony service</a>. Providing an
+          <var>remoteParty</var> in the invalid format will generally result in
+          the call disconnecting because the <a>telephony service</a> or
+          <a>telephony network</a> will deem it an <a>invalid number</a>.
         </p>
         <ol id="steps-dial">
-          <li>Create a new <a>TelephonyCall</a> object, referred as
-          <var>telCall</var> in these steps.
+          <li>Let <var>remote party</var> be the value of the value of the
+          <var>remoteParty</var> argument.
           </li>
-          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
-          <a>remote party id</a> specified in the <a>remoteParty</a> parameter.
+          <li>Let <var>service</var> initially be either the default telephony
+          service, if one is available to the <a href=
+          "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+            <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+            effective script origin</a>, or null otherwise.
           </li>
-          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> attribute, then an
-          <code>InvalidModificationError</code> exception.
-          </li>
-          <li>Otherwise, make a request to the telephony system to dial in the
-          <a>remote party id</a> passed in the <var>remoteParty</var>
-          parameter. Note that the value can be also an emergency number.
-          According to the value of the <code>hideCallerId</code> in the <code>
-            params</code> parameter, the own number is requested to be either
-            displayed, hidden or otherwise the default system configuration to
-            this regard is requested to be followed. The call MUST be made
-            using the <a>telephony service</a> specified in the
-            <code>service</code> member of the <code>params</code> arguement.
-            If not specified, then the implementation MUST use the <a>default
-            telephony service</a>. Even if there is no SIM card and no other
-            telephony services are available, but emergency calls are known to
-            be possible (e.g. because a cellular modem is present), it is
-            considered as a default service with only emergency call
-            capability, and the implementation MUST define a <a>telephony
-            service id</a> for it. When not even emergency calls are possible
-            (e.g. it is a purely IP based implementation and there is no
-            cellular modem), the implementation MAY use empty string for
-            default <a>telephony service id</a>, but it is encouraged that a
-            default service is created, with the methods throwing a
-            <code>NotSupported</code> error.
-          </li>
-          <li>If the request is successful, then
+          <li>If the <var>options</var> argument is used, and it has a
+          serviceId member:
             <ol>
-              <li>Set the <code>state</code> of <var>telCall</var> to
-              "<a>dialing</a>" value.
+              <li>If the value of serviceId member exactly matches the
+              telephony service id accessible to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+              <a href=
+              "http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+                effective script origin</a>, then let <var>service</var> be the
+                telephony service that matches that value.
               </li>
-              <li>Add <var>telCall</var> to the <a>calls</a> array.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>statechange</code> at the <var>telCall</var> object.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>dialing</code> at the <var>telCall</var> object.
+              <li>If the serviceId member is not an empty string and that does
+              not match any telephony service id available to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>,
+              throw a "NotFoundError" exception and terminate these steps.
               </li>
             </ol>
+          </li>
+          <li>If the <var>options</var> argument is used, and it has a
+          hideCallerId member, then let <var>hide caller id</var> be the value
+          of the hideCallerId member.
+          </li>
+          <li>Let <var>telCall</var> be a new instance of <a>TelephonyCall</a>.
+          </li>
+          <li>Set <var>telCall</var>'s <a>remoteParty</a> attribute to <a><var>
+            remote party id</var></a>.
+          </li>
+          <li>Return <var>telCall</var> and continue asynchronously.
+          </li>
+          <li>
+            <a>Make a call</a> using <var>remote party</var>,
+            <var>service</var> and, and, if it was defined, <var>hide caller
+            id</var>.
           </li>
         </ol>
       </section><!--dial() method-->
@@ -1494,12 +1518,12 @@ enum <dfn>DisconnectReason</dfn> {
           </tr>
         </table>
       </section><!-- event handers -->
-      <!-- - - - - - - - - - - -  DialParams Dictionary - - - - - - - - - - -->
+      <!-- - - - - - - - - - - -  DialOptions Dictionary - - - - - - - - - - -->
       <section>
         <h3>
-          <a>DialParams</a> Dictionary
+          <a>DialOptions</a> Dictionary
         </h3>
-        <dl title="dictionary DialParams" class="idl">
+        <dl title="dictionary DialOptions" class="idl">
           <dt>
             boolean hideCallerId
           </dt>
@@ -1513,11 +1537,15 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>hideCallerId</code> member
           </h3>
           <p>
-            The <dfn id="widl-DialParams-hideCallerId">hideCallerId</dfn>
-            member represents whether the own number is to be hidden or
-            displayed to the remote party being called. If missing, the user
-            agent uses the default configuration for the <a>telephony
+            The <dfn id="widl-DialOptions-hideCallerId">hideCallerId</dfn>
+            member represents whether the local party identifier is to be
+            hidden or displayed to the remote party being called. If missing,
+            the user agent uses the default configuration for the <a>telephony
             service</a> that initiated the call.
+          </p>
+          <p class="note">
+            Only some protocols support hidding the identity of the local party
+            when making a call.
           </p>
         </section>
         <!-- - - - - - - - - - - -  serviceId member - - - - - - - - - - -->
@@ -1526,18 +1554,18 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn id="widl-DialParams-serviceId">serviceId</dfn> member
+            The <dfn id="widl-DialOptions-serviceId">serviceId</dfn> member
             represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
-      </section><!-- DialParams Dictionary -->
-      <!-- - - - - - - - - - - - ToneParams Dictionary  - - - - - - - - - - -->
+      </section><!-- DialOptions Dictionary -->
+      <!-- - - - - - - - - - - - ToneOptions Dictionary  - - - - - - - - - - -->
       <section>
         <h3>
-          <a>ToneParams</a> Dictionary
+          <a>ToneOptions</a> Dictionary
         </h3>
-        <dl title="dictionary ToneParams" class="idl">
+        <dl title="dictionary ToneOptions" class="idl">
           <dt>
             unsigned long duration
           </dt>
@@ -1554,7 +1582,7 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>duration</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-duration">duration</dfn> member
+            The <dfn id="widl-ToneOptions-duration">duration</dfn> member
             represents the duration (mark) in milliseconds of the [[!DTMF]]
             tones to be sent.
           </p>
@@ -1565,7 +1593,7 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>gap</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-gap">gap</dfn> member represents the
+            The <dfn id="widl-ToneOptions-gap">gap</dfn> member represents the
             duration in milliseconds of the time gap (space) before a [[!DTMF]]
             tone.
           </p>
@@ -1576,12 +1604,12 @@ enum <dfn>DisconnectReason</dfn> {
             The <code>serviceId</code> member
           </h3>
           <p>
-            The <dfn id="widl-ToneParams-serviceId">serviceId</dfn> member
-            Represents the <a>telephony service id</a> of the <a>telephony
+            The <dfn id="widl-ToneOptions-serviceId">serviceId</dfn> member
+            represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
         </section><!-- serviceId member -->
-      </section><!-- ToneParams Dictionary -->
+      </section><!-- ToneOptions Dictionary -->
     </section><!-- TelephonyManager -->
     <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
     <section>
@@ -2086,7 +2114,7 @@ enum <dfn>DisconnectReason</dfn> {
         <p>
           When getting the <dfn id=
           "widl-TelephonyCall-remoteParty">remoteParty</dfn> attribute, the
-          user agent MUST return the remote party identifier (e.g. telephone
+          user agent MUST return the <a>remote party id</a> (e.g. telephone
           number) of the call participant. If not available (e.g. callerId has
           been hidden), return <code>null</code>.
         </p>
