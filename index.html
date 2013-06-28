@@ -736,12 +736,28 @@ enum <dfn>CallState</dfn> {
         <h3>
           Making calls (outbound states)
         </h3>
+        <div class="issue">
+          <p>
+            The following needs to be redefined algorithmically in terms of the
+            telephony service.
+          </p>
+          <p>
+            To <dfn>make a call</dfn> with a <a><var>remote party
+            identifier</var></a>, optionally a <var>telephony service</var>,
+            and optionally a <var>hide caller id</var>, the user agent MUST ...
+          </p>
+        </div>
         <p>
-          When making a call, the identity (e.g. SIM card, associated to an
-          Integrated Circuit Card Identifier, ICC-ID) is always provided,
-          either explicitly by the developer when calling a function, or by the
-          user agent relying on the <a>default telephony service</a> of the
-          implementation.
+          Even if there is no SIM card and no other telephony services are
+          available, but emergency calls are known to be possible (e.g. because
+          a cellular modem is present), it is considered as a default service
+          with only emergency call capability, and the implementation MUST
+          define a <a>telephony service id</a> for it. When not even emergency
+          calls are possible (e.g. it is a purely IP based implementation and
+          there is no cellular modem), the implementation MAY use empty string
+          for default <a>telephony service id</a>, but it is encouraged that a
+          default service is created, with the methods throwing a
+          <code>NotSupported</code> error.
         </p>
         <p>
           For making a call, the <a>telephony service</a> transitions through
@@ -781,9 +797,9 @@ enum <dfn>CallState</dfn> {
           Disconnecting calls
         </h2>
         <p>
-          The reasons why a call can become disconnected are as follows. Within
-          the API the following disconnection reasons are represented by the
-          the <code><a>DisconnectReason</a></code> enum.
+          The reasons why a call can become <a>disconnected</a> are as follows.
+          Within the API the following disconnection reasons are represented by
+          the the <code><a>DisconnectReason</a></code> enum.
         </p>
         <dl>
           <dt>
@@ -1100,9 +1116,10 @@ enum <dfn>DisconnectReason</dfn> {
           invoked, the user agent MUST run the following steps:
         </p>
         <ol id="steps-sendtones">
-          <li>If the <a>ToneOptions</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
+          <li>If the <a>ToneOptions</a> parameter specifies the
+          <a>serviceId</a> to be used, then validate and use that value,
+          otherwise use the <a>default telephony service</a> for sending the
+          tones.
           </li>
           <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then validate and use that value, otherwise
@@ -1208,9 +1225,10 @@ enum <dfn>DisconnectReason</dfn> {
           this case applications may then use the <code>sendTones</code> method
           for sending [[!DTMF]].
           </li>
-          <li>If the <a>ToneOptions</a> parameter specifies the <a>serviceId</a>
-          to be used, then validate and use that value, otherwise use the
-          <a>default telephony service</a> for sending the tones.
+          <li>If the <a>ToneOptions</a> parameter specifies the
+          <a>serviceId</a> to be used, then validate and use that value,
+          otherwise use the <a>default telephony service</a> for sending the
+          tones.
           </li>
           <li>If the <a>ToneOptions</a> parameter specifies the tone
           <code>duration</code>, then ignore that value.
@@ -1247,9 +1265,10 @@ enum <dfn>DisconnectReason</dfn> {
           The <code>dial()</code> method
         </h3>
         <p>
-          The <dfn id="widl-TelephonyManager-dial-TelephonyCall">dial()</dfn>
-          method initiates a new <a>telephony call</a>. When invoked the user
-          agent MUST run the following steps:
+          The <dfn id=
+          "widl-TelephonyManager-dial-TelephonyCall">dial(remoteParty,
+          options)</dfn> method initiates a new <a>telephony call</a>. When
+          invoked the user agent MUST run the following steps:
         </p>
         <p class="note">
           Note that verification of the format of the <var>remoteParty</var>
@@ -1259,55 +1278,50 @@ enum <dfn>DisconnectReason</dfn> {
           <a>telephony network</a> will deem it an <a>invalid number</a>.
         </p>
         <ol id="steps-dial">
-          <li>Let <var>service</var> be one of the following:
+          <li>Let <var>remote party</var> be the value of the value of the
+          <var>remoteParty</var> argument.
           </li>
-          <li>If <a>calls</a> array already contains a <a>TelephonyCall</a>
-          object with identical <a>remoteParty</a> attribute, then throw an
-          <code>AbortError</code> exception.
+          <li>Let <var>service</var> initially be either the default telephony
+          service, if one is available to the <a href=
+          "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+            <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+            effective script origin</a>, or null otherwise.
           </li>
-          <li>Let <var>telCall</var> be a new <a>TelephonyCall</a> object.
-          </li>
-          <li>Set the <a>remoteParty</a> attribute of <var>telCall</var> to the
-          <a>remote party id</a> specified in the <a>remoteParty</a> argument.
-          </li>
-          <li>Otherwise, make a request to the <a>telephony system</a> to dial
-          the <a>remote party id</a> passed in the <var>remoteParty</var>
-          parameter. Note that the value can be also an emergency number.
-          According to the value of the <code>hideCallerId</code> in the <code>
-            options</code> parameter, the own number is requested to be either
-            displayed, hidden or otherwise the default system configuration to
-            this regard is requested to be followed. The call MUST be made
-            using the <a>telephony service</a> specified in the
-            <code>service</code> member of the <code>options</code> arguement.
-            If not specified, then the implementation MUST use the <a>default
-            telephony service</a>. Even if there is no SIM card and no other
-            telephony services are available, but emergency calls are known to
-            be possible (e.g. because a cellular modem is present), it is
-            considered as a default service with only emergency call
-            capability, and the implementation MUST define a <a>telephony
-            service id</a> for it. When not even emergency calls are possible
-            (e.g. it is a purely IP based implementation and there is no
-            cellular modem), the implementation MAY use empty string for
-            default <a>telephony service id</a>, but it is encouraged that a
-            default service is created, with the methods throwing a
-            <code>NotSupported</code> error.
-          </li>
-          <li>If the request is successful, then
+          <li>If the <var>options</var> argument is used, and it has a
+          serviceId member:
             <ol>
-              <li>Set the <code>state</code> of <var>telCall</var> to
-              "<a>dialing</a>" value.
+              <li>If the value of serviceId member exactly matches the
+              telephony service id accessible to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+              <a href=
+              "http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+                effective script origin</a>, then let <var>service</var> be the
+                telephony service that matches that value.
               </li>
-              <li>Add <var>telCall</var> to the <a>calls</a> array.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>statechange</code> at the <var>telCall</var> object.
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code>dialing</code> at the <var>telCall</var> object.
+              <li>If the serviceId member is not an empty string and that does
+              not match any telephony service id available to the origin:
+                <ol>
+                  <li>?? Throw.
+                  </li>
+                </ol>
               </li>
             </ol>
+          </li>
+          <li>If the <var>options</var> argument is used, and it has a
+          hideCallerId member, then let <var>hide caller id</var> be the value
+          of the hideCallerId member.
+          </li>
+          <li>Let <var>telCall</var> be a new instance of <a>TelephonyCall</a>.
+          </li>
+          <li>Set <var>telCall</var>'s <a>remoteParty</a> attribute to <a><var>
+            remote party id</var></a>.
+          </li>
+          <li>Return <var>telCall</var> and continue asynchronously.
+          </li>
+          <li>
+            <a>Make a call</a> using <var>remote party</var>,
+            <var>service</var> and, and, if it was defined, <var>hide caller
+            id</var>.
           </li>
         </ol>
       </section><!--dial() method-->
@@ -1526,10 +1540,14 @@ enum <dfn>DisconnectReason</dfn> {
           </h3>
           <p>
             The <dfn id="widl-DialOptions-hideCallerId">hideCallerId</dfn>
-            member represents whether the own number is to be hidden or
-            displayed to the remote party being called. If missing, the user
-            agent uses the default configuration for the <a>telephony
+            member represents whether the local party identifier is to be
+            hidden or displayed to the remote party being called. If missing,
+            the user agent uses the default configuration for the <a>telephony
             service</a> that initiated the call.
+          </p>
+          <p class="note">
+            Only some protocols support hidding the identity of the local party
+            when making a call.
           </p>
         </section>
         <!-- - - - - - - - - - - -  serviceId member - - - - - - - - - - -->
