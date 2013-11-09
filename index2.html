@@ -111,19 +111,45 @@
         channels management.
       </p>
       <p>
-        An example of making a telephony call is provided below:
+        A simple example for making a telephony call is provided below:
       </p>
-      <pre class="example highlight">
-        var telCall = navigator.telephony.dial('+1234567890');
+      <pre title="Dialing a call" class="example highlight">
+        navigator.telephony.dial('+1234567890').then(
+            function(call) {
+                call.onstatechange = stateHandler;
+            },
+            function(error) {
+                console.log("Telephony error" + error.name);
+            }
+        );
 
-        telCall.onactive = function(e) {
-            window.console.log('Connected!');
-        }
 
-        telCall.ondisconnected = function(e) {
-            window.console.log('Disconnected!');
-            // update call history
+        function stateHandler(TelephonyCall call) {
+            if(telCall.state == 'active')
+               window.console.log('Connected!');
+            else if(telCall.state == 'disconnected') {
+               window.console.log('Disconnected!');
+               // update call history
+            }
         }
+      </pre>
+      <p>
+        A simple example for receiving a telephony call is provided below:
+      </p>
+      <pre title="Receiving calls" class="example highlight">
+        navigator.telephony.onincoming = function(TelephonyCall call) {
+            call.onstatechange = stateHandler;
+            if(call.state == 'incoming') {
+                call.accept().then(
+                    function(call) {
+                        console.log('Call from ' + call.remotePartyId + ' accepted');
+                    },
+                    function(error) {
+                        console.log("Telephony error" + error.name);
+                    }
+                );
+            }
+        };
       </pre>
       <p>
         The use cases for this specification are collected in the <a href=
@@ -136,13 +162,11 @@
         "Global System for Mobile Communications">GSM</abbr> the [[!GSM-CALL]]
         suite, for IMS/SIP the [[!IMS]] suite, for <abbr title=
         "Extensible Messaging and Presence Protocol ">XMPP</abbr> the
-        [[!JINGLE]] specification. Note, however, that IMS/SIP and XMPP are not
-        supported in this version.
-      </p>
-      <p>
+        [[!JINGLE]] specification.
         It is likely that the same API would work also for <abbr title=
         "Session Initiation Protocol">SIP</abbr> and <abbr title=
-        "Extensible Messaging and Presence Protocol ">XMPP</abbr> calls.
+        "Extensible Messaging and Presence Protocol ">XMPP</abbr> calls,
+        but IMS/SIP and XMPP are not explicitly supported in this version.
       </p>
       <p class='issue'>
         It is under discussion whether a system message should be propagated
@@ -206,7 +230,7 @@
     <!-- - - - - - - - - - -  Task Source - - - - - - - - - - - - - - - - - -->
     <section> <h2>Task Source</h2>
       <p>
-        <a>The task source</a> for all <a title="queue a task">tasks queued</a>
+        The <a>task source</a> for all <a title="queue a task">tasks queued</a>
         in this specification is the <dfn>telephony task source</dfn>.
       </p>
     </section>
@@ -237,18 +261,18 @@
     <!-- - - - - - - - - - - - Interface TelephonyManager - - - - - - - - - -->
     <section> <h2>The <a>TelephonyManager</a> Interface</h2>
       <p>
-        The <a>TelephonyManager</a> interface provides access to telephony
+        The <dfn>TelephonyManager</dfn> interface provides access to telephony
         functionality related to <a>telephony service</a> management such as
         multiple SIM and later VoIP support,
         <a>telephony call</a> management such as managing the telephony call
-        objects, sending <a>DTMF</a> tones, retrieving emergency numbers, and
+        objects, sending [[!DTMF]] tones, retrieving emergency numbers, and
         helper functionality for parsing and dispatching telephony commands.
       </p>
-      <dl title="TelephonyManager implements ServiceManager" class="idl"></dl>
-      <dl title="TelephonyManager implements CallManager" class="idl"></dl>
-      <dl title="TelephonyManager implements ToneManager" class="idl"></dl>
+      <dl title="TelephonyManager implements ServiceManager"   class="idl"></dl>
+      <dl title="TelephonyManager implements CallManager"      class="idl"></dl>
+      <dl title="TelephonyManager implements ToneManager"      class="idl"></dl>
       <dl title="TelephonyManager implements EmergencyManager" class="idl"></dl>
-      <dl title="TelephonyManager implements CommandParser" class="idl"></dl>
+      <dl title="TelephonyManager implements CommandParser"    class="idl"></dl>
       <p>
         Each of these interfaces will be expanded in the following sections.
       </p>
@@ -257,7 +281,7 @@
     <!-- - - - - - - - - - - - - -  Telephony Services  - - - - - - - - - - -->
     <section> <h2>Telephony services</h2>
       <section> <h2>Definitions</h2>
-      <section><h3>Telephony service</h3>
+      <section> <h3>Telephony service</h3>
       <p>
         A <dfn>telephony service</dfn> manages telephony operations associated
         with a subscriber identity, which is registered with a telephony
@@ -269,27 +293,33 @@
         subscriber identity.
       </p>
       </section>
-      <section><h3>Telephony service id</h3>
+      <section> <h3>Telephony service id</h3>
       <p>
+        A user agent can access zero or more <a>telephony service</a>s.
         Each telephony service has a unique <dfn>telephony service id</dfn>,
         which identifies a <a>telephony service</a> together with a user
-        identity in the system. For telephony services that make use of a SIM
-        card, it is RECOMMENDED that the ICC-ID be used for the service
-        identifier. For reducing fingerprinting, implementations MAY choose to
-        use generated UUID's or SHA signatures as service identifiers,
-        associated in the implementation to the internal service identifiers
-        such as ICC-ID.
+        identity in the system.
       </p>
       <p>
-        It is strongly RECOMMENDED that implementations <strong>do not</strong>
-        use use the MSISDN as the telephony service id. The <abbr
-        title="Mobile Subscriber Integrated Services Digital Network-Number">
-        MSISDN</abbr> cannot guarantee uniqueness.
+        Access to a telephony service by any <a>origin</a> is restricted by a
+        security policy. See the <strong>Security and privacy considerations
+        </strong> section for more details.
       </p>
       <p>
         In the API, telephony services are represented by a DOMString that maps
         to a <a>telephony service id</a> for each <a>telephony service</a>
         available to an <a>origin</a>.
+      </p>
+      <p>
+        It is strongly RECOMMENDED that implementations <strong>do not</strong>
+        use use the MSISDN as the telephony service id. The <abbr
+        title="Mobile Subscriber Integrated Services Digital Network-Number">
+        MSISDN</abbr> cannot guarantee uniqueness. For telephony services that
+        make use of a SIM card, it is RECOMMENDED that the ICC-ID be used for
+        the service identifier. For reducing fingerprinting, implementations MAY
+        choose to use generated UUID's or SHA signatures as service identifiers,
+        associated in the implementation to the internal service identifiers
+        such as ICC-ID.
       </p>
       </section>
       <section> <h3>Default telephony service</h3>
@@ -298,35 +328,28 @@
         service</a> that is used as default for the <a>origin</a> when the
         service is not specified in the methods of this API.
       </p>
-      <p>g
-        Access to a telephony service by any <a>origin</a> is restricted by a
-        security policy. See the <a>security and privacy considerations</a>
-        section for more details.
-      </p>
       <p>
-        A user agent can access zero or more <a>telephony services</a>. On
-        implementations that have access to a hardware modem, regulations may
+        If there is no <a>default telephony service</a> set for the
+        <a>origin</a>, the user agent SHOULD use the underlying system's default
+        telephony service, if available and if allowed by policy.
+        On implementations that have access to a hardware modem, regulations may
         require supporting emergency number dialing from PIN dialog or dialer
         interface. In this case even in the absence of a SIM card (subscriber
-        identity) the implementations SHOULD implement a telephony service
-        associated to emergency dialing, and set it as default telephony service
-        when when no SIM card is present.
-      </p>
-      <p>
-        If there is no <a>default telephony service</a> for the
-        <a>origin</a>, the user agent SHOULD use the underlying system's default
-        telephony service, if available and if allowed by policy. If there
-        are no telephony services available to use as the default for the
-        origin, the default telephony service is <code>null</code>. In this
-        case, also the <a>telephony</a> attribute of the
-        <a href="http://www.whatwg.org/specs/web-apps/current-work/#dom-navigator">
+        identity) the implementations MUST implement a telephony service
+        associated with only emergency dialing capability, and set it as default
+        telephony service id even when no SIM card is present.
+        When not even emergency calls are possible (e.g. it is a purely IP based
+        implementation and there is no cellular modem), the implementation MAY
+        use <code>null</code> for default <a>telephony service id</a>.
+        In this case, also the <a>telephony</a> attribute of the <a
+        href="http://www.whatwg.org/specs/web-apps/current-work/#dom-navigator">
         <code>Navigator</code></a> object object should be <code>null</code>,
         i.e. no telephony functionality is available.
       </p>
       <p>
         The default telephony service can be changed by the user through the
-        <a>changeDefaultService()</a> method of the <a>ServiceManager</a>
-        interface.
+        <code>changeDefaultService()</code> method of the
+        <a><code>ServiceManager</code></a> interface.
       </p>
       </section>
       </section> <!-- definitions -->
@@ -338,13 +361,13 @@
           <a>TelephonyService</a> objects.
         </p>
         <dl title="interface ServiceManager : EventTarget" class="idl">
-          <dt> readonly attribute DOMString? defaultServiceId          </dt>
+          <dt> readonly attribute DOMString?   defaultServiceId        </dt>
           <dt> Promise setDefaultService(DOMString serviceId)          </dt>
           <dt> Promise getServiceIds()                                 </dt>
           <dt> TelephonyService? getService(DOMString serviceId)       </dt>
-          <dt> readonly attribute EventHandler onserviceadded          </dt>
-          <dt> readonly attribute EventHandler onserviceremoved        </dt>
-          <dt> readonly attribute EventHandler ondefaultservicechanged </dt>
+          <dt> attribute EventHandler onserviceadded                   </dt>
+          <dt> attribute EventHandler onserviceremoved                 </dt>
+          <dt> attribute EventHandler ondefaultservicechanged          </dt>
         </dl>
 
       <!-- - - - - - - - - - - ServiceManager Event handlers  - - - - - - - -->
@@ -361,52 +384,28 @@
             <th>short description</th>
           </tr>
           <tr>
-            <td>
-              <dfn id="widl-ServiceManager-onserviceadded">
-                   <code>onserviceadded</code>
-              </dfn>
+            <td><dfn id="widl-ServiceManager-onserviceadded">
+                   <code>onserviceadded</code></dfn>
             </td>
-            <td>
-              <dfn><code>serviceadded</code></dfn>
-            </td>
-            <td>
-              <a>TelephonyServiceEvent</a>
-            </td>
-            <td>
-              handles a new enabled telephony service.
-            </td>
+            <td><dfn><code>serviceadded</code></dfn></td>
+            <td><a>TelephonyServiceEvent</a></td>
+            <td>handles a new enabled telephony service.</td>
           </tr>
           <tr>
-            <td>
-              <dfn id="widl-ServiceManager-onserviceremoved">
-                   <code>onserviceremoved</code>
-              </dfn>
+            <td> <dfn id="widl-ServiceManager-onserviceremoved">
+                   <code>onserviceremoved</code></dfn>
             </td>
-            <td>
-              <dfn><code>serviceremoved</code></dfn>
-            </td>
-            <td>
-              <a>TelephonyServiceEvent</a>
-            </td>
-            <td>
-              handles a disabled telephony service.
-            </td>
+            <td><dfn><code>serviceremoved</code></dfn></td>
+            <td><a>TelephonyServiceEvent</a></td>
+            <td>handles a disabled telephony service.</td>
           </tr>
           <tr>
-            <td>
-              <dfn id="widl-ServiceManager-ondefaultchanged">
-                   <code>ondefaultservicechanged</code>
-              </dfn>
+            <td><dfn id="widl-ServiceManager-ondefaultchanged">
+                   <code>ondefaultservicechanged</code></dfn>
             </td>
-            <td>
-              <dfn><code>defaultservicechanged</code></dfn>
-            </td>
-            <td>
-              <a>TelephonyServiceEvent</a>
-            </td>
-            <td>
-              handles the change of default telephony service.
-            </td>
+            <td><dfn><code>defaultservicechanged</code></dfn></td>
+            <td><a>TelephonyServiceEvent</a></td>
+            <td>handles the change of default telephony service.</td>
           </tr>
         </table>
       </section>
@@ -445,7 +444,7 @@
           service.
           </li>
           <li>
-            <a>Queue a task</a> to <a>fire an event</a> <var>event</var> at the
+            <a>Queue a task</a> to fire an event <var>event</var> at the
             <a>TelephonyManager</a>.
           </li>
         </ol>
@@ -456,7 +455,7 @@
         <p>
           When getting the <dfn id=
           "widl-ServiceManager-defaultServiceId">defaultServiceId</dfn>
-          attribute, the user agent MUST return the <a>DOMString</a> that
+          attribute, the user agent MUST return the <code>DOMString</code> that
           represents the <a>telephony service id</a> of the
           <a>default telephony service</a> (if any).
           Otherwise, it returns <code>null</code>.
@@ -497,9 +496,10 @@
               </li>
             </ol>
           </li>
-          <li>If <var>serviceId</var> exactly matches the <a>service id</a> of
-          the current <a>default telephony service</a>, run the following
-          sub-steps and terminate this algorithm:
+          <li>If <var>serviceId</var> exactly matches the
+            <a>telephony service id</a> of the current
+            <a>default telephony service</a>, run the following
+            sub-steps and terminate this algorithm:
             <ol>
               <li>Invoke <var>resolver</var>'s accept(value) method with
                   <var>serviceId</var> as the value argument.
@@ -604,10 +604,9 @@
           </li>
         </ol>
       </section> <!-- getServiceIds -->
-
       </section> <!-- ServiceManager -->
 
-      <!-- - - - - - - - - - Interface TelephonyServiceEvent  - - - - - - - - -->
+      <!-- - - - - - - - - - Interface TelephonyServiceEvent  - - - - - - - -->
       <section> <h2>The <a>TelephonyServiceEvent</a> Interface</h2>
         <p>
           Defines a telephony event for notifying a changed <a>telephony
@@ -618,7 +617,7 @@
         class="idl">
           <dt>readonly attribute DOMString serviceId</dt>
         </dl>
-        <!-- - - - - - - - - - serviceId attribute  - - - - - - - - - - - - - -->
+        <!-- - - - - - - - - - serviceId attribute  - - - - - - - - - - - - -->
         <section>
           <h3>The <code>serviceId</code> attribute</h3>
           <p>
@@ -628,14 +627,14 @@
             <a>telephony service</a> that triggered the event.
           </p>
         </section>
-        <!-- - - - - - - - - - TelephonyServiceEventInit dictionary - - - - - -->
+        <!-- - - - - - - - - - TelephonyServiceEventInit dictionary - - - - -->
         <section>
           <h3><code>TelephonyServiceEventInit</code> dictionary</h3>
           <dl title="dictionary TelephonyServiceEventInit : EventInit" class=
           "idl">
             <dt>DOMString serviceId</dt>
           </dl>
-          <!-- - - - - - - - - - serviceId member - - - - - - - - - - - - - - -->
+          <!-- - - - - - - - - - serviceId member - - - - - - - - - - - - - -->
           <section>
             <h3>The <code>serviceId</code> member</h3>
             <p>
@@ -659,14 +658,14 @@
         <dl title="[NoInterfaceObject]
           interface TelephonyService: EventHandler"
           class="idl">
-          <dt>readonly attribute DOMString serviceId              </dt>
-          <dt>readonly attribute boolean enabled                  </dt>
-          <dt>readonly attribute boolean emergencyOnly            </dt>
-          <dt>readonly attribute TelephonyProtocol protocol       </dt>
-          <dt>readonly attribute TelephonyServiceType serviceType </dt>
-          <dt>attribute DOMString displayName                     </dt>
-          <dt>readonly attribute DOMString provider               </dt>
-          <dt>Promise setEnabled(boolean enabled)                 </dt>
+          <dt>readonly attribute DOMString            serviceId     </dt>
+          <dt>readonly attribute boolean              enabled       </dt>
+          <dt>readonly attribute boolean              emergencyOnly </dt>
+          <dt>readonly attribute TelephonyProtocol    protocol      </dt>
+          <dt>readonly attribute TelephonyServiceType serviceType   </dt>
+          <dt>         attribute DOMString            displayName   </dt>
+          <dt>readonly attribute DOMString            provider      </dt>
+          <dt>Promise setEnabled(boolean enabled)                   </dt>
         </dl>
 
         <!-- - - - - - - - - TelephonyService.serviceId - - - - - - - - - - -->
@@ -820,14 +819,14 @@
           </dl>
           <dl title="[NoInterfaceObject]
           interface CellularService" class="idl">
-          <dt>readonly attribute SimInfo? simInfo;</dt>
-          <dt>readonly attribute SimSettings? simSettings;</dt>
-          <dt>readonly attribute TelephonyNetwork? network;</dt>
-          <dt>readonly attribute CallForwarding? forwarding;</dt>
-          <dt>readonly attribute CallBarring? barring;</dt>
-          <dt>readonly attribute CallMeters? meters;</dt>
-          <dt>readonly attribute SupplementaryServices? ss;</dt>
-          <dt>//... and other interfaces...</dt>
+          <dt>readonly attribute SimInfo?               simInfo     </dt>
+          <dt>readonly attribute SimSettings?           simSettings </dt>
+          <dt>readonly attribute TelephonyNetwork?      network     </dt>
+          <dt>readonly attribute CallForwarding?        forwarding  </dt>
+          <dt>readonly attribute CallBarring?           barring     </dt>
+          <dt>readonly attribute CallMeters?            meters      </dt>
+          <dt>readonly attribute SupplementaryServices? ss          </dt>
+          <dt>//... and other interfaces...                         </dt>
           </dl>
           <p>Depending on implementation, on operator network support and on
           settings, some of these interfaces may not be available, in which case
@@ -835,9 +834,7 @@
           </p>
         </section> <!-- note -->
         </section> <!-- extensions -->
-
       </section> <!-- TelephonyService -->
-
     </section> <!-- Telephony services -->
 
     <!-- - - - - - - - - - - - - - Telephony Calls  - - - - - - - - - - - -->
@@ -847,8 +844,8 @@
       <p>
           A <dfn>telephony call</dfn> results from a <a>telephony service</a>'s
           attempt to establish a connection for communication between two or
-          more parties. Telepony calls involving more than two parties are
-          referred to as a <a>multiparty call</a>.
+          more parties. Telephony calls involving more than two parties are
+          referred to as a <dfn>multiparty call</dfn>.
       </p>
       </section>
       <section><h3>Call state</h3>
@@ -856,7 +853,7 @@
           In the process of establishing and maintaining a connection between
           multiple parties, a telephony call transitions through various
           <a title="call state">call states</a>. A <a>telephony call</a> is
-          always in some <a>call state</a>, which can change over time.
+          always in a defined <a>call state</a>, which can change over time.
       </p>
       </section>
       <section><h3>Outbound and inbound call</h3>
@@ -877,7 +874,7 @@
           An <dfn>active call</dfn> is a <a>Call</a> in the <a>active</a> state
           representing a connected call which is bound to the media input and
           output devices (e.g. microphone, speaker, tone generator). Note that
-          a call on <a>hold</a> is also active from a call signaling point of
+          a call on hold is also active from a call signaling point of
           view, but not bound to media input and output devices.
       </p>
       </section>
@@ -885,7 +882,8 @@
       <p>
           Within the API, a telephony call is represented by the <a>Call</a>
           typedef - which encapsulates both objects that implement the
-          <a>TeleponyCall</a> interface and the <a>ConferenceCall</a>
+          <a><code>TelephonyCall</code></a> interface and the
+          <a><code>ConferenceCall</code></a>
           interface.
       </p>
       </section>
@@ -909,9 +907,24 @@
           A <dfn>multiparty call</dfn> (also commonly referred to as a
           <dfn>conference call</dfn>) is a <a>telephony call</a> with multiple
           remote party participants, which is controlled as a single telephony
-          call, i.e. it can be <a>held</a>, <a>activated</a>,
-          <a>disconnected</a> from all participants. Other calls can be joined
-          with a multiparty call.
+          call, i.e. it can be <a>held</a>, <a>active</a>,
+          <a>disconnected</a> from all participants in one transaction.
+          if the <a>telephony service</a> supports it, other calls can be
+          joined with a multiparty call, and a participant can be split off the
+          conference call for a private conversation, while the conference call
+          is put on hold. A <a><code>ConferenceCall</code></a> object is used
+          for controlling multiparty calls, but also for managing calls merged
+          using <dfn>client side merge</dfn>, implemented by the
+          <code>merge()</code> method of the <a><code>CallManager</code></a>
+          interface, and which means the audio channels of
+          the active call (be it simple or multiparty) is mixed with the audio
+          channel of another call from a different <a>telephony service</a>,
+          and the microphone is shared.
+          This needs support from the underlying audio system and the
+          telephony protocol stack, and it is managed completely on the client
+          side, unlike <a>multiparty call</a>s, which are managed by the
+          <a>telephony service</a>, i.e. the telephony network.
+          Implementations are not required to support <a>client side merge</a>.
         </p>
         <p>
           Every multiparty call has a unique <dfn>conference id</dfn> that
@@ -1114,7 +1127,7 @@
       <section> <h2>Call states</h2>
         <p>
           A <dfn>call state</dfn> represents the state of interaction between a
-          <a>telephony service</a>, the <a>telephony network</a>, the API, and
+          <a>telephony service</a>, the telephony network, the API, and
           one or more remote parties.
         </p>
         <p>
@@ -1270,7 +1283,7 @@
           <p class="note">
             Since <a title="call state">call states</a> can have slightly
             different semantics depending on the telephony protocol, the
-            <a><code>serviceId</code></a> and the <a><code>protocol</code></a>
+            <a><code>serviceId</code></a> and the <code>protocol</code>
             properties can be used for interpreting the call state in the
             implementation. See
             <a href="https://github.com/sysapps/telephony/issues/125">issue
@@ -1285,8 +1298,9 @@
           </p>
         </section><!-- state changes -->
       </section><!-- call states -->
+
       <!-- - - - - - - - - - - - - - Receiving calls  - - - - - - - - - - - -->
-      <section> <h3>Receiving calls (inbound states)</h3>
+      <section> <h3>States when receiving calls (inbound states)</h3>
         <p>
           The device can receive phone calls from any active telephony service,
           even simultaneously, in which case the user agent arbitrates the
@@ -1303,7 +1317,7 @@
           <li>"<a>active</a>".</li>
         </ol>
         <p class="note">
-          On received calls, telephony protocols also use a "<dfn>ringing</dfn>"
+          On received calls, telephony protocols also use a <dfn>ringing</dfn>
           state, set by the mobile terminal when local call alerting starts, in
           order to notify the remote party about the ongoing alerting (ringing
           can actually be e.g. a beep, ring tone, or vibration pattern). This
@@ -1322,51 +1336,6 @@
           implementation to determine which events to fire and in which order.
           Dialer applications need to be prepared to handle such cases.
         </p>
-        <p>
-          Upon a new incoming or waiting call, the <a>user agent</a> MUST
-          execute the following steps:
-        </p>
-        <ol id="steps-incoming">
-          <li>Let <var>incomingCall</var> be a new instance of
-            <a>TelephonyCall</a>.
-          </li>
-          <li>Set the <code>state</code> of <var><code>incomingCall</code></var>
-            to <a><code>incoming</code></a> in case the underlying telephony
-            system reports that state (which happens when there is no other call
-            in <a><code>active</code></a> state).
-          </li>
-          <li>Alternatively, set the <code>state</code> of
-            <var><code>incomingCall</code></var> to <a><code>waiting</code></a>,
-            in case the underlying telephony system reports that state (which
-            happens if the call waiting service is active and there is already
-            an <a>active</a> call).
-          </li>
-          <li>Otherwise, if there already is an <a>active</a> call and the call
-            waiting service is not enabled, the telephony system will disconnect
-            the call, and the implementation MUST follow the
-            <a href="steps-disconnect">disconnect steps</a> and terminate these
-            steps.
-          </li>
-          <li>If the the <code>state</code> of <var>incomingCall</var> is set
-            to either <a><code>incoming</code></a> or
-            <a><code>waiting</code></a>, then add <var>incomingCall</var> to the
-            <a>calls</a> array.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>statechange</code> at the <var>incomingCall</var> object.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>incoming</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-          <li>
-            <a>Queue a task</a> to <a>fire an event</a> named
-            <code>callschanged</code> at the <a>TelephonyManager</a> object
-            managing the call.
-          </li>
-        </ol>
         <figure>
           <img src="images/inbound_call_state_diagram.gif" alt="">
           <figcaption>
@@ -1377,7 +1346,7 @@
       </section><!-- Inbound states -->
 
       <!-- - - - - - - - - -  Making calls (outbound states)  - - - - - - - -->
-      <section> <h3>Making calls (outbound states)</h3>
+      <section> <h3>States when making calls (outbound states)</h3>
         <div class="issue">
           <p>
             The following needs to be redefined algorithmically in terms of the
@@ -1389,18 +1358,6 @@
             and optionally a <var>hide caller id</var>, the user agent MUST ...
           </p>
         </div>
-        <p>
-          Even if there is no SIM card and no other telephony services are
-          available, but emergency calls are known to be possible (e.g. because
-          a cellular modem is present), it is considered as a default service
-          with only emergency call capability, and the implementation MUST
-          define a <a>telephony service id</a> for it. When not even emergency
-          calls are possible (e.g. it is a purely IP based implementation and
-          there is no cellular modem), the implementation MAY use empty string
-          for default <a>telephony service id</a>, but it is encouraged that a
-          default service is created, with the methods throwing a
-          <code>NotSupported</code> error.
-        </p>
         <p>
           For making a call, the <a>telephony service</a> transitions through
           the following states in order. Errors can occur at each state, which
@@ -1428,8 +1385,8 @@
         </figure>
       </section><!-- Making calls (Outbound states) -->
 
-      <!-- - - - - - - - - - - Disconnecting calls  - - - - - - - - - - - - -->
-      <section> <h2>Disconnecting calls</h2>
+      <!-- - - - - - - - - - - Disconnect reason  - - - - - - - - - - - - - -->
+      <section> <h2>Disconnect reason</h2>
         <p>
           The reasons why a call can become <a>disconnected</a> are as follows.
           Within the API the following disconnection reasons are represented by
@@ -1460,94 +1417,60 @@
               more specific reason is known.
             </dd>
 
-            <dt><dfn>remote</dfn></dt>
+            <dt><dfn id="disconnect-remote">remote</dfn></dt>
             <dd>The call was disconnected by the remote party, and no more
               specific reason is known.
             </dd>
 
-            <dt><dfn>network</dfn></dt>
+            <dt><dfn id="disconnect-network">network</dfn></dt>
             <dd>The call was disconnected by the network, and no more specific
               reason is known.
             </dd>
 
-            <dt><dfn>busy</dfn></dt>
+            <dt><dfn id="disconnect-busy">busy</dfn></dt>
             <dd>The call was disconnected by the network, because the remote
               party was busy.
             </dd>
 
-            <dt><dfn>rejected</dfn></dt>
+            <dt><dfn id="disconnect-rejected">rejected</dfn></dt>
             <dd>The call was disconnected because the remote party rejected the
               call.
             </dd>
 
-            <dt><dfn>redirected</dfn></dt>
+            <dt><dfn id="disconnect-redirected">redirected</dfn></dt>
             <dd>The call has been redirected to another subscriber.</dd>
 
-            <dt><dfn>unreachable</dfn></dt>
+            <dt><dfn id="disconnect-unreachable">unreachable</dfn></dt>
             <dd>The call was disconnected by the network, because the remote
               party was unreachable by the network.
             </dd>
 
-            <dt><dfn>no-answer</dfn></dt>
+            <dt><dfn id="disconnect-no-answer">no-answer</dfn></dt>
             <dd>The call was disconnected by the network, because the remote
               party has not answered and the call has timed out.
             </dd>
 
-            <dt><dfn>network-unreachable</dfn></dt>
+            <dt>
+              <dfn id="disconnect-network-unreachable">network-unreachable</dfn>
+            </dt>
             <dd>The call was disconnected because the network was unreachable.
             </dd>
 
-            <dt><dfn>barred</dfn></dt>
+            <dt><dfn id="disconnect-barred">barred</dfn></dt>
             <dd>The call was disconnected because it was barred.</dd>
 
-            <dt><dfn>no-service</dfn></dt>
+            <dt><dfn id="disconnect-no-service">no-service</dfn></dt>
             <dd>The call was not made because there is no telephony service set
               up and enabled (e.g. no SIM card).
             </dd>
 
-            <dt><dfn>invalid-number</dfn></dt>
+            <dt><dfn id="disconnect-invalid-number">invalid-number</dfn></dt>
             <dd>The call was disconnected by the network, because the remote
               party identifier was invalid.
             </dd>
           </dl>
         </section><!-- DisconnectReason Enum -->
-        <section> <h3>Disconnect steps</h3>
-        <p>
-          When a <a>telephony service</a> is notified of call disconnection of
-          the <a>Call</a> object <var>telCall</var>, it MUST run the steps to
-          disconnect:
-        </p>
-        <ol id="steps-call-disconnect">
-          <li><a>Queue a task</a> to:
-           <ol>
-            <li>Remove the <var>telCall</var> object from the <a>calls</a>
-              array.
-            </li>
-            <li>set the <code>state</code> of <var>telCall</var> to
-              "<a>disconnected</a>".
-            </li>
-            <li>
-                <a>fire an event</a> named <code>statechange</code> at the
-                <var>telCall</var> object.
-            </li>
-            <li>
-              <a>fire an event</a> named <code>disconnected</code> at the
-              <var>telCall</var> object.
-            </li>
-           </ol>
-          </li>
-        </ol>
-        <p>
-          The <code>param</code> attribute of the <code>disconnected</code>
-          event MUST be set to the <a>DisconnectReason</a>, if available, or
-          otherwise it MUST be set to <code>null</code>. At least the following
-          values MUST be supported for the disconnect reason: "<a>local</a>",
-          "<a>remote</a>" and "<a>network</a>". The rest of the
-          <a>DisconnectReason</a> values SHOULD be supported.
-        </p>
-        </section> <!-- disconnect steps -->
       </section><!-- disconnecting calls -->
-
     </section> <!-- definitions -->
 
     <!-- - - - - - - - - - - - - Interface CallManager  - - - - - - - - - - -->
@@ -1559,20 +1482,31 @@
       </p>
       <dl title="interface CallManager : EventTarget" class="idl">
         <dt>readonly attribute Call? activeCall   </dt>
-        <dt>  // on success getCalls() returns a sequence of TelephonyCall's
-        </dt>
+        <dt>  // on success, getCalls() returns an array of TelephonyCall's</dt>
         <dt>Promise getCalls()</dt>
-        <dt>  // on success dial() returns a TelephonyCall</dt>
-        <dt>TelephonyCall dial (DOMString remoteParty, optional DialOptions options)
+        <dt>
+          Call? getCall(DOMString remoteParty, optional DOMString serviceId)
         </dt>
-        <dt>attribute EventHandler onincoming      </dt>
-        <dt>attribute EventHandler ondisconnected  </dt>
+        <dt>  // on success, dial() returns a TelephonyCall</dt>
+        <dt>
+          Promise dial (DOMString remoteParty, optional DialOptions options)
+        </dt>
+        <dt> // on success, createConference() returns a ConferenceCall</dt>
+        <dt>
+          Promise createConference(optional DOMString remote,
+                                   optional DialOptions options)
+        </dt>
+        <dt> // on success, merge() returns a ConferenceCall</dt>
+        <dt>Promise merge(Call call)</dt>
+        <dt>attribute EventHandler oncalladded     </dt>
+        <dt>attribute EventHandler oncallremoved   </dt>
         <dt>attribute EventHandler onactivechanged </dt>
       </dl>
+
       <!-- - - - - - - - - - -  Event handlers  - - - - - - - - - - - - - - -->
       <section> <h2>Event handlers</h2>
         <p>
-          The following are the <a>event handlers</a> are implemented by the
+          The following are the event handlers implemented by the
           <a>CallManager</a> interface.
         </p>
         <table class="simple">
@@ -1584,25 +1518,26 @@
           </tr>
           <tr>
             <td>
-              <dfn id="widl-CallManager-onincoming"><code>onincoming</code>
+              <dfn id="widl-CallManager-oncalladded"><code>oncalladded</code>
               </dfn>
             </td>
-            <td><dfn><code>incoming</code></dfn></td>
+            <td><dfn><code>calladded</code></dfn></td>
             <td><a>TelephonyEvent</a></td>
-            <td>handles incoming and waiting calls, hence a change in the
-              <a>calls</a> array
+            <td>handles incoming and waiting calls, and creation of multiparty
+              calls, hence a change in the calls managed by this object
             </td>
           </tr>
           <tr>
             <td>
               <dfn
-                id="widl-CallManager-ondisconnected"><code>ondisconnected</code>
+                id="widl-CallManager-oncallremoved"><code>oncallremoved</code>
               </dfn>
             </td>
-            <td><dfn><code>disconnected</code></dfn></td>
+            <td><dfn><code>callremoved</code></dfn></td>
             <td><a><code>TelephonyEvent</code></a></td>
-            <td>handles call disconnection, hence a change in the <a>calls</a>
-              array
+            <td>handles call disconnection and when calls are moved to
+              conference calls, hence a change in the calls managed by this
+              object
             </td>
           </tr>
           <tr>
@@ -1615,25 +1550,156 @@
             <td>handles a change of the <code>activeCall</code> property
             </td>
           </tr>
-        </table>
+          </table>
+
+          <!-- - - - - - - - - - calladded event  - - - - - - - - - - - - - -->
+          <section> <h3>The <code>oncalladded</code> event</h2>
+          <p>The <code>oncalladded</code> event MUST be raised either when there
+            is an incoming or waiting call, or when a new conference call is
+            created, i.e. when the list of <a><code>Call</code></a> objects
+            managed by the <a><code>CallManager</code></a> changes.
+          <p>
+            Upon a new incoming or waiting call, the <a>user agent</a> MUST
+            execute the following <df>onincoming steps</dfn>:
+          </p>
+          <ol id="steps-onincoming">
+          <li>Let <var>incomingCall</var> be a new instance of
+            <a>TelephonyCall</a>.
+          </li>
+          <li>Set the <code>state</code> of <var><code>incomingCall</code></var>
+            to <a><code>incoming</code></a> in case the underlying telephony
+            system reports that state (which happens when there is no other call
+            in <a><code>active</code></a> state).
+          </li>
+          <li>Alternatively, set the <code>state</code> of
+            <var><code>incomingCall</code></var> to <a><code>waiting</code></a>,
+            in case the underlying telephony system reports that state (which
+            happens if the call waiting service is active and there is already
+            an <a>active</a> call).
+          </li>
+          <li>Otherwise, if there already is an <a>active</a> call and the call
+            waiting service is not enabled, the telephony system will disconnect
+            the call, the implementation MUST follow the
+            <a href="steps-ondisconnected">disconnect steps</a> and terminate
+            these steps.
+          </li>
+          <li>If the <code>state</code> of <var>incomingCall</var> is set
+            to either <a><code>incoming</code></a> or
+            <a><code>waiting</code></a>, then add <var>incomingCall</var> to the
+            list of calls managed by <a><code>CallManager</code></a>.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>statechange</code> at the <var>incomingCall</var> object.
+          </li>
+          <li>
+            <a>Queue a task</a> to <a>fire an event</a> named
+            <code>calladded</code> at all the <a>CallManager</a> objects, with
+            its <var>call</var> argument set to <var>incomingCall</var>.
+          </li>
+          </ol>
+          </section>
+
+          <!-- - - - - - - - - - - oncallremoved event  - - - - - - - - - - -->
+          <section> <h3>The <code>callremoved</code> event</h3>
+          <p>
+            The <code>callremoved</code> event MUST be raised either when a
+            <a><code>Call</code></a> object managed by the <a>CallManager</a>
+            object is disconnected, or when it is moved to be part of a
+            <a>ConferenceCall</a>, i.e. when the list of
+            <a><code>Call</code></a> objects managed by the
+            <a><code>CallManager</code></a> changes.
+          <p>
+            When a <a>telephony service</a> is notified of call disconnection of
+            the <a>Call</a> object <var>telCall</var>, the user agent MUST run
+            the following <dfn>ondisconnected steps</dfn>:
+          </p>
+          <ol id="steps-ondisconnected">
+            <li><a>Queue a task</a> to:
+             <ol>
+              <li>Remove the <var>telCall</var> object from all internal lists
+                of <a><code>CallManager</code></a>
+              </li>
+              <li>set the <code>state</code> of <var>telCall</var> to
+                "<a>disconnected</a>".
+              </li>
+              <li>
+                fire a <a><code>TelephonyStateEvent</code></a>
+                named <code>statechange</code> at the <var>telCall</var>
+                object, with the <code>name</code> property set to
+                <code>'disconnected'</code> and the <code>reason</code>
+                property set to the <a>DisconnectReason</a>, if available,
+                or otherwise it MUST be set to <code>null</code>. At least the
+                following values MUST be supported for the disconnect reason:
+                "<a>local</a>", "<a>remote</a>" and "<a>network</a>".
+                The rest of the <a>DisconnectReason</a> values SHOULD be
+                supported.
+              <li>
+                fire the <var>callremoved</var> event at all the
+                <a><code>CallManager</code></a> objects.
+              </li>
+             </ol>
+            </li>
+          </ol>
+          </section>
+
+        <!-- - - - - - - - Active call change event steps - - - - - - - - - -->
+        <section> <h3>Handling the <code>activechanged</code> event</h3>
+        <p>
+          When the the <code>activeCall</code> of a
+          <a><code>CallManager</code></a> object changed, the user agent MUST
+          run the following steps:
+        </p>
+        <ol id="steps-call-onactivechanged">
+          <li>let <var>callManager</var> denote the
+            <a><code>CallManager</code></a> instance on which the
+            <code>activeCall</code> was changed
+          </li>
+          <li><a>Queue a task</a> to <a>fire an event</a> named
+            <code>activechanged</code> at all the  instances of
+            <a><code>CallManager</code></a>, except <var>callManager</var>.
+          </li>
+        </ol>
+        </section>
       </section><!-- event handers -->
+
+      <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
+      <section> <h2><a>TelephonyEvent</a> Interface</h2>
+        <p>
+          Defines telephony events for <a>TelephonyCall</a> state changes,
+          including handling incoming and waiting calls.
+        </p>
+        <dl title="interface TelephonyEvent : Event" class="idl">
+          <dt>readonly attribute Call call</dt>
+        </dl>
+        <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - - -->
+        <section> <h3>The <code>call</code> attribute</h3>
+          <p>
+            When getting the <dfn id="widl-TelephonyEvent-call">call</dfn>
+            attribute, the user agent MUST return the <a>Call</a> that
+            triggered the event.
+          </p>
+        </section>
+      </section><!-- interface TelephonyEvent -->
+
       <!-- - - - - - - - - - - - -  activeCall attribute  - - - - - - - - - -->
       <section> <h3>The <code>activeCall</code> attribute</h3>
         <p>
           When getting the <dfn id=
           "widl-CallManager-activeCall">activeCall</dfn> attribute, the
           user agent MUST return the <a>Call</a> object that represents the
-          <a>active call</a>. If there is no active <a>Call</a> return
+          <a>active call</a>. If there is no active <a>Call</a>, return
           <code>null</code>.
         </p>
       </section>
-      <!-- - - - - - - - - - - - - calls attribute  - - - - - - - - - - - - -->
+
+      <!-- - - - - - - - - - - - - getCalls() method  - - - - - - - - - - - -->
       <section> <h3>The <code>getCalls()</code> method</h3>
         <p>
-          When the <dfn id="widl-CallManager-getCalls">getCalls()</dfn>
-          method is invoked, the user agent MUST return an <code>Promise</code>,
-          which in case of success resolved to an array, which can be
-          empty, of <a>Call</a> objects managed by this objects.
+          When the <dfn id="widl-CallManager-getCalls-Promise">getCalls()</dfn>
+          method is invoked, the user agent MUST return a <code>Promise</code>
+          object, which in case of success resolves to an array, which can be
+          empty, of <a>Call</a> objects managed by this object.
         </p>
         <p class="Note">
           <a>TelephonyCall</a> objects belonging to a multiparty call are
@@ -1641,67 +1707,7 @@
           be present in this array.
         </p>
       </section>
-      <!-- - - - - - - - - - - dial() method  - - - - - - - - - - - - - - - -->
-      <section><h3>The <code>dial()</code> method</h3>
-        <p>
-          The <dfn id=
-          "widl-TelephonyManager-dial-CallManager">dial(remoteParty,
-          options)</dfn> method initiates a new <a>telephony call</a>. When
-          invoked the user agent MUST run the following steps:
-        </p>
-        <p class="note">
-          Note that verification of the format of the <var>remoteParty</var>
-          argument is left to the <a>telephony service</a>. Providing an
-          <var>remoteParty</var> in the invalid format will generally result in
-          the call disconnecting because the <a>telephony service</a> or
-          <a>telephony network</a> will deem it an <a>invalid number</a>.
-        </p>
-        <ol id="steps-dial">
-          <li>Let <var>remote party</var> be the value of the value of the
-          <var>remoteParty</var> argument.
-          </li>
-          <li>Let <var>service</var> initially be either the default telephony
-          service, if one is available to the <a href=
-          "http://dom.spec.whatwg.org/#concept-document">document</a>'s
-            <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
-            effective script origin</a>, or null otherwise.
-          </li>
-          <li>If the <var>options</var> argument is used, and it has a
-          serviceId member:
-            <ol>
-              <li>If the value of serviceId member exactly matches the
-              telephony service id accessible to the <a href=
-              "http://dom.spec.whatwg.org/#concept-document">document</a>'s
-              <a href=
-              "http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
-                effective script origin</a>, then let <var>service</var> be the
-                telephony service that matches that value.
-              </li>
-              <li>If the serviceId member is not an empty string and that does
-              not match any telephony service id available to the <a href=
-              "http://dom.spec.whatwg.org/#concept-document">document</a>,
-              throw a "NotFoundError" exception and terminate these steps.
-              </li>
-            </ol>
-          </li>
-          <li>If the <var>options</var> argument is used, and it has a
-          hideCallerId member, then let <var>hide caller id</var> be the value
-          of the hideCallerId member.
-          </li>
-          <li>Let <var>telCall</var> be a new instance of <a>TelephonyCall</a>.
-          </li>
-          <li>Set <var>telCall</var>'s <a>remoteParty</a> attribute to <a><var>
-            remote party id</var></a>.
-          </li>
-          <li>Return <var>telCall</var> and continue asynchronously.
-          </li>
-          <li>
-            <a>Make a call</a> using <var>remote party</var>,
-            <var>service</var> and, and, if it was defined, <var>hide caller
-            id</var>.
-          </li>
-        </ol>
-      </section><!--dial() method-->
+
       <!-- - - - - - - - - - - -  DialOptions Dictionary  - - - - - - - - - -->
       <section> <h3><a>DialOptions</a> Dictionary</h3>
         <dl title="dictionary DialOptions" class="idl">
@@ -1731,25 +1737,291 @@
           </p>
         </section><!-- serviceId member -->
       </section><!-- DialOptions Dictionary -->
-    </section><!-- TelephonyManager -->
-    <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
-    <section> <h2><a>TelephonyEvent</a> Interface</h2>
-      <p>
-        Defines telephony events for <a>TelephonyCall</a> state changes,
-        including handling incoming and waiting calls.
-      </p>
-      <dl title="interface TelephonyEvent : Event" class="idl">
-        <dt>readonly attribute Call call</dt>
-      </dl>
-      <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - - -->
-      <section> <h3>The <code>call</code> attribute</h3>
+
+      <!-- - - - - - - - - - - dial() method  - - - - - - - - - - - - - - - -->
+      <section><h3>The <code>dial()</code> method</h3>
         <p>
-          When getting the <dfn id="widl-TelephonyEvent-call">call</dfn>
-          attribute, the user agent MUST return the <a>TelephonyCall</a> that
-          triggered the event.
+          The <dfn id="widl-CallManager-dial-Promise-DOMString-remoteParty-DialOptions-options">dial()</dfn>
+          method initiates a new <a>telephony call</a>. When
+          invoked, the user agent MUST run the following <dfn>dial steps</dfn>:
         </p>
-      </section>
-    </section><!-- interface TelephonyEvent -->
+        <p class="note">
+          Note that verification of the format of the <var>remoteParty</var>
+          argument is left to the <a>telephony service</a>. Providing an
+          <var>remoteParty</var> in the invalid format will generally result in
+          the call disconnecting because the <a>telephony service</a> or
+          telephony network will deem it an invalid number.
+        </p>
+        <ol id="steps-dial">
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Let <var>service</var> initially be either the default telephony
+          service id, if one is available to the <a href=
+          "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+            <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+            effective script origin</a>, or <code>null</code> otherwise.
+          </li>
+          <li>If the <var>options</var> argument is used, and it has a
+            <var>serviceId</var> member specified, then:
+            <ol>
+              <li>If the value of <var>serviceId</var> matches a valid
+              telephony service id accessible to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+              <a href=
+              "http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+                effective script origin</a>, then set <var>service</var> to
+                that value.
+              </li>
+              <li>Otherwise, set <var>service</var> to <code>null</code></li>
+            </ol>
+          </li>
+          <li>
+            If <var>service</var> is <code>null</code>, then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NotFoundError"</code>, and terminate this algorithm.
+          </li>
+          <li>Let <var>telCall</var> be a new instance of <a>TelephonyCall</a>.
+          </li>
+          <li>Set <var>telCall</var>'s <a>remoteParty</a> attribute to <a><var>
+            remote party id</var></a>.
+          </li>
+          <li>Make a request to the underlying telephony system to
+            <a>make a call</a> using <var>service</var> as
+            <a>telephony service id</a>, and if the <var>options</var> argument
+            is specified, and it has a <var>hideCallerId</var> member, then use
+            that value, otherwise by default use <code>false</code> for hiding
+            the caller id.
+          </li>
+          <li>Wait for response from the underlying system.
+          </li>
+          <li>If it's not possible to fulfill the request for whatever reason:
+            timeout, security, etc., then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate this
+            algorithm.
+          </li>
+          <li>Otherwise, <a>queue a task</a> to invoke <var>resolver</var>'s
+            <code>accept(value)</code> method with <var>telCall</var> as
+            <var>value</var> argument.
+          </li>
+        </ol>
+      </section><!--dial() method-->
+
+      <!-- - - - - - - - - createConference() method  - - - - - - - - - - - -->
+      <section><h3>The <code>createConference()</code> method</h3>
+        <p>
+          When the <dfn id="widl-CallManager-createConference-Promise-DOMString-remote-DialOptions-options">createConference()</dfn>
+          method is invoked, the user agent MUST run the following
+          <dfn>createconference steps</dfn>:
+        </p>
+        <ol id="steps-createconference">
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Let <var>service</var> initially be either the default telephony
+          service id, if one is available to the <a href=
+          "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+            <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+            effective script origin</a>, or <code>null</code> otherwise.
+          </li>
+          <li>If the <var>options</var> argument is used, and it has a
+            <var>serviceId</var> member specified, then:
+            <ol>
+              <li>If the value of <var>serviceId</var> matches a valid
+              telephony service id accessible to the <a href=
+              "http://dom.spec.whatwg.org/#concept-document">document</a>'s
+              <a href=
+              "http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#effective-script-origin">
+                effective script origin</a>, then set <var>service</var> to
+                that value.
+              </li>
+              <li>Otherwise, set <var>service</var> to <code>null</code></li>
+            </ol>
+          </li>
+          <li>
+            If <var>service</var> is <code>null</code>, then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NotFoundError"</code>, and terminate this algorithm.
+          </li>
+          <li>Let <var>confCall</var> be a new instance of <a>ConferenceCall</a>
+            with a unique <code>conferenceId</code> property.
+          </li>
+          <li>If the <var>remote</var> parameter was not specified, i.e. there
+          were no parameters, then follow these sub-steps:
+            <ol>
+              <li>set the <code>conferenceId</code> property of
+                <var>confCall</var> to a unique value.
+              </li>
+              <li>Set the <code>state</code> of <var>confCall</var> to
+              "<a>joining</a>".
+              </li>
+              <li>Then, in the telephony service specified by <var>service</var>
+                make a request to the telephony system to create a conference
+                call, and wait for the response.
+                In cellular telephony (such as GSM and CDMA) this will mean
+                joining the active and held calls into a multiparty call. In a
+                SIP service it will create an new conference focus. In other
+                telephony services which require at least another participant to
+                be specified, this request may fail.
+              </li>
+              <li>If the request fails, call <var>resolver</var>'s
+              <code>reject(value)</code> method with the <var>value</var>
+                argument set to a new <code>DOMError</code> object whose name is
+                set to <code>"NoModificationAllowedError"</code>, and terminate
+                this algorithm.
+              </li>
+              <li>Otherwise, if the request has successfully completed, then
+                execute the steps for <a>finishing conference call creation</a>
+                and terminate this algorithm.
+              </li>
+            </ol>
+          </li>
+          <li>Otherwise if there is no <a>active call</a>, then resolve
+            <var>promise</var> with a <code>"NoModificationAllowedError"</code>
+              error, and terminate this algorithm.
+          </li>
+          <li>Otherwise, if the <var>options</var> parameter was specified, and
+            it has a <var>serviceId</var> member specified which is not equal to
+            the <a>telephony service id</a> of the <a>active call</a>, then
+            resolve <var>promise</var> with a
+            <code>"NoModificationAllowedError"</code> error, and terminate
+            this algorithm.
+          </li>
+          <li>Otherwise execute the steps for making a multiparty call with
+           the specified <var>remote</var>. The exact steps will differ
+           depending on the <var>service</var> protocol used. In telephony
+           services like SIP or XMPP it means making an asynchronous
+           request to the underlying telephony system for setting up a
+           conference call with the specified <var>remote</var>.
+           In cellular telephony this is not possible with one transaction,
+           and the implementations SHOULD execute the following steps:
+           <ol>
+             <li>if the implementation chooses to not support the following
+               steps in one transaction: programmatically dialing
+               <var>remote</var> by using the <a>dial steps</a>, then putting
+               the <a>active call</a> on hold by using the <a>hold steps</a>,
+               and finally joining the active and held calls,
+               then resolve <var>promise</var> with a
+               <code>"NoModificationAllowedError"</code> error, and
+               terminate this algorithm.
+             </li>
+             <li>otherwise, make a request to the underlying telephony
+               system to dial a call by using the <a>dial steps</a> to
+               <var>remote</var> and wait until the call denoted by a new
+               <var>telCall</var> object is connected and the
+               <a>active call</a> is put in <a><code>hold</code></a> state.
+             </li>
+             <li>for all calls in the given <a>telephony service</a>,
+               save the value of the <code>state</code> property, then set it to
+               <a><code>joining</code></a>
+             </li>
+             <li>make a a request to the telephony system to join the
+               active and held calls into a multiparty call and wait for
+               the response
+             </li>
+             <li>If the request fails for any reason, then restore the
+               <code>state</code> of all calls to the value saved before
+               the request, then resolve <var>promise</var> with a
+               <code>"NoModificationAllowedError"</code> error, and
+               terminate this algorithm.
+             </li>
+             <li>Otherwise, if the request has successfully completed, then
+               execute the steps for <a>finishing conference call creation</a>
+               and terminate this algorithm.
+             </li>
+           </ol>
+         </li>
+       </ol>
+       <p>
+         The steps for <dfn>finishing conference call creation</dfn> are the
+         following:
+       </p>
+       <ol>
+         <li>set the <code>conferenceId</code> attribute of the
+           participating calls to the unique identifier generated for the
+           multiparty call <var>confCall</var>.
+         </li>
+         <li>Add the calls participating in the multiparty call to the
+           <code>calls</code> attribute of the <var>confCall</var> object, and
+           set their <code>state</code> to <a><code>multiparty</code></a>.
+         </li>
+         <li>Add the <var>confCall</var> object to all the <a>CallManager</a>
+           objects, and <a>queue a task</a> to fire a <code>calladded</code>
+           event with its <var>call</var> set to <var>confCall</var> on each
+           of these
+         </li>
+         <li>Remove all calls participating in the multiparty call from all
+           <a><code>CallManager</code></a> objects, and <a>queue a task</a> to
+           fire a <code>callremoved</code> event with its <var>call</var> set to
+           the removed call object
+         </li>
+         <li>Set the <code>state</code> of <var>confCall</var> to
+           <a><code>active</code></a>.
+         </li>
+         <li>
+           <a>Queue a task</a> to <a>fire an event</a> named
+           <code>participantadded</code> at <var>confCall</var>.
+         </li>
+         <li>Follow the state changes of <var>confCall</var> through the
+           state change events.
+         </li>
+       </ol>
+      </section><!--createConference() method-->
+    </section><!-- CallManager -->
+
+    <!-- - - - - - - - - - - merge() method - - - - - - - - - - - - - - - - -->
+    <section><h3>The <code>merge()</code> method</h3>
+      <p>
+        The <dfn id="widl-CallManager-merge-Promise-Call-call">merge()</dfn>
+        method initiates a <a>client side merge</a> of the <a>active call</a>
+        and the call specified as argument.
+        When invoked, the user agent MUST run the following steps:
+      </p>
+      <ol id="steps-merge">
+        <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+          object and <var>resolver</var> its associated resolver.
+        </li>
+        <li>If there is no <a>active call</a>, then resolve
+        <var>promise</var> with a <code>"NoModificationAllowedError"</code>
+          error, and terminate this algorithm.
+        </li>
+        <li>Otherwise return <var>promise</var> and continue the following steps
+          asynchronously.
+        </li>
+        <li>Make a request to the underlying audio system to merge the audio
+          channels between the <a>active call</a> and <var>call</var>, and a
+          request to share the microphone between the two calls. These two
+          requests SHOULD be handled as one transaction.
+        </li>
+        <li>Wait for response from the underlying system.
+        </li>
+        <li>If it's not possible to fulfill either request for whatever reason:
+          timeout, security, etc., then
+          call <var>resolver</var>'s <code>reject(value)</code>
+          method with the <var>value</var> argument set to a new
+          <code>DOMError</code> object whose name is set to
+          <code>"NoModificationAllowedError"</code>, and terminate this
+          algorithm.
+        </li>
+        <li>Otherwise, <a>queue a task</a> to invoke <var>resolver</var>'s
+          <code>accept()</code> method.
+        </li>
+      </ol>
+    </section><!--merge() method-->
+
     <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - -->
     <section> <h2><a>CallHandler</a> interface</h2>
       <p>
@@ -1761,20 +2033,20 @@
         specification, and has no functional utility on its own.
       </p>
       <dl title="[NoInterfaceObject] interface CallHandler" class="idl">
-        <dt>void resume()                          </dt>
-        <dt>void hold()                            </dt>
-        <dt>void disconnect()                      </dt>
         <dt>readonly attribute DOMString callId    </dt>
         <dt>readonly attribute DOMString serviceId </dt>
         <dt>readonly attribute CallState state     </dt>
+        <dt>Promise resume()                       </dt>
+        <dt>Promise hold()                         </dt>
+        <dt>Promise disconnect()                   </dt>
         <dt>attribute EventHandler onstatechange   </dt>
       </dl>
       <!-- - - - - - - - - - - -  event handlers  - - - - - - - - - - - - - -->
       <section id="callhandler-eventhandlers"> <h3>Event handlers</h3>
         <p>
-          The following are the <a>event handlers</a> are exposed by the
-          CallHandler interface. The event type is simple
-          <a><code>Event</code></a>.
+          The following are the event handlers are exposed by the
+          CallHandler interface. The event type is
+          <a><code>TelephonyStateEvent</code></a>.
         </p>
 
         <table class="simple">
@@ -1794,7 +2066,84 @@
             </tr>
           </tbody>
         </table>
+        <!-- - - - - - - - - - Interface TelephonyStateEvent  - - - - - - - -->
+        <section> <h2>The <a>TelephonyStateEvent</a> Interface</h2>
+          <p>
+            Defines a telephony event for notifying a changed state for a
+            telephony call.
+          </p>
+          <dl title="interface TelephonyStateEvent : Event"
+          class="idl">
+            <dt>readonly attribute DOMString state</dt>
+            <dt>readonly attribute DOMString reason</dt>
+          </dl>
+          <!-- - - - - - - - - - state attribute  - - - - - - - - - - - - - -->
+          <section> <h3>The <code>state</code> attribute</h3>
+            <p>
+            <p>
+              When getting the <dfn id=
+              "widl-TelephonyStateEvent-state">state</dfn>, the user agent
+              MUST return the new <a>call state</a> causing the state change.
+            </p>
+          </section>
+          <!-- - - - - - - - - - reason attribute - - - - - - - - - - - - - -->
+          <section>
+            <h3>The <code>reason</code> attribute</h3>
+            <p>
+              When getting the <dfn id=
+              "widl-TelephonyStateEvent-reason">reason</dfn>, the user
+              agent MUST return a reason for the new telephony call state
+              of the <a>telephony call</a> if the reason is available, or
+              <code>null</code> otherwise. In this version, only
+              the <code>'disconnected'</code> state reasons are specified, as
+              described in <a><code>DisconnectReason</code></a>.
+            </p>
+          </section>
+        </section><!-- interface TelephonyStateEvent -->
+
       </section><!-- Event Handlers -->
+
+      <!-- - - - - - - - - - - -  hold() method - - - - - - - - - - - - - -->
+      <section> <h3>The <code>hold()</code> method</h3>
+        <p>
+          The <dfn id="widl-CallHandler-hold-void">hold()</dfn> method requests
+          the telephony system put the <a>Call</a> on hold. When
+          invoked, the user agent MUST run the following <dfn>hold steps</dfn>:
+        </p>
+        <ol>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>If <code>state</code> is not equal to <a><code>active</code></a>,
+            then call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Set the <code>state</code> of the call to <code>holding</code>
+          </li>
+          <li>Make a request to the telephony system to put the call on hold.
+          </li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the <code>state</code> of the
+            call to <a><code>active</code></a>. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code>, and terminate
+            this algorithm.
+          </li>
+          <li>If the request is acknowledged, then set <code>state</code> to
+            <a><code>held</code></a>, and  <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
+          </li>
+        </ol>
+      </section> <!-- hold() method -->
+
       <!-- - - - - - - - - - - -  resume() method - - - - - - - - - - - - -->
       <section> <h3>The <code>resume()</code> method</h3>
         <p>
@@ -1803,49 +2152,76 @@
           When invoked, the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to "<a>held</a>", then throw
-          an <code>InvalidStateError</code> exception.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Otherwise make a request to the telephony system to resume the
-          call. If the request is acknowledged, then set <code>state</code> to
-          "<a>resuming</a>".
+          <li>If <code>state</code> is not equal to <a><code>held</code></a>,
+            then call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Save the <code>state</code> of the call</li>
+          <li>Set the <code>state</code> of the call to
+            <a><code>resuming</code></a>
+          </li>
+          <li>Make a request to the telephony system to resume the call.</li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the <code>state</code> of the
+            call to <a><code>held</code></a>. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code>, and terminate
+            this algorithm.
+          </li>
+          <li>If the request is acknowledged, then set <code>state</code> to
+            <a><code>active</code></a>, and  <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
           </li>
         </ol>
       </section><!-- resume() method -->
-      <!-- - - - - - - - - - - -  hold() method - - - - - - - - - - - - - -->
-      <section> <h3>The <code>hold()</code> method</h3>
-        <p>
-          The <dfn id="widl-CallHandler-hold-void">hold()</dfn> method requests
-          the telephony system put the <a>Call</a> <a>on hold</a>. When
-          invoked, the user agent MUST run the following steps:
-        </p>
-        <ol>
-          <li>If <code>state</code> is not equal to <code>active</code>, then
-          throw an <code>InvalidStateError</code> exception.
-          </li>
-          <li>Otherwise make a request to the telephony system to hold the
-          call.
-          </li>
-          <li>Return, and continue these steps asynchronously.
-          </li>
-          <li>If the request is acknowledged then set <code>state</code> to
-          "<a>holding</a>".
-          </li>
-        </ol>
-      </section> <!-- hold() method -->
+
       <!-- - - - - - - - - - - -  disconnect() method - - - - - - - - - - - -->
       <section> <h3>The <code>disconnect</code> method</h3>
         <p>
           The <dfn id="widl-CallHandler-disconnect-void">disconnect</dfn>
           method, if invoked on a <a>TelephonyCall</a>, it initiates releasing
           of the telephony call. If invoked on a <a>ConferenceCall</a>, it
-          initiates releasing the multiparty call, and each participating
+          MUST initiate releasing the multiparty call, and each participating
           <a>TelephonyCall</a> object.
         </p>
-        <p>
-          If the telephony service is CDMA, throw "<code>NotSupported</code>"
-          DOMError.
-        </p>
+        <ol>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Save the <code>state</code> of the call</li>
+          <li>Set the <code>state</code> of the call to
+            <code>disconnecting</code>
+          </li>
+          <li>Make a request to the telephony system to disconnect the call</li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the <code>state</code> of the
+            call to the saved value. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code>, and terminate
+            this algorithm.
+          </li>
+          <li>If the request is acknowledged, then execute the
+            <a>ondisconnected steps</a>, and and  <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
+          </li>
+        </ol>
         <p class="note">
           Depending on the protocol, there may be restrictions on methods. For
           instance, GSM does not permit disconnecting a held call. Also,
@@ -1856,6 +2232,7 @@
           (that participant must choose to hang up).
         </p>
       </section><!-- disconnect() method -->
+
       <!-- - - - - - - - - - - - callId attribute - - - - - - - - - - - - - -->
       <section> <h3>The <code>callId</code> attribute</h3>
         <p>
@@ -1863,6 +2240,7 @@
           attribute, the user agent MUST return the <a>call id</a>.
         </p>
       </section><!-- callId attribute -->
+
       <!-- - - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
       <section> <h3>The <code>serviceId</code> attribute</h3>
         <p>
@@ -1871,6 +2249,7 @@
           of the <a>telephony service</a> associated with this call.
         </p>
       </section><!-- serviceId attribute -->
+
       <!-- - - - - - - - - - - -  state attribute - - - - - - - - - - - - - -->
       <section> <h3>The <code>state</code> attribute</h3>
         <p>
@@ -1890,11 +2269,11 @@
       <dl title="interface TelephonyCall : EventHandler" class="idl">
         <dt> readonly attribute DOMString? remoteParty   </dt>
         <dt> readonly attribute DOMString? conferenceId  </dt>
-        <dt> void accept()                               </dt>
-        <dt> void redirect(DOMString remoteParty)        </dt>
-        <dt> void transfer(DOMString thirdParty)         </dt>
-        <dt> ConferenceCall createConference()           </dt>
+        <dt> Promise accept()                            </dt>
+        <dt> Promise redirect(DOMString remoteParty)     </dt>
+        <dt> Promise transfer(DOMString thirdParty)      </dt>
       </dl>
+
       <!-- - - - - - - - - - - - remoteParty attribute  - - - - - - - - - - -->
       <section> <h3>The <code>remoteParty</code> attribute</h3>
         <p>
@@ -1905,6 +2284,7 @@
           been hidden), return <code>null</code>.
         </p>
       </section>
+
       <!-- - - - - - - - - - - - conferenceId attribute - - - - - - - - - - -->
       <section> <h3>The <code>conferenceId</code> attribute</h3>
         <p>
@@ -1916,6 +2296,7 @@
           call is part of. Otherwise, return <code>null</code>.
         </p>
       </section>
+
       <!-- - - - - - - - - - - - accept() method  - - - - - - - - - - - - - -->
       <section> <h3>The <code>accept()</code> method</h3>
         <p>
@@ -1924,16 +2305,38 @@
           the user agent MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to "<a>incoming</a>" or
-          "<a>waiting</a>", then throw an <code>InvalidStateError</code>
-          exception.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Otherwise make a request to the telephony system to accept the
-          call. If the request is acknowledged then set <code>state</code> to
-          "<a>accepted</a>".
+          <li>If <code>state</code> is not equal to <a><code>incoming</code></a>
+            or <a><code>waiting</code></a>, then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Save the <code>state</code> of the call</li>
+          <li>Make a request to the telephony system to accept the call.</li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the call state to the value saved before the request. Then,
+            call <var>resolver</var>'s <code>reject(value)</code> method with
+            the <var>value</var> argument set to a new <code>DOMError</code>
+            object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate
+            this algorithm.
+          </li>
+          <li>If the request is acknowledged, then set <code>state</code> to
+            <a><code>accepted</code></a>, and  <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
           </li>
         </ol>
       </section><!-- accept() method -->
+
       <!-- - - - - - - - - - - - redirect() method  - - - - - - - - - - - - -->
       <section> <h3>The <code>redirect()</code> method</h3>
         <p class="note">
@@ -1950,22 +2353,43 @@
           agent MUST run the following steps:
         </p>
         <ol>
-          <li>If the <a>state</a> is not <a>"incoming"</a> or <a>"waiting"</a>,
-          then throw an <code>InvalidStateError</code> exception.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Otherwise make a request to the telephony system to redirect the
-          call to the number indicated in the <var>remoteParty</var> parameter,
-          return, and continue these steps asynchronously.
+          <li>If the <a>state</a> is not <a><code>incoming</code></a> or
+            <a><code>waiting</code></a>,
+            then call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
           </li>
-          <li>If the request is acknowledged, then set <code>state</code> to
-          "<a>redirecting</a>".
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
           </li>
-          <li>When the <a>telephony service</a> is notified that the call has
-          been successfully redirected it MUST set <code>state</code> to
-          "<a>disconnected</a>".
+          <li>Save the <code>state</code> of the call</li>
+          <li>Make a request to the telephony system to redirect the
+           call to the number indicated in the <var>remoteParty</var> parameter
+          </li>
+          <li>Set the <code>state</code> of the call to
+            <a><code>redirecting</code></a>
+          </li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the state before the request.
+            Then call <var>resolver</var>'s <code>reject(value)</code> method
+            with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate this
+            algorithm.
+          </li>
+          <li>If the request is successful, then set <code>state</code> to
+            <a><code>disconnected</code></a>, and  <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
           </li>
         </ol>
       </section><!-- redirect() method -->
+
       <!-- - - - - - - - - - - - transfer() method  - - - - - - - - - - - - -->
       <section> <h3>The <code>transfer()</code> method</h3>
         <p class="note">
@@ -1983,92 +2407,46 @@
           MUST run the following steps:
         </p>
         <ol>
-          <li>If <code>state</code> is not equal to "<a>active</a>" or
-          "<a>held</a>", then throw an <code>InvalidStateError</code>
-          exception.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Otherwise make a request to the telephony system to transfer the
-          call to the number indicated in the <var>thirdParty</var> parameter.
-          Note that in GSM this requires putting the current call on hold,
-          dialing a new call to the third party, then initiating the call
-          transfer procedure. If there is an error, the original call MUST be
-          resumed and then queue a task to fire a simple event named "error"
-          without modifying the call state. If the request is acknowledged,
-          then set <code>state</code> to "<a>transferring</a>".
+          <li>If <code>state</code> is not equal to <a><code>active</code></a>
+            or <a><code>held</code></a>, then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
           </li>
-          <li>When the <a>telephony service</a> is notified that the call has
-          been successfully transferred and the original call is disconnected,
-          it MUST set <code>state</code> to "<a>disconnected</a>".
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Save the <code>state</code> of the call</li>
+          <li>Set the <code>state</code> of the call to
+            <a><code>transferring</code></a>
+          </li>
+          <li>Make a request to the telephony system to transfer the
+            call to the number indicated in the <var>thirdParty</var> parameter.
+            Note that in GSM this requires putting the current call on hold,
+            dialing a new call to the third party, then initiating the call
+            transfer procedure.
+          </li>
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the <code>state</code> of the call to the value saved before
+            the request. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code> and terminate
+            this algorithm.
+          </li>
+          <li>If the transfer request is successful, then execute the
+            <a>ondisconnected steps</a>, and <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
           </li>
         </ol>
       </section><!-- transfer() method -->
-      <!-- - - - - - - - - - - - createConference() method  - - - - - - - - -->
-      <section> <h3>The <code>createConference()</code> method</h3>
-        <p>
-          The <dfn id=
-          "widl-TelephonyCall-createConference-ConferenceCall">
-          createConference()</dfn>
-          method Creates a multiparty call from the current call. On cellular
-          telephony services, this happens by initiating merging the active and
-          held calls into a multiparty call. Using this method MUST be the only
-          way to create a <a>ConferenceCall</a> object. When invoked, the user
-          agent MUST run the following steps:
-        </p>
-        <ol id="steps-createConference">
-          <li>Let <var>telCall</var> be the <a>telephony call</a> on which this
-          method was invoked.
-          </li>
-          <li>Set the <code>state</code> of <var>telCall</var> to
-          "<a>joining</a>".
-          </li>
-          <li>Then, in cellular telephony services, make a request to the
-          telephony system to join the active and held calls into a multiparty
-          call.
-          </li>
-          <li>If one of the calls is already a <a>ConferenceCall</a> object,
-          use it as <var>confCall</var> in these steps.
-          </li>
-          <li>Otherwise create a new <a>ConferenceCall</a> object with a unique
-          conference id, named <var>confCall</var>.
-          </li>
-          <li>Set the <code>state</code> of <var>confCall</var> to
-          "<a>joining</a>".
-          </li>
-          <li>Return the <var>confCall</var> object, and continue these steps
-          asynchronously.
-          </li>
-          <li>If the request to the telephony system is successful,
-            <ol>
-              <li>set the <code>conferenceId</code> attribute of the
-              participating calls to the unique identifier generated for the
-              multiparty call <var>confCall</var>.
-              </li>
-              <li>Add the calls participating in the multiparty call to the <a>
-                calls</a> attribute of the <var>confCall</var> object, remove
-                them from the <a>calls</a> array of the <a>TelephonyManager</a>
-                object, and set their <code>state</code> to
-                <code>'multiparty'</code>.
-              </li>
-              <li>Add the <var>confCall</var> object to the <a>calls</a> array
-              of the <a>TelephonyManager</a> object.
-              </li>
-              <li>Set the <code>state</code> of <var>confCall</var> to
-              "<a>active</a>".
-              </li>
-              <li>
-                <a>Queue a task</a> to <a>fire an event</a> named
-                <code><a>participantadded</a></code> at <var>confCall</var>.
-                object
-              </li>
-              <li>Follow the state changes of <var>confCall</var> through the
-              state change events.
-              </li>
-            </ol>
-          </li>
-        </ol>
-      </section><!-- createConference() method -->
-
     </section><!-- TelephonyCall -->
+
     <!-- - - - - - - - - - - -  Interface ConferenceCall  - - - - - - - - - -->
     <section> <h2>The <a>ConferenceCall</a> Interface</h2>
       <p>
@@ -2078,15 +2456,19 @@
       <dl title="ConferenceCall implements CallHandler" class="idl"></dl>
       <dl title="interface ConferenceCall : EventTarget" class="idl">
         <dt> readonly attribute DOMString conferenceId       </dt>
-        <dt> readonly attribute TelephonyCall[] calls        </dt>
-        <dt> Promise split(TelephonyCall participantCall)    </dt>
+        <dt>  // on success, getCalls() returns an array of TelephonyCall's</dt>
+        <dt> Promise getCalls()                              </dt>
+        <dt> Promise split(TelephonyCall call)               </dt>
+        <dt> Promise invite(DOMString remoteParty,
+                            optional DialParams params)      </dt>
         <dt> attribute EventHandler onparticipantadded       </dt>
         <dt> attribute EventHandler onparticipantremoved     </dt>
       </dl>
+
       <!-- - - - - - - - - - - - Event handlers - - - - - - - - - - - - - - -->
       <section> <h3>Event handlers</h3>
         <p>
-          To handle changes in <a>telephony state</a>, the
+          To handle changes in <a>call state</a>s, the
           <a>ConferenceCall</a> interface implements the following <a>event
           handlers</a>. The event type for the events is
           <a><code>Event</code></a>.
@@ -2099,19 +2481,21 @@
           <tr>
             <td>
               <code><dfn id=
-              "widl-ConferenceCall-onparticipantadded">onparticipantadded</dfn></code>
+              "widl-ConferenceCall-onparticipantadded">onparticipantadded</dfn>
+              </code>
             </td>
-            <td><a>participantadded</a></td>
+            <td>participantadded</td>
           </tr>
           <tr>
             <td>
               <code><dfn id=
               "widl-ConferenceCall-onparticipantremoved">onparticipantremoved</dfn></code>
             </td>
-            <td><a>participantremoved</a></td>
-          </tr>\
+            <td>participantremoved</td>
+          </tr>
         </table>
       </section>
+
       <!-- - - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
       <section> <h3>The <code>conferenceId</code> attribute</h3>
         <p>
@@ -2121,19 +2505,27 @@
           and in call history. It MUST NOT be the empty string.
         </p>
       </section><!-- conferenceId attribute -->
-      <!-- - - - - - - - - - - -  calls attribute - - - - - - - - - - - - - -->
-      <section> <h3>The <code>calls</code> attribute</h3>
+
+      <!-- - - - - - - - - - - - - getCalls() method  - - - - - - - - - - - -->
+      <section> <h3>The <code>getCalls()</code> method</h3>
         <p>
-          When getting the <dfn id="widl-ConferenceCall-calls">calls</dfn>, the
-          user agent MUST return the array of <a>TelephonyCall</a> objects
-          managed by the multiparty call object.
+          When the <dfn
+          id="widl-ConferenceCall-getCalls-Promise">getCalls()</dfn>
+          method is invoked, the user agent MUST return a <code>Promise</code>
+          object, which in case of success resolves to an array, which can be
+          empty, of <a>Call</a> objects managed by this object.
         </p>
-      </section><!-- calls attribute -->
+        <p class="Note">
+          <a><code>Call</code></a> objects belonging this multiparty
+          call won't be present in <a><code>CallManager</code></a> objects.
+        </p>
+      </section>
+
       <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - - -->
       <section> <h3>The <code>split()</code> method</h3>
         <p>
           The <dfn id=
-          "widl-ConferenceCall-split-void-TelephonyCall-participantCall">split()</dfn>
+          "widl-ConferenceCall-split-Promise-TelephonyCall-call">split()</dfn>
           method requests the telephony system split the specified participant
           <a>TelephonyCall</a> object, activate it and put this multiparty call
           on hold. The method takes one argument, which represents the
@@ -2142,27 +2534,46 @@
           following steps:
         </p>
         <ol>
-          <li>If the provided <var>participantCall</var> does not identify a
-          valid <a>TelephonyCall</a> object which is part of this multiparty
-          call, then an throw an <code>InvalidModificationError</code>
-          exception.
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
           </li>
-          <li>Otherwise, set the <code>state</code> of the
-          <var>participantCall</var> and that of this <a>ConferenceCall</a>
-          object to "<a>splitting</a>".
+          <li>If the provided <var>call</var> does not identify a
+            valid <a>TelephonyCall</a> object which is part of this multiparty
+            call, then call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"InvalidModificationError"</code>, and terminate this
+            algorithm.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Set the <code>state</code> of the <var>call</var> and
+            set the state of the <a>ConferenceCall</a> object to
+            <a></code>splitting</code></a>.
           </li>
           <li>Make a request to the telephony system to split the call
-          participant from the multiparty call.
+            participant from the multiparty call.
           </li>
-          <li>Return, and continue these steps asynchronously.
+          <li>Wait for response from the telephony system</li>
+          <li>If the request fails, then check if call state has changed, and if
+            yes, then execute the steps relevant to that call state, otherwise
+            restore the <code>state</code> of the <var>call</var>
+            and the state of the multiparty call to
+            <a><code>multiparty</code></a>. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code>, and terminate
+            this algorithm.
           </li>
-          <li>If the request was successful, the telephony system will put the
-          multiparty call on hold and activate the split call. The
-          implementation MUST follow the state transitions on the calls as
-          described in this specification.
+          <li>If the request was successful, reset the <code>conferenceId</code>
+            of the split call to <code>null</code>.
+            The telephony system will put the multiparty call on hold and
+            activate the split call. The implementation MUST follow the state
+            transitions on the calls as described in this specification.
           </li>
-          <li>Reset the <code>conferenceId</code> of the split call to
-          <code>null</code>.
+          <li> <a>queue a task</a> to invoke <var>resolver</var>'s
+            <code>accept()</code> method.
           </li>
         </ol>
         <p class='note'>
@@ -2172,6 +2583,35 @@
           comparison of multiparty call and 3-way call.
         </p>
       </section><!-- split() method -->
+
+      <!-- - - - - - - - - - - invite() method  - - - - - - - - - - - - - - -->
+      <section><h3>The <code>invite()</code> method</h3>
+        <p>
+          The <dfn id="widl-ConferenceCall-invite-Promise-DOMString-remoteParty-DialParams-params">invite()</dfn>
+          method is equivalent to invoking the <code>createConference</code>
+          method with the parameters given to <code>invite()</code>. When
+          invoked, the user agent MUST run the following steps:
+        </p>
+        <ol id="steps-invite">
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>
+            If this call is not the <a>active call</a>, then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate this
+            algorithm.
+          </li>
+          <li>Otherwise, execute the <a>createconference steps</a> with the
+            parameters given to this method.
+          </li>
+        </ol>
+      </section><!--invite() method-->
     </section><!-- ConferenceCall -->
     </section><!-- Telephony Calls -->
 
@@ -2340,7 +2780,7 @@
             </ol>
           </section>
 
-        <!-- - - - - - - - - - - -  ToneOptions - - - - - - - - - - - - - - -->
+          <!-- - - - - - - - - - - -  ToneOptions - - - - - - - - - - - - - -->
           <section> <h3><a>ToneOptions</a> Dictionary</h3>
             <dl title="dictionary ToneOptions" class="idl">
               <dt> unsigned long duration </dt>
@@ -2461,13 +2901,17 @@
         This interface provides a method for parsing and classifying user input.
         Applications can use this for dispatching these user inputs to relevant
         handlers. This is a helper interface for dialer applications, in order
-        to avoid parsing user input in telephony service specific context.
+        to avoid parsing user input to resolve commands in various telephony
+        service specific contexts.
         For example, dialers could accept an emergency number typed in a PIN
         code dialog and display a button for making the emergency call.
         Another example is in a running dialer application, user input can be a
-        phone number, an emergency number, or an MMI command. In case of an
-        MMI command the implementation of this interface can tell whether the
-        command is valid, and could be forwarded to the telephony service.
+        phone number, an emergency number, or an MMI command, which enables
+        the application know which API methods to use in continuation, i.e.
+        which interfaces can accept the given user input. For instance, in the
+        case of an MMI command the implementation of this interface can tell
+        whether the command is valid and could be forwarded to the telephony
+        service.
       </p>
       <section> <h3>The <a>TelephonyCommandParser</a> Interface</h3>
       <dl title="interface TelephonyCommandParser" class="idl">
@@ -2476,7 +2920,7 @@
           Promise parseCommand(DOMString input, optional DOMString serviceId)
         </dt>
       </dl>
-      <section> <h3>The <a><code>parseCommand()</code></a> method</h3>
+      <section> <h3>The <code>parseCommand()</code> method</h3>
       <p>
         When the <code>parseCommand()</code> method is invoked, the user agent
         MUST run the following steps:
@@ -2518,7 +2962,7 @@
       </section>
       <section> <h3>The <a><code>TelephonyCommandType</code></a> enum</h3>
       <p>
-        The return value of the <a><code>parseCommand()</code></a> method
+        The return value of the <code>parseCommand()</code> method
         through the <code>Promise</code> is a string enumeration value of
         the input classification.
       </p>
@@ -2530,7 +2974,7 @@
         <dt>number</dt>
         <dt>unknown</dt>
       </dl>
-      <p> The supported command type values are the following:
+      <p> The supported command type values are the following:</p>
       <dl>
         <dt>"emergency"</dt>
         <dd>The user input matches to a known emergency number.</dd>
@@ -2548,7 +2992,7 @@
         </dd>
 
         <dt>"number"</dt>
-        <dd>The user input matched to a remote party identifier of known
+        <dd>The user input matched to a remote party id of known
           format.</dd>
 
         <dt>"unknown"</dt>
@@ -2556,7 +3000,6 @@
           known number format. The input may be usable, depending on the
           telephony service.</dd>
       </dl>
-      </p>
       </section>
       </section>
     </section> <!-- Command parser -->
@@ -2711,16 +3154,34 @@
           </li>
         </ul>
       </section><!-- Mitigations -->
+
       <!-- - - - - - - - - - - - User interaction guidelines  - - - - - - - -->
-      <section>
-        <h3>
-          User interaction guidelines
-        </h3>
+      <section> <h2>User interaction guidelines</h2>
         <p>
-          TODO
+          This API has been designed to facilitate typical telephony interaction
+          scenarios, such as:
+          <ol>
+            <li>incoming call dialog</li>
+            <li>ongoing call dialog</li>
+            <li>request PIN code dialog</li>
+            <li>typing emergency numbers in PIN code dialog</li>
+            <li>typing phone numbers, remote party id's and MMI commands in
+              dialer
+            </li>
+          </ol>
+        </p>
+        <p>
+          Implementations SHOULD make sure the phone calls are controllable by
+          the user at any point in time while the call is active.
+        </p>
+        <p>
+          Implementations SHOULD validate user input using the
+          <code>parseCommand()</code> method of the
+          <a><code>TelephonyCommandParser</code></a> interface.
         </p>
       </section><!-- User interaction guidelines -->
     </section><!-- Security and privacy -->
+
     <!-- - - - - - - - - - -  Managing Call History   - - - - - - - - - - - -->
     <section class="appendix"> <h2>Managing call history</h2>
       <p>
@@ -2738,14 +3199,14 @@
       <!-- - - - - - - - - - - CallHistoryEntry Interface - - - - - - - - - -->
       <section> <h3><code>CallHistoryEntry</code> interface</h3>
         <dl title="interface CallHistoryEntry" class="idl">
-          <dt> readonly attribute DOMString remoteParty              </dt>
-          <dt> readonly attribute DOMString serviceId                </dt>
-          <dt> readonly attribute DOMString? conferenceId            </dt>
-          <dt> readonly attribute Date startTime                     </dt>
-          <dt> readonly attribute unsigned long long duration        </dt>
-          <dt> readonly attribute CallDirection direction            </dt>
-          <dt> readonly attribute DisconnectReason? disconnectReason </dt>
-          <dt> readonly attribute boolean emergency                  </dt>
+          <dt> readonly attribute DOMString          remoteParty      </dt>
+          <dt> readonly attribute DOMString          serviceId        </dt>
+          <dt> readonly attribute DOMString?         conferenceId     </dt>
+          <dt> readonly attribute Date               startTime        </dt>
+          <dt> readonly attribute unsigned long long duration         </dt>
+          <dt> readonly attribute CallDirection      direction        </dt>
+          <dt> readonly attribute DisconnectReason?  disconnectReason </dt>
+          <dt> readonly attribute boolean            emergency        </dt>
         </dl>
         <!-- - - - - - - - - - -  remoteParty attribute - - - - - - - - - - -->
         <section> <h3>The <code>remoteParty</code> attribute</h3>
