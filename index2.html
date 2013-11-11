@@ -1522,7 +1522,7 @@
               </dfn>
             </td>
             <td><dfn><code>calladded</code></dfn></td>
-            <td><a>TelephonyEvent</a></td>
+            <td><a>TelephonyCallEvent</a></td>
             <td>handles incoming and waiting calls, and creation of multiparty
               calls, hence a change in the calls managed by this object
             </td>
@@ -1534,7 +1534,7 @@
               </dfn>
             </td>
             <td><dfn><code>callremoved</code></dfn></td>
-            <td><a><code>TelephonyEvent</code></a></td>
+            <td><a><code>TelephonyCallEvent</code></a></td>
             <td>handles call disconnection and when calls are moved to
               conference calls, hence a change in the calls managed by this
               object
@@ -1546,7 +1546,7 @@
               </dfn>
             </td>
             <td><dfn><code>activechanged</code></dfn></td>
-            <td><a>TelephonyEvent</a></td>
+            <td><a>TelephonyCallEvent</a></td>
             <td>handles a change of the <code>activeCall</code> property
             </td>
           </tr>
@@ -1663,24 +1663,45 @@
         </section>
       </section><!-- event handers -->
 
-      <!-- - - - - - - - - - - - Interface TelephonyEvent - - - - - - - - - - -->
-      <section> <h2><a>TelephonyEvent</a> Interface</h2>
+      <!-- - - - - - - - - - - - Interface TelephonyCallEvent - - - - - - - -->
+      <section> <h2><a>TelephonyCallEvent</a> Interface</h2>
         <p>
           Defines telephony events for <a>TelephonyCall</a> state changes,
           including handling incoming and waiting calls.
         </p>
-        <dl title="interface TelephonyEvent : Event" class="idl">
+        <dl title=
+        "[Constructor(DOMString type, optional TelephonyCallEventInit eventInitDict)]interface TelephonyCallEvent : Event"
+        "interface TelephonyCallEvent : Event"
+        class="idl">
           <dt>readonly attribute Call call</dt>
         </dl>
-        <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - - -->
+        <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - -->
         <section> <h3>The <code>call</code> attribute</h3>
           <p>
-            When getting the <dfn id="widl-TelephonyEvent-call">call</dfn>
+            When getting the <dfn id="widl-TelephonyCallEvent-call">call</dfn>
             attribute, the user agent MUST return the <a>Call</a> that
             triggered the event.
           </p>
         </section>
-      </section><!-- interface TelephonyEvent -->
+        <!-- - - - - - - - - - TelephonyCallEventInit dictionary  - - - - - -->
+        <section>
+          <h3><code>TelephonyCallEventInit</code> dictionary</h3>
+          <dl title="dictionary TelephonyCallEventInit : EventInit"
+              class="idl">
+            <dt>Call call</dt>
+          </dl>
+          <!-- - - - - - - - - - - -  call member - - - - - - - - - - - - - -->
+          <section>
+            <h3>The <code>call</code> member</h3>
+            <p>
+              The <dfn id=
+              "widl-TelephonyCallEventInit-call">call</dfn> member
+              represents the <a><code>Call</code></a> object which is the source
+              of this event.
+            </p>
+          </section>
+        </section><!-- TelephonyCallEventInit interface -->
+      </section><!-- interface TelephonyCallEvent -->
 
       <!-- - - - - - - - - - - - -  activeCall attribute  - - - - - - - - - -->
       <section> <h3>The <code>activeCall</code> attribute</h3>
@@ -2072,8 +2093,10 @@
             Defines a telephony event for notifying a changed state for a
             telephony call.
           </p>
-          <dl title="interface TelephonyStateEvent : Event"
-          class="idl">
+          <dl title=
+             "[Constructor(DOMString type, optional TelephonyStateEventInit eventInitDict)]interface TelephonyStateEvent : Event"
+              "interface TelephonyStateEvent : Event"
+              class="idl">
             <dt>readonly attribute DOMString state</dt>
             <dt>readonly attribute DOMString reason</dt>
           </dl>
@@ -2099,6 +2122,34 @@
               described in <a><code>DisconnectReason</code></a>.
             </p>
           </section>
+          <!-- - - - - - - - - - TelephonyStateEventInit dictionary - - - - -->
+          <section>
+            <h3><code>TelephonyStateEventInit</code> dictionary</h3>
+            <dl title="dictionary TelephonyStateEventInit : EventInit" class=
+            "idl">
+              <dt>DOMString state</dt>
+              <dt>DOMString reason</dt>
+            </dl>
+            <!-- - - - - - - - - - - state member - - - - - - - - - - - - - -->
+            <section>
+              <h3>The <code>state</code> member</h3>
+              <p>
+                The <dfn id=
+                "widl-TelephonyStateEventInit-state">state</dfn> member
+                represents the <a>call state</a> of a <a><code>Call</code></a>
+                object.
+              </p>
+            </section><!-- state member -->
+            <!-- - - - - - - - - - reason member  - - - - - - - - - - - - - -->
+            <section>
+            <h3>The <code>reason</code> attribute</h3>
+            <p>
+              The <dfn id="widl-TelephonyStateEvent-reason">reason</dfn> member
+              represents the <a><code>DisconnectReason</code></a> for a
+              <a><code>Call</code></a> object.
+            </p>
+            </section> <!-- reason member -->
+          </section><!-- TelephonyStateEventInit interface -->
         </section><!-- interface TelephonyStateEvent -->
 
       </section><!-- Event Handlers -->
@@ -2913,8 +2964,8 @@
         whether the command is valid and could be forwarded to the telephony
         service.
       </p>
-      <section> <h3>The <a>TelephonyCommandParser</a> Interface</h3>
-      <dl title="interface TelephonyCommandParser" class="idl">
+      <section> <h3>The <a>CommandParser</a> Interface</h3>
+      <dl title="interface CommandParser" class="idl">
         <dt>// on success returns TelephonyCommandType</dt>
         <dt>
           Promise parseCommand(DOMString input, optional DOMString serviceId)
@@ -3177,7 +3228,7 @@
         <p>
           Implementations SHOULD validate user input using the
           <code>parseCommand()</code> method of the
-          <a><code>TelephonyCommandParser</code></a> interface.
+          <a><code>CommandParser</code></a> interface.
         </p>
       </section><!-- User interaction guidelines -->
     </section><!-- Security and privacy -->
