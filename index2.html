@@ -22,21 +22,15 @@
           crEnd:                "",
           editors: [
             { name: "Marcos Cáceres", company: "Mozilla",
-                    companyURL: "http://www.tid.es/",
-                    note: "patterns, correctness; integrator" },
+                    companyURL: "http://www.tid.es/" },
             { name: "José M. Cantera", company: "Telefónica",
-                    companyURL: "http://www.tid.es/",
-                    note: "calls, tones" },
+                    companyURL: "http://www.tid.es/" },
             { name: "Eduardo Fullea", company: "Telefónica",
-                    companyURL: "http://www.tid.es/",
-                    note: "calls, tones; integrator" },
+                    companyURL: "http://www.tid.es/" },
             { name: "Zoltan Kis", company: "Intel",
-                    companyURL: "http://www.intel.com/",
-                    note: "calls, tones, services; integrator" },
+                    companyURL: "http://www.intel.com/" },
             { name: "John Lyle", company: "University of Oxford",
-                    companyURL: "http://www.cs.ox.ac.uk/",
-                    note: "security and privacy"
-            }
+                    companyURL: "http://www.cs.ox.ac.uk/" },
           ],
           inlineCSS:    true,
           noIDLIn:      true,
@@ -72,17 +66,24 @@
     figcaption{
         display: block;
         margin-top: 1em;
-    }                
+    }
     </style>
   </head>
   <body>
     <!-- - - - - - - - - - - - - - - Abstract - - - - - - - - - - - - - - - -->
     <section id="abstract">
       <p>
-        This specification defines an API to manage telephone calls. A typical
-        use case of the <cite>Web Telephony API</cite> is the implementation of
-        a 'Dialer' application supporting multiparty calls and multiple
-        telephony services.
+        This specification defines an API to manage telephony related
+        functionality. The main targeted use case is enabling implementations
+        of a 'dialer' applications, supporting multiparty calls and multiple
+        <a>telephony service</a>s. This uses the API in full depth, and requires suitable permissions.
+        In addition, a larger group of applications may benefit from knowing telephony related contextual information, such as the presence of a
+        telephony call in the system, and what media is connected to it. This
+        is a small subset of this specification, and requires lesser API
+        permissions.
+        This API does not specify how to invoke the system dialer application
+        with a URI of the remote party, as this use case is handled by a
+        different API.
       </p>
     </section>
 
@@ -115,41 +116,72 @@
       </p>
       <pre title="Dialing a call" class="example highlight">
         navigator.telephony.dial('+1234567890').then(
-            function(call) {
-                call.onstatechange = stateHandler;
-            },
-            function(error) {
-                console.log("Telephony error" + error.name);
-            }
-        );
-
+          function(call) {
+            call.addEventListener("statechange", stateHandler, true);
+          },
+          function(error) {
+              console.log("Telephony error" + error.name);
+          });
 
         function stateHandler(TelephonyCall call) {
-            if(telCall.state == 'active')
-               window.console.log('Connected!');
-            else if(telCall.state == 'disconnected') {
-               window.console.log('Disconnected!');
-               // update call history
-            }
+          // ...
+          if (call.state == 'active')
+             window.console.log('Connected!');
+          else if(call.state == 'disconnected') {
+             window.console.log('Disconnected!');
+             // update call history
+          }
+          // ...
         }
       </pre>
       <p>
         A simple example for receiving a telephony call is provided below:
       </p>
       <pre title="Receiving calls" class="example highlight">
-        navigator.telephony.onincoming = function(TelephonyCall call) {
-            call.onstatechange = stateHandler;
-            if(call.state == 'incoming') {
+        navigator.telephony.addEventListener("calladded",
+          function(evt) {
+            //this is the time to wire state change listener to the call object
+            var call = navigator.telephony.getCall(evt.callId);
+            if (call) {
+              call.addEventListener("statechange", stateHandler, true);
+              if (call.state == 'incoming') {
                 call.accept().then(
-                    function(call) {
-                        console.log('Call from ' + call.remotePartyId + ' accepted');
-                    },
-                    function(error) {
-                        console.log("Telephony error" + error.name);
-                    }
-                );
+                  function(call) {
+                    console.log('Call from ' + call.remotePartyId + ' accepted');
+                  },
+                  function(error) {
+                    console.log("Telephony error" + error.name);
+                  });
+              }
             }
-        };
+          }, true);  // capture if we are the dialer
+      </pre>
+      <p>
+        A simple example for subscribing to telephony contextual information is
+        provided below:
+      </p>
+      <pre title="Telephony information" class="example highlight">
+        navigator.telephony.addEventListener("calladded",
+          function(evt) {
+            console.log("New telephony call in state = " + evt.callState);
+            console.log("Now I need to adapt");
+          }, false);  // don't capture!
+
+        navigator.telephony.addEventListener("active",
+          function(evt) {
+            var callid = evt.callId;
+            var serviceId = evt.serviceId;
+            console.log("A call became active, so I cannot play music");
+            // wire a listener for disconnected calls
+            navigator.telephony.addEventListener("callremoved",
+              function(evt) {
+                // check if there is any other active call
+                if (navigator.telephony.anyCallActive)
+                  console log("There is no active call, I can safely work");
+                else
+                  console.log("There is an active call");
+              }, false);
+          }, false);
       </pre>
       <p>
         The use cases for this specification are collected in the <a href=
@@ -173,9 +205,137 @@
         when a CDMA telephony call is active, since not all CDMA networks
         support concurrent services. Therefore, many applications will lose
         their data connection when the end user is in a voice call. However,
-        such message should be sent when the data connection is lost for any
-        reason, independently from this specification, so it could be monitored
-        from one place.
+        such message should be sent whenever the data connection is lost for any
+        reason, so such a system message should be issued by the implementation
+        of the data connection handling.
+      </p>
+    </section>
+
+    <!-- - - - - - - - - - - - - - Use cases  - - - - - - - - - - - - - - - -->
+    <section class="informative"> <h2>Use cases</h2>
+      <section class="informative"> <h3>Generic use cases</h3>
+      <p>
+        Use cases requiring lower privilege levels are the following:
+        <ol>
+          <li>determine if there is an <a>active call</a> in the system</li>
+          <li>determine when a new call is added, or removed</li>
+          <li>list basic and impersonal information about ongoing calls.</li>
+        </ol>
+        These are referred to as <dfn>call contextual information</dfn> in this
+        specification. The primary reason to follow call contextual information
+        is to optimize resource usage during telephony calls are being managed.
+        For instance, a media player may stop receiving data while there is an
+        active call, since the media stream is corked by the system anyway.
+      </p>
+      </section>
+      <section class="informative"> <h3>Dialer specific use cases</h3>
+      <p>
+        This API has been designed to facilitate typical telephony interaction
+        scenarios, such as:
+        <ol>
+          <li>incoming call dialog</li>
+          <li>ongoing call dialog</li>
+          <li>outgoing call (dialer) dialog</li>
+          <li>dialing emergency numbers in PIN code dialog</li>
+          <li>typing remote party identifiers (phone numbers) and MMI commands
+            in dialer</li>
+          <li>support <a>telephony service</a> (subscriber identity) selection
+            for dual-SIM and multi-SIM phones</li>
+          <li>support <a>default telephony service</a> selection.</li>
+          </li>
+        </ol>
+      </p>
+      <p>
+        The technical use cases, requiring elevated permissions are the
+        following:
+        <ul>
+         <li>Call management
+          <ol>
+          <li>make a call to a remote party and subscribe to notifications about
+            the state changes of the call</li>
+          <li>when making a call, if multiple subscriber identities are
+            configured, optionally choose which identity should be used for a
+            dialed call, otherwise a default identity is used
+          </li>
+          <li>when making a call, optionally hide the caller identity, if the
+            <a>telephony service</a> supports it </li>
+          <li>list the ongoing telephony calls</li>
+          <li>retrieve the active call, if any</li>
+          <li>receive phone calls and subscribe to notifications about incoming
+            calls and their state changes</li>
+          <li>handle waiting calls, when the service is available and enabled</li>
+          <li>put calls on hold</li>
+          <li>resume held calls</li>
+          <li>create phone conference, when the device and
+            <a>telephony service</a> supports it</li>
+          <li>deflect an incoming call to be handled by another remote party,
+            when the <a>telephony service</a> supports it</li>
+          <li>transfer an ongoing call with a remote party to become a call
+            between the remote party and a third party, if the
+            <a>telephony service</a> supports it</li>
+          </ol>
+         </li>
+         <li>Tone management
+          <ol>
+          <li>send DTMF tones to the telephony network, and optionally set
+          DTMF mark and space parameters.</li>
+          </ol>
+         </li>
+         <li>Emergency calls
+          <ol>
+          <li>dial an emergency call, even without having a SIM card, if it is
+            technically possible (e.g. there is a telephony modem or service to support it)</li>
+          <li>list the usable emergency numbers for a given
+            <a>telephony service</a>, if supported by the device and the
+            telephony network</li>
+          <li>subscribe to notification when the list of emergency numbers
+            changes</li>
+          </ol>
+         </li>
+         <li>Telephony service management
+          <ol>
+          <li>set a default subscriber identity, so that the identity is
+            optional to provide before dialing </li>
+          <li>list the available <a>telephony service</a>s</li>
+          <li>subscribe to notifications about the activation of new telephony
+            services in the system</li>
+          <li>subscribe to notifications about the removal of telehony services
+            in the system</li>
+          </ol>
+         </li>
+        </ul>
+      </p>
+      </section>
+      <section class="informative"> <h3>Omitted use cases</h3>
+        <p>
+          Further telephony use cases which are currently <b>not</b> explicitly handled by this API:
+          <ol>
+          <li>start the system dialer with a given phone number or phone URI</li>
+          <li>set the default sound volume for telephony</li>
+          <li>set the sound volume during a call</li>
+          <li>mute and unmute the microphone for a call</li>
+          <li>use headphones with calls</li>
+          <li>use external displays with calls </li>
+          <li>select between audio sources</li>
+          <li>select between audio targets (speaker, headphones, etc)</li>
+          <li>see and manage call capabilities during a call, such as is
+            multiparty call possible, is video call possible, etc </li>
+          <li>set and check network services, such as call forwarding, call
+            barring, network selection mode, call counters, etc.</li>
+          <li>save the list of past calls into call history.</li>
+          </ol>
+        </p>
+      </section>
+    </section>
+
+    <!-- - - - - - - - - - - - - - Permissions  - - - - - - - - - - - - - - -->
+    <section class="informative"> <h2>Permissions</h2>
+      <p>
+        This API conforms to the permission model defined for System
+        Applications, with 2 levels of permission: one generic permission which
+        could be used by any page or application in order to obtain
+        <a>call contextual information</a>, and one restricted permission level,
+        which enables access to the full API specified in this document.
       </p>
     </section>
 
@@ -259,7 +419,7 @@
 
 
     <!-- - - - - - - - - - - - Interface TelephonyManager - - - - - - - - - -->
-    <section> <h2>The <a>TelephonyManager</a> Interface</h2>
+    <section class="informative"> <h2>The <a>TelephonyManager</a> Interface</h2>
       <p>
         The <dfn>TelephonyManager</dfn> interface provides access to telephony
         functionality related to <a>telephony service</a> management such as
@@ -436,8 +596,9 @@
           <code>defaultservicechanged</code> if the
           <a>default telephony service</a> has changed.
           This event does not bubble, is not cancelable, has no default action,
-          and its <a>serviceId</a> attribute is set to the <a>telephony service
-          id</a> of the <a>telephony service</a> that initiated this algorithm.
+          and its <code>serviceId</code> attribute is set to the
+          <a>telephony service id</a> of the <a>telephony service</a> that
+          initiated this algorithm.
           </li>
           <li>If the service has been removed and it's been the default
           telephony service for the <a>origin</a>, then change default telephony
@@ -621,8 +782,7 @@
         <section>
           <h3>The <code>serviceId</code> attribute</h3>
           <p>
-            When getting the <dfn id=
-            "widl-TelephonyServiceEvent-serviceId">serviceId</dfn>, the user
+            When getting the <code>serviceId</code>, the user
             agent MUST return the <a>telephony service id</a> of the
             <a>telephony service</a> that triggered the event.
           </p>
@@ -638,8 +798,7 @@
           <section>
             <h3>The <code>serviceId</code> member</h3>
             <p>
-              The <dfn id=
-              "widl-TelephonyServiceEventInit-serviceId">serviceId</dfn> member
+              The <code>serviceId</code> member
               represents the <a>telephony service id</a> of a <a>telephony
               service</a>.
             </p>
@@ -845,7 +1004,7 @@
           A <dfn>telephony call</dfn> results from a <a>telephony service</a>'s
           attempt to establish a connection for communication between two or
           more parties. Telephony calls involving more than two parties are
-          referred to as a <dfn>multiparty call</dfn>.
+          referred to as a <a>multiparty call</a>.
       </p>
       </section>
       <section><h3>Call state</h3>
@@ -1258,7 +1417,7 @@
         <!-- - - - - - - - - - -  State changes - - - - - - - - - - - - - - -->
         <section> <h3>State changes</h3>
           <p>
-            Whenever there is a change in the <a>state</a> attribute the
+            Whenever there is a change in the <code>state</code> attribute the
             <a>user agent</a> MUST run the following steps:
           </p>
           <ol id="steps-call-statechange-event">
@@ -1283,7 +1442,7 @@
           <p class="note">
             Since <a title="call state">call states</a> can have slightly
             different semantics depending on the telephony protocol, the
-            <a><code>serviceId</code></a> and the <code>protocol</code>
+            <code>serviceId</code> and the <code>protocol</code>
             properties can be used for interpreting the call state in the
             implementation. See
             <a href="https://github.com/sysapps/telephony/issues/125">issue
@@ -1353,9 +1512,10 @@
             telephony service.
           </p>
           <p>
-            To <dfn>make a call</dfn> with a <a><var>remote party
-            identifier</var></a>, optionally a <var>telephony service</var>,
-            and optionally a <var>hide caller id</var>, the user agent MUST ...
+            To <dfn>make a call</dfn> with a
+            <a><var>remote party id</var></a>, optionally a
+            <var>telephony service</var>, and optionally a
+            <var>hide caller id</var>, the user agent MUST ...
           </p>
         </div>
         <p>
@@ -1678,7 +1838,7 @@
         <!-- - - - - - - - - - - - call attribute - - - - - - - - - - - - - -->
         <section> <h3>The <code>call</code> attribute</h3>
           <p>
-            When getting the <dfn id="widl-TelephonyCallEvent-call">call</dfn>
+            When getting the <code>call</code>
             attribute, the user agent MUST return the <a>Call</a> that
             triggered the event.
           </p>
@@ -1694,8 +1854,7 @@
           <section>
             <h3>The <code>call</code> member</h3>
             <p>
-              The <dfn id=
-              "widl-TelephonyCallEventInit-call">call</dfn> member
+              The <code>call</code> member
               represents the <a><code>Call</code></a> object which is the source
               of this event.
             </p>
@@ -1717,7 +1876,7 @@
       <!-- - - - - - - - - - - - - getCalls() method  - - - - - - - - - - - -->
       <section> <h3>The <code>getCalls()</code> method</h3>
         <p>
-          When the <dfn id="widl-CallManager-getCalls-Promise">getCalls()</dfn>
+          When the <code>getCalls()</code>
           method is invoked, the user agent MUST return a <code>Promise</code>
           object, which in case of success resolves to an array, which can be
           empty, of <a>Call</a> objects managed by this object.
@@ -1752,7 +1911,7 @@
         <!-- - - - - - - - - - - -  serviceId member  - - - - - - - - - - - -->
         <section> <h3>The <code>serviceId</code> member</h3>
           <p>
-            The <dfn id="widl-DialOptions-serviceId">serviceId</dfn> member
+            The <code>serviceId</code> member
             represents the <a>telephony service id</a> of the <a>telephony
             service</a> to be used when dialing.
           </p>
@@ -1809,8 +1968,8 @@
           </li>
           <li>Let <var>telCall</var> be a new instance of <a>TelephonyCall</a>.
           </li>
-          <li>Set <var>telCall</var>'s <a>remoteParty</a> attribute to <a><var>
-            remote party id</var></a>.
+          <li>Set <var>telCall</var>'s <code>remoteParty</code> attribute to
+            <a><var> remote party id</var></a>.
           </li>
           <li>Make a request to the underlying telephony system to
             <a>make a call</a> using <var>service</var> as
@@ -1894,7 +2053,7 @@
                 call, and wait for the response.
                 In cellular telephony (such as GSM and CDMA) this will mean
                 joining the active and held calls into a multiparty call. In a
-                SIP service it will create an new conference focus. In other
+                SIP service it will create a new conference focus. In other
                 telephony services which require at least another participant to
                 be specified, this request may fail.
               </li>
@@ -1943,7 +2102,7 @@
                system to dial a call by using the <a>dial steps</a> to
                <var>remote</var> and wait until the call denoted by a new
                <var>telCall</var> object is connected and the
-               <a>active call</a> is put in <a><code>hold</code></a> state.
+               <a>active call</a> is put in <a><code>held</code></a> state.
              </li>
              <li>for all calls in the given <a>telephony service</a>,
                save the value of the <code>state</code> property, then set it to
@@ -2001,47 +2160,47 @@
          </li>
        </ol>
       </section><!--createConference() method-->
-    </section><!-- CallManager -->
 
-    <!-- - - - - - - - - - - merge() method - - - - - - - - - - - - - - - - -->
-    <section><h3>The <code>merge()</code> method</h3>
-      <p>
-        The <dfn id="widl-CallManager-merge-Promise-Call-call">merge()</dfn>
-        method initiates a <a>client side merge</a> of the <a>active call</a>
-        and the call specified as argument.
-        When invoked, the user agent MUST run the following steps:
-      </p>
-      <ol id="steps-merge">
-        <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated resolver.
-        </li>
-        <li>If there is no <a>active call</a>, then resolve
-        <var>promise</var> with a <code>"NoModificationAllowedError"</code>
-          error, and terminate this algorithm.
-        </li>
-        <li>Otherwise return <var>promise</var> and continue the following steps
-          asynchronously.
-        </li>
-        <li>Make a request to the underlying audio system to merge the audio
-          channels between the <a>active call</a> and <var>call</var>, and a
-          request to share the microphone between the two calls. These two
-          requests SHOULD be handled as one transaction.
-        </li>
-        <li>Wait for response from the underlying system.
-        </li>
-        <li>If it's not possible to fulfill either request for whatever reason:
-          timeout, security, etc., then
-          call <var>resolver</var>'s <code>reject(value)</code>
-          method with the <var>value</var> argument set to a new
-          <code>DOMError</code> object whose name is set to
-          <code>"NoModificationAllowedError"</code>, and terminate this
-          algorithm.
-        </li>
-        <li>Otherwise, <a>queue a task</a> to invoke <var>resolver</var>'s
-          <code>accept()</code> method.
-        </li>
-      </ol>
-    </section><!--merge() method-->
+      <!-- - - - - - - - - - - merge() method - - - - - - - - - - - - - - - - -->
+      <section><h3>The <code>merge()</code> method</h3>
+        <p>
+          The <dfn id="widl-CallManager-merge-Promise-Call-call">merge()</dfn>
+          method initiates a <a>client side merge</a> of the <a>active call</a>
+          and the call specified as argument.
+          When invoked, the user agent MUST run the following steps:
+        </p>
+        <ol id="steps-merge">
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>If there is no <a>active call</a>, then resolve
+          <var>promise</var> with a <code>"NoModificationAllowedError"</code>
+            error, and terminate this algorithm.
+          </li>
+          <li>Otherwise return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Make a request to the underlying audio system to merge the audio
+            channels between the <a>active call</a> and <var>call</var>, and a
+            request to share the microphone between the two calls. These two
+            requests SHOULD be handled as one transaction.
+          </li>
+          <li>Wait for response from the underlying system.
+          </li>
+          <li>If it's not possible to fulfill either request for whatever reason:
+            timeout, security, etc., then
+            call <var>resolver</var>'s <code>reject(value)</code>
+            method with the <var>value</var> argument set to a new
+            <code>DOMError</code> object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate this
+            algorithm.
+          </li>
+          <li>Otherwise, <a>queue a task</a> to invoke <var>resolver</var>'s
+            <code>accept()</code> method.
+          </li>
+        </ol>
+      </section><!--merge() method-->
+    </section><!-- CallManager -->
 
     <!-- - - - - - - - - - - -  Interface CallHandler - - - - - - - - - - - -->
     <section> <h2><a>CallHandler</a> interface</h2>
@@ -2104,8 +2263,7 @@
           <section> <h3>The <code>state</code> attribute</h3>
             <p>
             <p>
-              When getting the <dfn id=
-              "widl-TelephonyStateEvent-state">state</dfn>, the user agent
+              When getting the <code>state</code>, the user agent
               MUST return the new <a>call state</a> causing the state change.
             </p>
           </section>
@@ -2113,8 +2271,7 @@
           <section>
             <h3>The <code>reason</code> attribute</h3>
             <p>
-              When getting the <dfn id=
-              "widl-TelephonyStateEvent-reason">reason</dfn>, the user
+              When getting the <code>reason</code>, the user
               agent MUST return a reason for the new telephony call state
               of the <a>telephony call</a> if the reason is available, or
               <code>null</code> otherwise. In this version, only
@@ -2134,8 +2291,7 @@
             <section>
               <h3>The <code>state</code> member</h3>
               <p>
-                The <dfn id=
-                "widl-TelephonyStateEventInit-state">state</dfn> member
+                The <code>state</code> member
                 represents the <a>call state</a> of a <a><code>Call</code></a>
                 object.
               </p>
@@ -2144,7 +2300,7 @@
             <section>
             <h3>The <code>reason</code> attribute</h3>
             <p>
-              The <dfn id="widl-TelephonyStateEvent-reason">reason</dfn> member
+              The <code>reason</code> member
               represents the <a><code>DisconnectReason</code></a> for a
               <a><code>Call</code></a> object.
             </p>
@@ -2295,7 +2451,7 @@
       <!-- - - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
       <section> <h3>The <code>serviceId</code> attribute</h3>
         <p>
-          When getting the <dfn id="widl-CallHandler-serviceId">serviceId</dfn>
+          When getting the <code>serviceId</code>
           attribute, the user agent MUST return the <a>telephony service id</a>
           of the <a>telephony service</a> associated with this call.
         </p>
@@ -2304,11 +2460,11 @@
       <!-- - - - - - - - - - - -  state attribute - - - - - - - - - - - - - -->
       <section> <h3>The <code>state</code> attribute</h3>
         <p>
-          When getting the <dfn id="widl-CallHandler-state">state</dfn>
+          When getting the <code>state</code>
           attribute, the user agent MUST return the <a>CallState</a> value that
           represents the state of for the <a>Call</a>.
         </p>
-      </section><!-- state attribute -->      
+      </section><!-- state attribute -->
     </section><!-- CallHandler Interface -->
 
     <!-- - - - - - - - - - - -  Interface TelephonyCall - - - - - - - - - - -->
@@ -2328,8 +2484,7 @@
       <!-- - - - - - - - - - - - remoteParty attribute  - - - - - - - - - - -->
       <section> <h3>The <code>remoteParty</code> attribute</h3>
         <p>
-          When getting the <dfn id=
-          "widl-TelephonyCall-remoteParty">remoteParty</dfn> attribute, the
+          When getting the <code>remoteParty</code> attribute, the
           user agent MUST return the <a>remote party id</a> (e.g. telephone
           number) of the call participant. If not available (e.g. callerId has
           been hidden), return <code>null</code>.
@@ -2339,8 +2494,7 @@
       <!-- - - - - - - - - - - - conferenceId attribute - - - - - - - - - - -->
       <section> <h3>The <code>conferenceId</code> attribute</h3>
         <p>
-          When getting the <dfn id=
-          "widl-TelephonyCall-conferenceId">conferenceId</dfn> attribute, if
+          When getting the <code>conferenceId</code> attribute, if
           this call is managed as a part of a multiparty call then the user
           agent MUST return the value of the <code>conferenceId</code>
           attribute of the <a>ConferenceCall</a> multiparty call to which this
@@ -2407,7 +2561,7 @@
           <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
             object and <var>resolver</var> its associated resolver.
           </li>
-          <li>If the <a>state</a> is not <a><code>incoming</code></a> or
+          <li>If the <code>state</code> is not <a><code>incoming</code></a> or
             <a><code>waiting</code></a>,
             then call <var>resolver</var>'s <code>reject(value)</code>
             method with the <var>value</var> argument set to a new
@@ -2520,8 +2674,8 @@
       <section> <h3>Event handlers</h3>
         <p>
           To handle changes in <a>call state</a>s, the
-          <a>ConferenceCall</a> interface implements the following <a>event
-          handlers</a>. The event type for the events is
+          <a>ConferenceCall</a> interface implements the following
+          <a>event handler</a>s. The event type for the events is
           <a><code>Event</code></a>.
         </p>
         <table class="simple">
@@ -2703,7 +2857,7 @@
           </p>
           <ol id="steps-sendtones">
             <li>If the <a>ToneOptions</a> parameter specifies the
-            <a>serviceId</a> to be used, then validate and use that value,
+            <code>serviceId</code> to be used, then validate and use that value,
             otherwise use the <a>default telephony service</a> for sending the
             tones.
             </li>
@@ -2757,7 +2911,7 @@
               method for sending [[!DTMF]].
               </li>
               <li>If the <a>ToneOptions</a> parameter specifies the
-              <a>serviceId</a> to be used, then validate and use that value,
+              <code>serviceId</code> to be used, then validate and use that value,
               otherwise use the <a>default telephony service</a> for sending the
               tones.
               </li>
@@ -2836,25 +2990,24 @@
             <dl title="dictionary ToneOptions" class="idl">
               <dt> unsigned long duration </dt>
               <dt> unsigned long gap      </dt>
-              <dt> DOMString serviceId     </dt>
+              <dt> DOMString serviceId    </dt>
             </dl>
             <section> <h3>The <code>duration</code> member</h3>
               <p>
-                The <dfn id="widl-ToneOptions-duration">duration</dfn> member
-                represents the duration (mark) in milliseconds of the [[!DTMF]]
-                tones to be sent.
+                The <code>duration</code> member represents the duration (mark)
+                in milliseconds of the [[!DTMF]] tones to be sent.
               </p>
             </section>
             <section> <h3>The <code>gap</code> member</h3>
               <p>
-                The <dfn id="widl-ToneOptions-gap">gap</dfn> member represents
+                The <code>gap</code> member represents
                 the duration in milliseconds of the time gap (space) before a
                 [[!DTMF]] tone.
               </p>
             </section>
             <section> <h3>The <code>serviceId</code> member</h3>
               <p>
-                The <dfn id="widl-ToneOptions-serviceId">serviceId</dfn> member
+                The <code>serviceId</code> member
                 represents the <a>telephony service id</a> of the <a>telephony
                 service</a> to be used when dialing.
               </p>
@@ -3106,7 +3259,7 @@
           <li>The API could be used to make unwanted calls to premium-rate
           telephone numbers. A malicious application could use this to earn
           money at the user's expense. Similarly, this API could be misused to
-          enrol the user into a premium-rate calling service, which would then
+          enroll the user into a premium-rate calling service, which would then
           charge the end user when calls are received.
           </li>
           <li>The API could be used to make unwanted advertising calls, in a
@@ -3209,19 +3362,6 @@
       <!-- - - - - - - - - - - - User interaction guidelines  - - - - - - - -->
       <section> <h2>User interaction guidelines</h2>
         <p>
-          This API has been designed to facilitate typical telephony interaction
-          scenarios, such as:
-          <ol>
-            <li>incoming call dialog</li>
-            <li>ongoing call dialog</li>
-            <li>request PIN code dialog</li>
-            <li>typing emergency numbers in PIN code dialog</li>
-            <li>typing phone numbers, remote party id's and MMI commands in
-              dialer
-            </li>
-          </ol>
-        </p>
-        <p>
           Implementations SHOULD make sure the phone calls are controllable by
           the user at any point in time while the call is active.
         </p>
@@ -3262,8 +3402,7 @@
         <!-- - - - - - - - - - -  remoteParty attribute - - - - - - - - - - -->
         <section> <h3>The <code>remoteParty</code> attribute</h3>
           <p>
-            When getting the <dfn id=
-            "CallHistoryEntry-remoteParty">remoteParty</dfn> attribute, the
+            When getting the <code>remoteParty</code> attribute, the
             user agent MUST return the <a>remote party id</a> (e.g. telephone
             number) of the call participant.
           </p>
@@ -3271,8 +3410,7 @@
         <!-- - - - - - - - - - -  serviceId attribute - - - - - - - - - - - -->
         <section> <h3>The <code>serviceId</code> attribute</h3>
           <p>
-            When getting the <dfn id=
-            "CallHistoryEntry-serviceId">serviceId</dfn> attribute, the user
+            When getting the <code>serviceId</code> attribute, the user
             agent MUST return the <a>telephony service id</a> of the
             <a>telephony service</a> used for the call.
           </p>
@@ -3280,8 +3418,7 @@
         <!-- - - - - - - - - - -  conferenceId attribute  - - - - - - - - - -->
         <section> <h3>The <code>conferenceId</code> attribute</h3>
           <p>
-            When getting the <dfn id=
-            "CallHistoryEntry-conferenceId">conferenceId</dfn> attribute, the
+            When getting the <code>conferenceId</code> attribute, the
             user agent MUST return the <a>conference id</a> of the call, if the
             call has participated in a multiparty call. Otherwise, return
             <code>null</code>. string.
@@ -3372,7 +3509,7 @@
       </p>
       <ul>
         <li>No changes yet.
-        </li><!-- 
+        </li><!--
         <li><a href="">Link to bug that documents the change</a></li>
         -->
       </ul>
@@ -3397,6 +3534,10 @@
 </html>
 
 <!--
+For conference issues, see also:
+
+GSM
+===
 
 GSM TS 04.08 call control states
 GSM TS 04.83 call hold states
@@ -3411,4 +3552,10 @@ IMS TS 23.228 IP Multimedia Subsystem (IMS); Stage 2
 - implementation to generate a MPTY_ID which refers to the list of all active
 call ID's in the mpty call
 
+CDMA
+====
+
+http://www.scribd.com/doc/7029977/Network-Inter-Working-Between-GSM-MAP-and-ANSI41-CDMA
+
+http://support.verizonwireless.com/support/faqs/FeaturesandOptionalServices/faq_3-way_calling.html
 -->
