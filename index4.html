@@ -291,7 +291,8 @@
       <p>
         A <dfn>telephony service</dfn> is an abstract concept used in this API
         to denote the tuple of a given <a>subscriber identity</a>, and a given
-        <a>telephony modem</a>. If any of these elements is changed, it means a different telephony service. Note that when a device is moving, and
+        <a>telephony modem</a>. If any of these elements is changed, it means a
+        different telephony service. Note that when a device is moving, and
         eventually changes the <a>telephony network</a>, it continues to see the
         same telephony service.
         A telephony service can use different protocols for telephony
@@ -302,7 +303,8 @@
       <p>
         Note the difference between dual-SIM and multiple-SIM card use cases.
         In dual-SIM use case the subscriber has two identities, which both can
-        be active in the same time, i.e. could make and receive calls. In the multiple SIM card use case the subscriber has multiple identities, but
+        be active in the same time, i.e. could make and receive calls. In the
+        multiple SIM card use case the subscriber has multiple identities, but
         only one can be active at a given time. These constraints are not
         exposed by this API, and implementations are expected to encapsulate
         them.
@@ -586,18 +588,6 @@
             changes</li>
           </ol>
          </li>
-         <li>Man-Machine Interface (MMI) Code Support
-           Global Certification Forum compliancy requires support for MMI codes
-           by dialer applications. Hence dialers need to handle multiple types
-           of input, which can be dialed numbers, MMI codes, PIN codes and other
-           input, all handled by different telephony services, e.g. MMI codes
-           are handled by Supplementary Services in GSM. The API should provide
-           pre-validating and parsing user input in order to determine whether
-           does it match a MMI code sendable to Supplementary Services
-           (otherwise all applications would need to parse all MMI codes
-           themselves). Codes not matched by the implementation need to be
-           handled by the applications using this API.
-         </li>
          <li>Telephony service management
           <ol>
           <li>set a default subscriber identity, so that the identity is
@@ -627,6 +617,19 @@
             conference call possible, is video call possible, etc </li>
           <li>support network services, such as call forwarding, call
             barring, network selection mode, call counters, etc.</li>
+          <li>Man-Machine Interface (MMI) Code Support
+           Global Certification Forum compliancy requires support for MMI codes
+           by dialer applications. Hence dialers need to handle multiple types
+           of input, which can be dialed numbers, MMI codes, PIN codes and other
+           input, all handled by different telephony services, e.g. MMI codes
+           are handled by Supplementary Services in GSM. The API may provide
+           in the future pre-validating and parsing user input in order to
+           determine whether does it match a MMI code sendable to
+           Supplementary Services
+           (otherwise all applications would need to parse all MMI codes
+           themselves). Codes not matched by the implementation need to be
+           handled by the applications using this API.
+          </li>
           </ol>
         </p>
       </section>
@@ -663,11 +666,8 @@
       </p>
       <dl title="TelephonyManager implements CallManager" class="idl"></dl>
       <dl title="TelephonyManager implements ToneManager" class="idl"></dl>
-      <dl title="interface TelephonyManager" class="idl">
-        <dt>readonly attribute EmergencyManager emergency</dt>
-        <dt>readonly attribute CommandParser command</dt>
-        <dt>readonly attribute ServiceManager service</dt>
-      </dl>
+      <dl title="TelephonyManager implements EmergencyManager" class="idl"></dl>
+      <dl title="TelephonyManager implements ServiceManager" class="idl"></dl>
       <p>
         Each of these interfaces will be expanded in the following sections.
       </p>
@@ -1087,7 +1087,8 @@
         <code>"<a>ringing</a>"</code> state, set by the mobile terminal when
         local call alerting starts, in order to notify the remote party about
         the ongoing alerting (ringing can actually be e.g. a beep, ring tone,
-        or vibration pattern). If the modem expects this state to be set, implementations SHOULD make sure to set it.
+        or vibration pattern). If the modem expects this state to be set,
+        implementations SHOULD make sure to set it.
       </p>
       <p class='note'>
         CDMA cannot report all these states in the expected sequence. The
@@ -1125,7 +1126,8 @@
       <p>
         For making a call, the <a>telephony service</a> transitions through
         the following states in order. Errors can occur at each state, which
-        are handled by the <a>telephony network</a>, and may result in the call becoming <a>disconnected</a>:
+        are handled by the <a>telephony network</a>, and may result in the call
+        becoming <a>disconnected</a>:
       </p>
       <ol>
         <li><code><a>dialing</a></code></li>
@@ -1832,7 +1834,8 @@
           <a><code>TelephonyCall</code></a> objects in the system which have the
           value of the <code>state</code> property different from
           <code>'disconnected'</code>, i.e. all
-          telephony calls in progress. <a><code>TelephonyCall</code></a> objects belonging to a conference call are also listed here.
+          telephony calls in progress. <a><code>TelephonyCall</code></a> objects
+          belonging to a conference call are also listed here.
           The applications SHOULD check the <code>conferenceId</code> property
           of each <code>TelephonyCall</code> object in order to determine
           whether the call is part of a conference call, and if yes, which is
@@ -2249,7 +2252,7 @@
       <dl title="interface EmergencyManager" class="idl">
         <dt> // on success returns emergency numbers as sequence of DOMString
         <dt>Promise getEmergencyNumbers()</dt>
-        <dt>attribute EventHandler onchanged</dt>
+        <dt>attribute EventHandler onemergencynumberschanged</dt>
       </dl>
       <!-- - - - - - - - - - - EmergencyManager Event handlers  - - - - - - -->
       <section> <h2>Event handlers</h2>
@@ -2264,12 +2267,12 @@
         </tr>
         <tr>
           <td>
-            <dfn id="widl-EmergencyManager-onchanged">
-                 <code>onchanged</code>
+            <dfn id="widl-EmergencyManager-onemergencynumberschanged">
+                 <code>onemergencynumberschanged</code>
             </dfn>
           </td>
           <td>
-            <dfn><code>changed</code></dfn>
+            <dfn><code>emergencynumberschanged</code></dfn>
           </td>
         </tr>
       </table>
@@ -2277,7 +2280,7 @@
         When emergency numbers have changed, the <code>changed</code> event of
         type <a><code>Event</code></a> MUST be fired at the object implementing
         this interface. The applications SHOULD read the emergency numbers
-        by the <code>getNumbers()</code> method.
+        by the <code>getEmergencyNumbers()</code> method.
       </p>
     </section>
     <section> <h3>The <code>getEmergencyNumbers()</code> method</h3>
@@ -2320,115 +2323,6 @@
       </p>
     </section>
     </section> <!-- Emergency numbers -->
-
-    <!-- - - - - - - - - - - - Command parser - - - - - - - - - - - - - - - -->
-    <section> <h2>The <a>CommandParser</a> Interface</h2>
-      <p>
-        This interface provides a method for parsing and classifying user input.
-        Applications can use this for dispatching these user inputs to relevant
-        handlers. This is a helper interface for dialer applications, in order
-        to avoid parsing user input to resolve commands in various telephony
-        service specific contexts.
-        For example, dialers could accept an emergency number typed in a PIN
-        code dialog and display a button for making the emergency call.
-        Another example is in a running dialer application, user input can be a
-        phone number, an emergency number, or an MMI command, which enables
-        the application know which API methods to use in continuation, i.e.
-        which interfaces can accept the given user input. For instance, in the
-        case of an MMI command the implementation of this interface can tell
-        whether the command is valid and could be forwarded to the telephony
-        service.
-      </p>
-      <dl title="interface CommandParser" class="idl">
-        <dt>// on success returns TelephonyCommandType</dt>
-        <dt>
-          Promise classify(DOMString input, optional DOMString serviceId)
-        </dt>
-      </dl>
-      <section> <h3>The <a><code>TelephonyCommandType</code></a> enum</h3>
-      <p>
-        The return value of the <code>classify()</code> method
-        through the <code>Promise</code> is a string enumeration value of
-        the input classification.
-      </p>
-      <dl title="enum TelephonyCommandType" class="idl">
-        <dt>emergency</dt>
-        <dt>smmi</dt>
-        <dt>mmi</dt>
-        <dt>invalid</dt>
-        <dt>number</dt>
-        <dt>unknown</dt>
-      </dl>
-      <p> The supported command type values are the following:</p>
-      <dl>
-        <dt>"emergency"</dt>
-        <dd>The user input matches to a known emergency number.</dd>
-
-        <dt>"smmi"</dt>
-        <dd>The user input matched to a standalone MMI command.</dd>
-
-        <dt>"mmi"</dt>
-        <dd>The user input matched to a sendable MMI command.</dd>
-
-        <dt>"invalid"</dt>
-        <dd>
-          The user input is invalid (e.g. too long or contains invalid
-          characters).
-        </dd>
-
-        <dt>"number"</dt>
-        <dd>The user input matched to a remote party id of known
-          format.</dd>
-
-        <dt>"unknown"</dt>
-        <dd>The user input matched does not match to a known command, nor to a
-          known number format. The input may be usable, depending on the
-          telephony service.</dd>
-      </dl>
-      </section> <!-- TelephonyCommandType -->
-      <section> <h3>The <code>classify()</code> method</h3>
-      <p>
-        When the <code><dfn id=
-      "widl-CommandParser-classify-Promise-DOMString-input-DOMString-serviceId">
-        classify()</code> method is invoked, the user agent
-        MUST run the following steps:
-      </p>
-      <ol id="steps-parsecommand">
-        <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-          object and <var>resolver</var> its associated resolver.
-        </li>
-        <li>Return <var>promise</var> and continue the following steps
-          asynchronously.
-        </li>
-        <li>If the parameter <var>serviceId</var> has been specified, then
-          restrict the following steps to the corresponding
-          <a>telephony service</a>.
-        </li>
-        <li>Make a request to the underlying system to parse the user input
-          given in <var>input</var>.
-        </li>
-        <li>Wait for response from the underlying system.
-        </li>
-        <li>If it's not possible to retrieve the list of telephony service
-        identifiers for whatever reason: timeout, security, etc., then run the
-        following sub-steps and terminate this algorithm:
-          <ol>
-            <li>Let <var>error</var> be a new DOMError object whose name is
-            <code>"NoModificationAllowedError"</code>.
-            </li>
-            <li>Call <var>resolver</var>'s <code>reject(value)</code> method
-            with <var>error</var> as the <var>value</var> argument.
-            </li>
-          </ol>
-        </li>
-        <li>Otherwise, <a>queue a task</a> to invoke <var>resolver</var>'s
-          <code>accept(value)</code> method with the result as string, i.e. a
-          <a><code>TelephonyCommandType</code></a> enumeration value as
-          <var>value</var> argument.
-        </li>
-      </ol>
-      </section> <!-- classify() -->
-    </section> <!-- Command parser -->
 
     <!-- - - - - - - - - - - - Security and privacy - - - - - - - - - - - - -->
     <section> <h2>Security and privacy considerations</h2>
@@ -2586,11 +2480,6 @@
         <p>
           Implementations SHOULD make sure the phone calls are controllable by
           the user at any point in time while the call is active.
-        </p>
-        <p>
-          Implementations SHOULD validate user input using the
-          <code>classify()</code> method of the
-          <a><code>CommandParser</code></a> interface.
         </p>
       </section><!-- User interaction guidelines -->
     </section><!-- Security and privacy -->
@@ -2983,8 +2872,7 @@
           Defines a telephony event for notifying a changed <a>telephony
           service</a>.
         </p>
-        <dl title=
-        "[Constructor(DOMString type, optional TelephonyServiceEventInit eventInitDict)]interface TelephonyServiceEvent : Event"
+        <dl title="interface TelephonyServiceEvent : Event"
         class="idl">
           <dt>readonly attribute DOMString serviceId</dt>
         </dl>
