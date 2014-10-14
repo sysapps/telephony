@@ -1214,12 +1214,12 @@
         <dt>readonly attribute DOMString serviceId    </dt>
         <dt>readonly attribute CallState state        </dt>
         <dt>readonly attribute DOMString stateReason  </dt>
+        <dt>readonly attribute TelephonyTechnology technology </dt>
         <dt>Promise accept()                          </dt>
         <dt>Promise hold()                            </dt>
         <dt>Promise resume()                          </dt>
         <dt>Promise disconnect()                      </dt>
         <dt>Promise deflect(DOMString remoteParty)    </dt>
-        <dt>Promise transfer(TelephonyCall call)      </dt>
         <dt>Promise split()                           </dt>
       </dl>
 
@@ -1300,6 +1300,36 @@
           </ul>
         </p>
       </section><!-- stateReason attribute -->
+
+      <!-- - - - - - - - - - - -  technology attribute - - - - - - - - - - -->
+      <section> <h3>The <code>technology</code> property</h3>
+        <p>
+          When getting the <dfn id="widl-TelephonyCall-technology"></dfn>
+          attribute, the user agent MUST return the current technology used by
+          the <a>telephony provider</a>, if available, or otherwise
+          <code>null</code>.
+        </p>
+        <dl title="enum TelephonyTechnology" class="idl">
+          <dt>gsm</dt>
+          <dt>cdma</dt>
+          <dt>edge</dt>
+          <dt>umts</dt>
+          <dt>hspa</dt>
+          <dt>lte</dt>
+        </dl>
+        <p>
+          The following values are supported as telephony technologies:
+          <ul>
+            <li><code>"gsm"</code>: used for GSM protocols</li>
+            <li><code>"cdma"</code>: used for CDMA and related protocols</li>
+            <li><code>"edge"</code>: used for EDGE protocol</li>
+            <li><code>"umts"</code>: used for UMTS protocols</li>
+            <li><code>"hspa"</code>: used for HSPA and HSPA+ protocols</li>
+            <li><code>"lte"</code>: used for LTE protocols</li>
+          </ul>
+        </p>
+      </section> <!-- technology -->
+
 
       <!-- - - - - - - - - - - - accept() method  - - - - - - - - - - - - - -->
       <section> <h3>The <code>accept()</code> method</h3>
@@ -1530,65 +1560,6 @@
         </ol>
       </section><!-- deflect() method -->
 
-      <!-- - - - - - - - - - - - transfer() method  - - - - - - - - - - - - -->
-      <section> <h3>The <code>transfer()</code> method</h3>
-        <p class="note">
-          The <a>telephony service</a> needs to have the call transfer feature
-          enabled in order for this method to succeed. For instance, in GSM,
-          the Call Transfer supplementary service needs to be active.
-        </p>
-        <p>
-          The <dfn id=
-          "widl-TelephonyCall-transfer-void-TelephonyCall-call">transfer()</dfn>
-          method Initiates transferring the call to a new call between the
-          remote party of this call and another remote party, then disconnects
-          the call. The method needs the Explicit Call Transfer supplementary
-          service to be active.The method takes one argument, which represents
-          the held call whose remote party is connected with the remote party
-          of this call (which MUST be the <a>active call</a>).
-           When invoked, the user agent MUST run the following steps:
-        </p>
-        <ol>
-          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
-            object and <var>resolver</var> its associated resolver.
-          </li>
-          <li>If <code>state</code> is not equal to <a><code>active</code></a>
-            or if the <code>state</code> of the parameter '<var>call</var> is not
-            equal to <a><code>held</code></a>, then optionally call
-            <var>resolver</var>'s
-            <code>reject(value)</code> method with the <var>value</var> argument
-            set to a new <code>DOMError</code> object whose name is set to
-            <code>"InvalidStateError"</code>, and terminate this algorithm.
-          </li>
-          <li>if the method is not supported by the implementation, optionally
-            call <var>resolver</var>'s <code>reject(value)</code> method with
-            the <var>value</var> argument set to a new <code>DOMError</code>
-            object whose name is set to <code>NotSupportedError</code>, and terminate these steps.</li>
-          <li>Return <var>promise</var> and continue the following steps
-            asynchronously.
-          </li>
-          <li>Set the <code>state</code> of this call to
-            <a><code>transferring</code></a>
-          </li>
-          <li>Make a request to the telephony system to transfer the
-            call to the remote party indicated in the <var>call</var> parameter,
-            and wait for response from the telephony system
-          </li>
-          <li>If the request fails, then reset the <code>state</code> of the
-            call to the call state on the modem. Then call <var>resolver</var>'s
-            <code>reject(value)</code> method with the <var>value</var> argument
-            set to a new <code>DOMError</code> object whose name is
-            set to <code>"NoModificationAllowedError"</code>
-            or <code>"NotSupportedError"</code> and terminate these steps.
-          </li>
-          <li>If the transfer request is successful, then execute the
-            <a href="#steps-call-disconnected"> call disconnected steps</a>,
-            and <a>queue a task</a> to invoke
-            <var>resolver</var>'s <code>accept()</code> method.
-          </li>
-        </ol>
-      </section><!-- transfer() method -->
-
       <!-- - - - - - - - - - - - split() method - - - - - - - - - - - - - - -->
       <section> <h3>The <code>split()</code> method</h3>
         <p>
@@ -1696,8 +1667,9 @@
       <dl title="interface CallManager: EventTarget" class="idl">
         <dt>readonly attribute TelephonyCall? activeCall</dt>
         <dt>Promise getCalls()</dt>
-        <dt>TelephonyCall? getCall(DOMString callId)</dt>
+        <!--dt>TelephonyCall? getCall(DOMString callId)</dt-->
         <dt>Promise dial(DOMString remoteParty, DialOptions options)</dt>
+        <dt>Promise transfer()</dt>
         <dt>Promise createConference()</dt>
         <dt>Promise getParticipantCalls(DOMString conferenceId)</dt>
         <dt>attribute EventHandler oncallstatechange</dt>
@@ -1941,10 +1913,13 @@
           </li>
           <li>If there is no <a>selected telephony service</a>, then the
             user agent SHOULD attempt retrieving the available
-            <a>telephony service</a>s andset a <a>selected telephony service</a>, then continue these steps. If this fails, then
-            call <var>resolver</var>'s <code>reject(value)</code> method with
+            <a>telephony service</a>s and set a
+            <a>selected telephony service</a>, then continue these steps.
+            If this fails, then call
+            <var>resolver</var>'s <code>reject(value)</code> method with
             the <var>value</var> argument set to a new <code>DOMError</code>
-            object whose name is set to <code>"NoModificationAllowedError"</code>, and terminate these steps.
+            object whose name is set to
+            <code>"NoModificationAllowedError"</code>, and terminate these steps.
           </li>
           <li>Optionally validate the value of the <code>remoteParty</code>
             property and if it is not valid, resolve <var>promise</var> with an
@@ -1971,6 +1946,67 @@
         </ol>
       </section><!--dial() method-->
 
+      <!-- - - - - - - - - - - - transfer() method  - - - - - - - - - - - - -->
+      <section> <h3>The <code>transfer()</code> method</h3>
+        <p class="note">
+          The <a>telephony service</a> needs to have the call transfer feature
+          enabled in order for this method to succeed. For instance, in GSM,
+          the Call Transfer supplementary service needs to be active.
+        </p>
+        <p>
+          The <dfn id=
+          "widl-TelephonyCall-transfer-Promise">transfer()</dfn>
+          method initiates joining the <a>active</a> and <a>held</a> calls on
+          the <a>selected telephony service</a>, then disconnects, so that the
+          conversation is continuing between the remote parties of the formerly
+          active and held calls, respectively.
+          The method needs the GSM Explicit Call Transfer supplementary
+          service to be active.The method takes one argument, which represents
+          the held call whose remote party is connected with the remote party
+          of this call (which MUST be the <a>active call</a>).
+           When invoked, the user agent MUST run the following steps:
+        </p>
+        <ol>
+          <li>Let <var>promise</var> be a new <a><code>Promise</code></a>
+            object and <var>resolver</var> its associated resolver.
+          </li>
+          <li>If there is no <a>active</a> or <a>held</a> calls in progress,
+            then optionally call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is set to
+            <code>"InvalidStateError"</code>, and terminate this algorithm.
+          </li>
+          <li>if the method is not supported by the implementation, optionally
+            call <var>resolver</var>'s <code>reject(value)</code> method with
+            the <var>value</var> argument set to a new <code>DOMError</code>
+            object whose name is set to <code>NotSupportedError</code>, and
+            terminate these steps.
+          </li>
+          <li>Set the <code>state</code> of this call to
+            <a><code>transferring</code></a>
+          </li>
+          <li>Return <var>promise</var> and continue the following steps
+            asynchronously.
+          </li>
+          <li>Make a request to the telephony system to transfer the
+            call to the remote party indicated in the <var>call</var> parameter,
+            and wait for response from the telephony system
+          </li>
+          <li>If the request fails, then reset the <code>state</code> of the
+            call to the call state on the modem. Then call <var>resolver</var>'s
+            <code>reject(value)</code> method with the <var>value</var> argument
+            set to a new <code>DOMError</code> object whose name is
+            set to <code>"NoModificationAllowedError"</code>
+            or <code>"NotSupportedError"</code> and terminate these steps.
+          </li>
+          <li>If the transfer request is successful, then execute the
+            <a href="#steps-call-disconnected"> call disconnected steps</a>,
+            and <a>queue a task</a> to invoke
+            <var>resolver</var>'s <code>accept()</code> method.
+          </li>
+        </ol>
+      </section><!-- transfer() method -->
+
       <!-- - - - - - - - - createConference() method  - - - - - - - - - - - -->
       <section><h3>The <code>createConference()</code> method</h3>
         <p>
@@ -1988,7 +2024,7 @@
           <li>If there is no <a>active call</a>, or no call in the
             <code>'<a>held</a>'</code> state, then optionally resolve
             <var>promise</var> with a <code>"NoModificationAllowedError"</code>
-              error, and terminate this algorithm.
+              error and terminate this algorithm.
           </li>
           <li>Let <var>service</var> be the value of the <code>serviceId</code>
             property of the <a>active call</a>.
@@ -2037,7 +2073,7 @@
         </ol>
       </section><!--createConference() method-->
 
-      <!-- - - - - - - - getParticipantCalls() method - - - - - - - - - - - - - -->
+      <!-- - - - - - - - getParticipantCalls() method - - - - - - - - - - - -->
       <section> <h3>The <code>getParticipantCalls()</code> method</h3>
         <p>
           When the <dfn
@@ -2969,28 +3005,12 @@
         </section> <!-- registrationMode -->
 
         <!-- - - - - - - - TelephonyProvider.technology - - - - - - - - - - -->
-        <section> <h3>The <code></code> property</h3>
+        <section> <h3>The <code>technology</code> property</h3>
           <p>
-            It MUST return the current technology used by the
-            <a>telephony provider</a>, if available, otherwise <code>null</code>.
-            The following values are supported as telephony technologies:
-            <ul>
-              <li><code>"gsm"</code>: used for GSM protocols</li>
-              <li><code>"cdma"</code>: used for CDMA and related protocols</li>
-              <li><code>"edge"</code>: used for EDGE protocol</li>
-              <li><code>"umts"</code>: used for UMTS protocols</li>
-              <li><code>"hspa"</code>: used for HSPA and HSPA+ protocols</li>
-              <li><code>"lte"</code>: used for LTE protocols</li>
-            </ul>
+            It MUST return the current <a><code>TelephonyTechnology</code></a>
+            used by the <a>telephony provider</a>, if available, otherwise
+            <code>null</code>.
           </p>
-          <dl title="enum TelephonyTechnology" class="idl">
-            <dt>gsm</dt>
-            <dt>cdma</dt>
-            <dt>edge</dt>
-            <dt>umts</dt>
-            <dt>hspa</dt>
-            <dt>lte</dt>
-          </dl>
         </section> <!-- technology -->
 
         <!-- - - - - - - - TelephonyProvider.technologies - - - - - - - - - -->
@@ -3020,7 +3040,7 @@
         </section> <!-- dataStrength -->
 
         <!-- - - - - - - TelephonyProvider.mobileNetworkCode  - - - - - - - -->
-        <section> <h3>The <code></code> property</h3>
+        <section> <h3>The <code>mobileNetworkCode</code> property</h3>
           <p>
             It MUST return the Mobile Network Code of the
             <a>telephony provider</a>, if available, otherwise <code>null</code>.
@@ -3028,7 +3048,7 @@
         </section> <!-- mobileNetworkCode -->
 
         <!-- - - - - - - TelephonyProvider.mobileCountryCode  - - - - - - - -->
-        <section> <h3>The <code></code> property</h3>
+        <section> <h3>The <code>mobileCountryCode</code> property</h3>
           <p>
             It MUST return the Mobile Country Code of the
             <a>telephony provider</a>, if available, otherwise <code>null</code>.
@@ -3036,7 +3056,7 @@
         </section> <!-- mobileCountryCode -->
 
         <!-- - - - - - - TelephonyProvider.locationAreaCode - - - - - - - - -->
-        <section> <h3>The <code></code> property</h3>
+        <section> <h3>The <code>locationAreaCode</code> property</h3>
           <p>
             It MUST return the Location Area Code of the
             <a>telephony provider</a>, if available, otherwise <code>null</code>.
